@@ -1,41 +1,50 @@
-import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface NavItem {
   icon: string;
   label: string;
   id: string;
+  path: string;
 }
 
 const navItems: NavItem[] = [
   { 
     id: "home",
     icon: "🏠",
-    label: "Home" 
+    label: "Home",
+    path: "/"
   },
   { 
     id: "quran",
     icon: "📖",
-    label: "Quran" 
+    label: "Quran",
+    path: "/quran"
   },
   { 
     id: "hadith",
     icon: "📜",
-    label: "Hadith" 
+    label: "Hadith",
+    path: "/bukhari"
   },
   { 
     id: "calendar",
     icon: "🗓️",
-    label: "Calendar" 
+    label: "Calendar",
+    path: "/calendar"
   },
   { 
     id: "settings",
     icon: "⚙️",
-    label: "Settings" 
+    label: "Settings",
+    path: "/settings"
   },
 ];
 
 const BottomNavigation = () => {
-  const [activeTab, setActiveTab] = useState("home");
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  const isActive = (path: string) => location.pathname === path;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-lg border-t border-border shadow-lg z-50">
@@ -43,14 +52,14 @@ const BottomNavigation = () => {
         {navItems.map((item) => (
           <button
             key={item.id}
-            onClick={() => setActiveTab(item.id)}
-            className={`bottom-nav-item ${activeTab === item.id ? "active" : ""}`}
+            onClick={() => navigate(item.path)}
+            className={`bottom-nav-item ${isActive(item.path) ? "active" : ""}`}
           >
-            <div className={`transition-transform text-2xl ${activeTab === item.id ? "scale-110" : ""}`}>
+            <div className={`transition-transform text-2xl ${isActive(item.path) ? "scale-110" : ""}`}>
               {item.icon}
             </div>
             <span className={`text-xs font-medium ${
-              activeTab === item.id ? "text-primary" : "text-muted-foreground"
+              isActive(item.path) ? "text-primary" : "text-muted-foreground"
             }`}>
               {item.label}
             </span>
