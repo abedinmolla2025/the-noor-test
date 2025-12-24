@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Search, BookOpen, ChevronRight } from "lucide-react";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -122,10 +122,10 @@ const DuaCollection = ({ open, onOpenChange }: DuaCollectionProps) => {
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[80vh]">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerContent className="max-h-[90vh]">
+        <DrawerHeader>
+          <DrawerTitle className="flex items-center gap-2">
             {(selectedDua || selectedCategory) && (
               <button
                 onClick={handleBack}
@@ -136,9 +136,10 @@ const DuaCollection = ({ open, onOpenChange }: DuaCollectionProps) => {
             )}
             <BookOpen className="w-5 h-5 text-primary" />
             {selectedDua ? selectedDua.title : selectedCategory || "Dua Collection"}
-          </DialogTitle>
-        </DialogHeader>
+          </DrawerTitle>
+        </DrawerHeader>
 
+        <div className="px-4 pb-6">
         {selectedDua ? (
           // Dua Detail View
           <ScrollArea className="h-[60vh] pr-4">
@@ -210,8 +211,9 @@ const DuaCollection = ({ open, onOpenChange }: DuaCollectionProps) => {
             </ScrollArea>
           </div>
         )}
-      </DialogContent>
-    </Dialog>
+        </div>
+      </DrawerContent>
+    </Drawer>
   );
 };
 

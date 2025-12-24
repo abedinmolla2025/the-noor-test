@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { RotateCcw, Volume2, VolumeX } from "lucide-react";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 
 interface TasbihCounterProps {
@@ -83,10 +83,10 @@ const TasbihCounter = ({ open, onOpenChange }: TasbihCounterProps) => {
   const isComplete = count >= currentDhikr.target;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerContent className="max-h-[90vh]">
+        <DrawerHeader className="text-center">
+          <DrawerTitle className="flex items-center justify-center gap-2">
             <span className="flex items-center gap-2">
               📿 Tasbih Counter
             </span>
@@ -98,8 +98,8 @@ const TasbihCounter = ({ open, onOpenChange }: TasbihCounterProps) => {
             >
               {soundEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
             </Button>
-          </DialogTitle>
-        </DialogHeader>
+          </DrawerTitle>
+        </DrawerHeader>
 
         <div className="flex flex-col items-center py-4 space-y-6">
           {/* Dhikr Selection */}
@@ -171,8 +171,8 @@ const TasbihCounter = ({ open, onOpenChange }: TasbihCounterProps) => {
             Total today: <span className="font-semibold">{totalCount}</span>
           </p>
         </div>
-      </DialogContent>
-    </Dialog>
+      </DrawerContent>
+    </Drawer>
   );
 };
 
