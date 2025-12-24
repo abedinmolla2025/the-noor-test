@@ -25,11 +25,19 @@ const QuranAudioPlayer = ({
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    if (audioRef.current) {
+    if (audioRef.current && audioUrl) {
       audioRef.current.pause();
+      audioRef.current.src = audioUrl;
       audioRef.current.load();
-      setIsPlaying(false);
       setProgress(0);
+      
+      // Auto play when new audio is loaded
+      audioRef.current.play()
+        .then(() => setIsPlaying(true))
+        .catch((err) => {
+          console.log("Autoplay prevented:", err);
+          setIsPlaying(false);
+        });
     }
   }, [audioUrl]);
 
@@ -74,9 +82,11 @@ const QuranAudioPlayer = ({
     >
       <audio
         ref={audioRef}
-        src={audioUrl}
+        preload="auto"
         onTimeUpdate={handleTimeUpdate}
         onEnded={handleEnded}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
       />
 
       {/* Progress Bar */}
