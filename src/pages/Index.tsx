@@ -12,7 +12,7 @@ const Index = () => {
       <main className="max-w-lg mx-auto px-4 py-6 space-y-6">
         {/* Prayer Hero Card */}
         <section className="animate-fade-in" style={{ animationDelay: "0ms" }}>
-          <PrayerHeroCard hijriDate="3 Rajab, 1447 AH" />
+          <PrayerHeroCard />
         </section>
 
         {/* Feature Icons */}
