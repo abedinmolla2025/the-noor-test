@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Search, Heart, HeartOff, User } from "lucide-react";
+import { Search, Heart, User } from "lucide-react";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -150,10 +150,10 @@ const BabyNames = ({ open, onOpenChange }: BabyNamesProps) => {
   );
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[85vh]">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerContent className="max-h-[90vh]">
+        <DrawerHeader>
+          <DrawerTitle className="flex items-center gap-2">
             {selectedName && (
               <button
                 onClick={() => setSelectedName(null)}
@@ -163,9 +163,9 @@ const BabyNames = ({ open, onOpenChange }: BabyNamesProps) => {
               </button>
             )}
             👶 {selectedName ? selectedName.name : "Islamic Baby Names"}
-          </DialogTitle>
-        </DialogHeader>
-
+          </DrawerTitle>
+        </DrawerHeader>
+        <div className="px-4 pb-6">
         {selectedName ? (
           // Name Detail View
           <div className="space-y-6 py-4">
@@ -275,8 +275,9 @@ const BabyNames = ({ open, onOpenChange }: BabyNamesProps) => {
             </Tabs>
           </div>
         )}
-      </DialogContent>
-    </Dialog>
+        </div>
+      </DrawerContent>
+    </Drawer>
   );
 };
 

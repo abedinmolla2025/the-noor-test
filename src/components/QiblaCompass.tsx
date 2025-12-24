@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { Compass, Navigation, Loader2, X } from "lucide-react";
+import { Compass, Navigation, Loader2 } from "lucide-react";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 
 // Mecca coordinates (Kaaba)
 const MECCA_LAT = 21.4225;
@@ -109,14 +109,14 @@ const QiblaCompass = ({ open, onOpenChange }: QiblaCompassProps) => {
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerContent className="max-h-[90vh]">
+        <DrawerHeader className="text-center">
+          <DrawerTitle className="flex items-center justify-center gap-2">
             <Compass className="w-5 h-5 text-primary" />
             Qibla Direction
-          </DialogTitle>
-        </DialogHeader>
+          </DrawerTitle>
+        </DrawerHeader>
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
@@ -213,8 +213,8 @@ const QiblaCompass = ({ open, onOpenChange }: QiblaCompassProps) => {
             )}
           </div>
         )}
-      </DialogContent>
-    </Dialog>
+      </DrawerContent>
+    </Drawer>
   );
 };
 
