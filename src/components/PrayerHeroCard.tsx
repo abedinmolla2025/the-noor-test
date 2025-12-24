@@ -127,7 +127,7 @@ const PrayerHeroCard = ({
           <img 
             src={prayingMan} 
             alt="Person praying" 
-            className="w-36 h-36 object-contain drop-shadow-lg -scale-x-100"
+            className="w-48 h-48 object-contain drop-shadow-lg -scale-x-100"
           />
         </div>
       </div>
