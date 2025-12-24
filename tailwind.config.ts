@@ -14,9 +14,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        arabic: ["Scheherazade New", "Noto Naskh Arabic", "Amiri", "serif"],
-        display: ["Playfair Display", "serif"],
+        sans: ["Poppins", "Inter", "system-ui", "sans-serif"],
+        arabic: ["Cairo", "Scheherazade New", "Noto Naskh Arabic", "Amiri", "serif"],
+        display: ["Poppins", "Playfair Display", "serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -63,10 +63,11 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
         islamic: {
-          green: "hsl(160 70% 36%)",
-          teal: "hsl(170 60% 42%)",
-          light: "hsl(165 55% 48%)",
-          gold: "hsl(45 90% 55%)",
+          green: "hsl(158 64% 22%)",
+          dark: "hsl(158 64% 18%)",
+          teal: "hsl(168 55% 28%)",
+          light: "hsl(158 50% 30%)",
+          gold: "hsl(45 93% 58%)",
         },
       },
       borderRadius: {
