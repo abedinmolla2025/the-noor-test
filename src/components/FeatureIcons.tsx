@@ -1,41 +1,41 @@
-import { BookOpen, HandHeart, Sparkles, Compass, CircleDot, Moon } from "lucide-react";
+import {
+  AnimatedQuranIcon,
+  AnimatedDuaIcon,
+  AnimatedNamesIcon,
+  AnimatedQiblaIcon,
+  AnimatedTasbihIcon,
+  AnimatedMoonIcon,
+} from "./AnimatedIcons";
 
 interface FeatureItem {
   icon: React.ReactNode;
   label: string;
-  color: string;
 }
 
 const features: FeatureItem[] = [
   { 
-    icon: <BookOpen size={28} />, 
-    label: "Quran", 
-    color: "text-islamic-green" 
+    icon: <AnimatedQuranIcon size={44} />, 
+    label: "Quran"
   },
   { 
-    icon: <HandHeart size={28} />, 
-    label: "Dua", 
-    color: "text-amber-500" 
+    icon: <AnimatedDuaIcon size={44} />, 
+    label: "Dua"
   },
   { 
-    icon: <Sparkles size={28} />, 
-    label: "Names", 
-    color: "text-pink-500" 
+    icon: <AnimatedNamesIcon size={44} />, 
+    label: "Names"
   },
   { 
-    icon: <Compass size={28} />, 
-    label: "Qibla", 
-    color: "text-blue-500" 
+    icon: <AnimatedQiblaIcon size={44} />, 
+    label: "Qibla"
   },
   { 
-    icon: <CircleDot size={28} />, 
-    label: "Tasbih", 
-    color: "text-rose-500" 
+    icon: <AnimatedTasbihIcon size={44} />, 
+    label: "Tasbih"
   },
   { 
-    icon: <Moon size={28} />, 
-    label: "99 Names", 
-    color: "text-purple-500" 
+    icon: <AnimatedMoonIcon size={44} />, 
+    label: "99 Names"
   },
 ];
 
@@ -49,7 +49,7 @@ const FeatureIcons = () => {
           style={{ animationDelay: `${index * 100}ms` }}
         >
           <div className="flex flex-col items-center gap-2">
-            <div className={`${feature.color} group-hover:scale-110 transition-transform`}>
+            <div className="group-hover:scale-110 transition-transform">
               {feature.icon}
             </div>
           </div>
