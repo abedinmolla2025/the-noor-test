@@ -46,9 +46,19 @@ const DailyHadith = () => {
   const [selectedLang, setSelectedLang] = useState<Language>("bengali");
 
   return (
-    <div className="rounded-3xl overflow-hidden shadow-xl relative">
+    <motion.div 
+      className="rounded-3xl overflow-hidden shadow-xl relative"
+      initial={{ opacity: 0, y: 30, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+    >
       {/* Outer golden border frame */}
-      <div className="absolute inset-0 rounded-3xl border-4 border-amber-400/60 pointer-events-none z-20" />
+      <motion.div 
+        className="absolute inset-0 rounded-3xl border-4 border-amber-400/60 pointer-events-none z-20"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3, duration: 0.4 }}
+      />
       
       {/* Golden Header with curved bottom */}
       <div className="relative">
@@ -173,7 +183,7 @@ const DailyHadith = () => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
