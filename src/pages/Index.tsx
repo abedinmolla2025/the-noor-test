@@ -1,12 +1,38 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import PrayerHeroCard from "@/components/PrayerHeroCard";
+import FeatureIcons, { FeatureLabels } from "@/components/FeatureIcons";
+import AudioRecitationCard from "@/components/AudioRecitationCard";
+import PrayerTimesList from "@/components/PrayerTimesList";
+import BottomNavigation from "@/components/BottomNavigation";
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background pb-24">
+      {/* Main Content */}
+      <main className="max-w-lg mx-auto px-4 py-6 space-y-6">
+        {/* Prayer Hero Card */}
+        <section className="animate-fade-in" style={{ animationDelay: "0ms" }}>
+          <PrayerHeroCard location="New York" hijriDate="3 Rajab, 1447 AH" />
+        </section>
+
+        {/* Feature Icons */}
+        <section className="animate-fade-in" style={{ animationDelay: "100ms" }}>
+          <FeatureIcons />
+          <FeatureLabels />
+        </section>
+
+        {/* Audio Recitation Card */}
+        <section className="animate-fade-in" style={{ animationDelay: "200ms" }}>
+          <AudioRecitationCard />
+        </section>
+
+        {/* Prayer Times List */}
+        <section className="animate-fade-in" style={{ animationDelay: "300ms" }}>
+          <PrayerTimesList />
+        </section>
+      </main>
+
+      {/* Bottom Navigation */}
+      <BottomNavigation />
     </div>
   );
 };
