@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { MapPin, Clock, Loader2 } from "lucide-react";
+import { MapPin, Clock, Loader2, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import prayingMan from "@/assets/praying-man.webp";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 
@@ -8,6 +9,7 @@ interface PrayerHeroCardProps {
 }
 
 const PrayerHeroCard = ({ prayerData }: PrayerHeroCardProps) => {
+  const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(new Date());
   const localPrayerData = usePrayerTimes();
   const { prayerTimes, location, hijriDate, isLoading } = prayerData || localPrayerData;
@@ -113,7 +115,10 @@ const PrayerHeroCard = ({ prayerData }: PrayerHeroCardProps) => {
   const locationStr = location?.city || "Loading...";
 
   return (
-    <div className="islamic-card min-h-[200px]">
+    <div 
+      className="islamic-card min-h-[200px] cursor-pointer hover:shadow-xl transition-shadow"
+      onClick={() => navigate("/prayer-times")}
+    >
       {/* Decorative circles */}
       <div className="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-primary-foreground/5" />
       <div className="absolute -right-5 top-20 w-24 h-24 rounded-full bg-primary-foreground/5" />
@@ -151,6 +156,7 @@ const PrayerHeroCard = ({ prayerData }: PrayerHeroCardProps) => {
           <div className="inline-flex items-center gap-2 bg-primary-foreground/15 rounded-full px-4 py-2">
             <Clock size={16} className="animate-pulse-soft" />
             <span className="text-sm font-medium">Next in {getCountdown()}</span>
+            <ChevronRight size={16} className="ml-1" />
           </div>
         </div>
 
