@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Play, Loader2 } from "lucide-react";
 import { useSurahDetail, Language, LANGUAGE_LABELS } from "@/hooks/useQuranData";
@@ -14,6 +14,17 @@ const SurahReader = ({ surahNumber, surahName, arabicName }: SurahReaderProps) =
   const [language, setLanguage] = useState<Language>("bengali");
   const [currentAyah, setCurrentAyah] = useState<number | null>(null);
   const { arabicData, translationData, loading, error } = useSurahDetail(surahNumber, language);
+  const ayahRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Auto scroll to current ayah
+  useEffect(() => {
+    if (currentAyah !== null && ayahRefs.current[currentAyah]) {
+      ayahRefs.current[currentAyah]?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [currentAyah]);
 
   const handlePlayAyah = (ayahIndex: number) => {
     setCurrentAyah(ayahIndex);
@@ -102,10 +113,11 @@ const SurahReader = ({ surahNumber, surahName, arabicName }: SurahReaderProps) =
         {arabicData?.ayahs.map((ayah, index) => (
           <motion.div
             key={ayah.number}
+            ref={(el) => (ayahRefs.current[index] = el)}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: index * 0.02 }}
-            className={`p-4 ${currentAyah === index ? "bg-primary/5" : ""}`}
+            className={`p-4 transition-colors duration-300 ${currentAyah === index ? "bg-primary/10 border-l-4 border-primary" : ""}`}
           >
             {/* Ayah Number & Play Button */}
             <div className="flex items-center justify-between mb-3">
