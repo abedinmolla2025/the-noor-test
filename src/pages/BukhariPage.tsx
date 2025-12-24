@@ -831,14 +831,14 @@ const BukhariPage = () => {
 
   return (
     <div 
-      className="min-h-screen bg-gradient-to-b from-amber-900 via-amber-800 to-orange-900"
+      className="min-h-screen bg-gradient-to-b from-emerald-900 via-emerald-800 to-teal-900"
       style={{ direction: isRtl ? "rtl" : "ltr" }}
     >
       {/* Header */}
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="sticky top-0 z-50 bg-amber-900/90 backdrop-blur-lg"
+        className="sticky top-0 z-50 bg-emerald-900/95 backdrop-blur-lg border-b border-white/10"
       >
         <div className="flex items-center justify-between px-4 py-4">
           <div className="flex items-center gap-3">
@@ -852,7 +852,7 @@ const BukhariPage = () => {
                   navigate("/");
                 }
               }}
-              className="p-2 -ml-2 text-amber-100/80 hover:text-white hover:bg-white/10 rounded-full transition-colors"
+              className="p-2 -ml-2 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-colors"
             >
               <ArrowLeft className="w-5 h-5" style={{ transform: isRtl ? "scaleX(-1)" : "none" }} />
             </button>
@@ -862,7 +862,7 @@ const BukhariPage = () => {
                   ? chapters.find(c => c.id === selectedChapter)?.name[language] 
                   : t.title}
               </h1>
-              <p className="text-xs text-amber-200/70">
+              <p className="text-xs text-white/70">
                 {selectedChapter !== null 
                   ? `${filteredHadiths.length} ${t.hadiths}` 
                   : t.subtitle}
@@ -886,7 +886,7 @@ const BukhariPage = () => {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="absolute top-full mt-2 right-0 bg-amber-800 rounded-xl shadow-xl overflow-hidden min-w-[120px] z-50"
+                  className="absolute top-full mt-2 right-0 bg-emerald-800 rounded-xl shadow-xl overflow-hidden min-w-[120px] z-50"
                 >
                   {languages.map((lang) => (
                     <button
@@ -896,7 +896,7 @@ const BukhariPage = () => {
                         setShowLanguageMenu(false);
                       }}
                       className={`w-full px-4 py-3 text-left hover:bg-white/10 transition-colors ${
-                        language === lang.code ? "bg-white/10 text-amber-300" : "text-white"
+                        language === lang.code ? "bg-white/10 text-emerald-300" : "text-white"
                       }`}
                     >
                       {lang.name}
@@ -913,14 +913,14 @@ const BukhariPage = () => {
           <div className="px-4 pb-4">
             <div className="relative">
               <Search 
-                className="absolute top-1/2 -translate-y-1/2 w-5 h-5 text-amber-300/50" 
+                className="absolute top-1/2 -translate-y-1/2 w-5 h-5 text-white/50" 
                 style={{ left: isRtl ? "auto" : "1rem", right: isRtl ? "1rem" : "auto" }}
               />
               <Input
                 placeholder={t.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-12 rounded-xl bg-white/10 border-0 text-white placeholder:text-amber-200/50"
+                className="h-12 rounded-xl bg-white/15 border-0 text-white placeholder:text-white/50"
                 style={{ paddingLeft: isRtl ? "1rem" : "3rem", paddingRight: isRtl ? "3rem" : "1rem" }}
               />
             </div>
@@ -940,8 +940,8 @@ const BukhariPage = () => {
           >
             {/* Hadith Number Badge */}
             <div className="flex justify-center">
-              <div className="bg-gradient-to-r from-amber-400 to-yellow-500 px-6 py-2 rounded-full">
-                <span className="text-amber-900 font-bold">{t.hadithNo} {selectedHadith.number}</span>
+              <div className="bg-gradient-to-r from-emerald-400 to-teal-400 px-6 py-2 rounded-full shadow-lg">
+                <span className="text-emerald-900 font-bold">{t.hadithNo} {selectedHadith.number}</span>
               </div>
             </div>
 
@@ -950,9 +950,9 @@ const BukhariPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-white/10 backdrop-blur-sm rounded-2xl p-6"
+              className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-xl"
             >
-              <p className="text-2xl font-arabic text-amber-200 leading-loose text-right" dir="rtl">
+              <p className="text-2xl font-arabic text-emerald-800 leading-loose text-right" dir="rtl">
                 {selectedHadith.arabic}
               </p>
             </motion.div>
@@ -962,9 +962,9 @@ const BukhariPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white/10 backdrop-blur-sm rounded-2xl p-6"
+              className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-xl"
             >
-              <p className={`text-lg text-white leading-relaxed ${isRtl ? "text-right" : ""}`}>
+              <p className={`text-lg text-emerald-900 leading-relaxed ${isRtl ? "text-right" : ""}`}>
                 {selectedHadith.translations[language]}
               </p>
             </motion.div>
@@ -976,13 +976,13 @@ const BukhariPage = () => {
               transition={{ delay: 0.3 }}
               className="grid grid-cols-2 gap-3"
             >
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
-                <p className="text-amber-300/70 text-sm mb-1">{t.narrator}</p>
-                <p className="text-white font-medium">{selectedHadith.narrator[language]}</p>
+              <div className="bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-lg">
+                <p className="text-emerald-600 text-sm mb-1 font-medium">{t.narrator}</p>
+                <p className="text-emerald-900 font-semibold">{selectedHadith.narrator[language]}</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
-                <p className="text-amber-300/70 text-sm mb-1">{t.chapter}</p>
-                <p className="text-white font-medium">{selectedHadith.chapter[language]}</p>
+              <div className="bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-lg">
+                <p className="text-emerald-600 text-sm mb-1 font-medium">{t.chapter}</p>
+                <p className="text-emerald-900 font-semibold">{selectedHadith.chapter[language]}</p>
               </div>
             </motion.div>
           </motion.div>
@@ -999,20 +999,20 @@ const BukhariPage = () => {
             <div className="flex gap-2 mb-4">
               <button
                 onClick={() => setActiveTab("hadiths")}
-                className={`flex-1 py-3 rounded-xl font-medium transition-all ${
+                className={`flex-1 py-3 rounded-xl font-medium transition-all shadow-lg ${
                   activeTab === "hadiths"
-                    ? "bg-gradient-to-r from-amber-400 to-yellow-500 text-amber-900"
-                    : "bg-white/10 text-white"
+                    ? "bg-white text-emerald-800"
+                    : "bg-white/15 text-white"
                 }`}
               >
                 {t.allHadiths}
               </button>
               <button
                 onClick={() => setActiveTab("chapters")}
-                className={`flex-1 py-3 rounded-xl font-medium transition-all ${
+                className={`flex-1 py-3 rounded-xl font-medium transition-all shadow-lg ${
                   activeTab === "chapters"
-                    ? "bg-gradient-to-r from-amber-400 to-yellow-500 text-amber-900"
-                    : "bg-white/10 text-white"
+                    ? "bg-white text-emerald-800"
+                    : "bg-white/15 text-white"
                 }`}
               >
                 {t.chapters}
@@ -1029,22 +1029,22 @@ const BukhariPage = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
                     onClick={() => setSelectedHadith(hadith)}
-                    className="w-full text-left bg-white/10 backdrop-blur-sm rounded-2xl p-4 hover:bg-white/15 transition-all active:scale-[0.98]"
+                    className="w-full text-left bg-white/95 backdrop-blur-sm rounded-2xl p-4 hover:bg-white transition-all active:scale-[0.98] shadow-lg"
                   >
                     <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center flex-shrink-0">
-                        <span className="text-amber-900 font-bold text-sm">{hadith.number}</span>
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center flex-shrink-0 shadow-md">
+                        <span className="text-white font-bold text-sm">{hadith.number}</span>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-white/90 line-clamp-2 mb-2">
+                        <p className="text-emerald-900 line-clamp-2 mb-2 font-medium">
                           {hadith.translations[language]}
                         </p>
-                        <div className="flex items-center gap-2 text-xs text-amber-200/60">
+                        <div className="flex items-center gap-2 text-xs text-emerald-600">
                           <BookOpen size={12} />
                           <span>{hadith.narrator[language]}</span>
                         </div>
                       </div>
-                      <ChevronRight className="text-amber-300/50 flex-shrink-0" size={20} />
+                      <ChevronRight className="text-emerald-400 flex-shrink-0" size={20} />
                     </div>
                   </motion.button>
                 ))}
@@ -1068,19 +1068,19 @@ const BukhariPage = () => {
                         setSelectedChapter(chapter.id);
                         setActiveTab("hadiths");
                       }}
-                      className="w-full text-left bg-white/10 backdrop-blur-sm rounded-2xl p-4 hover:bg-white/15 transition-all active:scale-[0.98]"
+                      className="w-full text-left bg-white/95 backdrop-blur-sm rounded-2xl p-4 hover:bg-white transition-all active:scale-[0.98] shadow-lg"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center">
-                            <span className="text-amber-900 font-bold text-sm">{chapter.id}</span>
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shadow-md">
+                            <span className="text-white font-bold text-sm">{chapter.id}</span>
                           </div>
                           <div>
-                            <p className="text-white font-medium">{chapter.name[language]}</p>
-                            <p className="text-amber-200/60 text-sm">{chapterHadithCount} {t.hadiths}</p>
+                            <p className="text-emerald-900 font-semibold">{chapter.name[language]}</p>
+                            <p className="text-emerald-600 text-sm">{chapterHadithCount} {t.hadiths}</p>
                           </div>
                         </div>
-                        <ChevronRight className="text-amber-300/50" size={20} />
+                        <ChevronRight className="text-emerald-400" size={20} />
                       </div>
                     </motion.button>
                   );
