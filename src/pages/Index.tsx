@@ -11,23 +11,11 @@ import AthanSettingsModal from "@/components/AthanSettingsModal";
 import { useAthanNotification } from "@/hooks/useAthanNotification";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 
-// Floating particle component
-const FloatingParticle = ({ delay, duration, x, y, size }: { delay: number; duration: number; x: number; y: number; size: number }) => (
-  <motion.div
-    className="absolute rounded-full bg-gradient-to-br from-amber-400/40 to-yellow-300/20"
+// Static decorative element (no animation to prevent flickering)
+const StaticParticle = ({ x, y, size }: { x: number; y: number; size: number }) => (
+  <div
+    className="absolute rounded-full bg-gradient-to-br from-amber-400/20 to-yellow-300/10"
     style={{ width: size, height: size, left: `${x}%`, top: `${y}%` }}
-    animate={{
-      y: [-20, 20, -20],
-      x: [-10, 10, -10],
-      opacity: [0.3, 0.7, 0.3],
-      scale: [1, 1.2, 1],
-    }}
-    transition={{
-      duration,
-      delay,
-      repeat: Infinity,
-      ease: "easeInOut",
-    }}
   />
 );
 
@@ -46,66 +34,36 @@ const Index = () => {
     requestNotificationPermission,
   } = useAthanNotification(prayerTimes);
 
-  // Generate floating particles
-  const particles = Array.from({ length: 20 }, (_, i) => ({
-    id: i,
-    delay: i * 0.3,
-    duration: 4 + Math.random() * 3,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size: 4 + Math.random() * 8,
-  }));
+  // Static particles (reduced count, no animation)
+  const particles = [
+    { id: 1, x: 15, y: 20, size: 6 },
+    { id: 2, x: 80, y: 35, size: 8 },
+    { id: 3, x: 45, y: 70, size: 5 },
+    { id: 4, x: 25, y: 85, size: 7 },
+    { id: 5, x: 70, y: 15, size: 6 },
+  ];
 
   return (
     <div className="min-h-screen min-h-[100dvh] bg-background pb-20 w-full overflow-x-hidden relative">
-      {/* Premium Animated Background */}
+      {/* Static Background - No animations to prevent flickering */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        {/* Gradient Orbs */}
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.15, 0.25, 0.15],
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-emerald-500/30 to-teal-500/20 rounded-full blur-[100px]"
-        />
-        <motion.div
-          animate={{
-            scale: [1, 1.3, 1],
-            opacity: [0.1, 0.2, 0.1],
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-amber-500/20 to-yellow-500/10 rounded-full blur-[80px]"
-        />
-        <motion.div
-          animate={{
-            scale: [1, 1.15, 1],
-            opacity: [0.1, 0.18, 0.1],
-          }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 4 }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-gradient-to-br from-emerald-400/15 to-cyan-400/10 rounded-full blur-[60px]"
-        />
+        {/* Static Gradient Orbs */}
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-emerald-500/20 to-teal-500/10 rounded-full blur-[100px]" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-amber-500/15 to-yellow-500/10 rounded-full blur-[80px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-gradient-to-br from-emerald-400/10 to-cyan-400/5 rounded-full blur-[60px]" />
 
-        {/* Floating Particles */}
+        {/* Static Particles */}
         {particles.map((particle) => (
-          <FloatingParticle key={particle.id} {...particle} />
+          <StaticParticle key={particle.id} {...particle} />
         ))}
 
-        {/* Decorative Stars */}
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-          className="absolute top-20 right-10 text-amber-400/30"
-        >
+        {/* Static Decorative Icons */}
+        <div className="absolute top-20 right-10 text-amber-400/20">
           <Star className="w-6 h-6" fill="currentColor" />
-        </motion.div>
-        <motion.div
-          animate={{ rotate: -360 }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute top-40 left-8 text-emerald-400/25"
-        >
+        </div>
+        <div className="absolute top-40 left-8 text-emerald-400/15">
           <Sparkles className="w-5 h-5" />
-        </motion.div>
+        </div>
       </div>
 
       {/* Playing Indicator */}
