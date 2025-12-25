@@ -33,7 +33,7 @@ const Bead = ({ position, isActive, isCounted, index }: BeadProps) => {
 
   return (
     <mesh ref={meshRef} position={position} castShadow receiveShadow>
-      <sphereGeometry args={[0.35, 32, 32]} />
+      <sphereGeometry args={[0.5, 32, 32]} />
       <meshStandardMaterial
         color={color}
         roughness={0.2}
