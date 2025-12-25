@@ -181,7 +181,7 @@ const PrayerHeroCard = ({ prayerData, athanSettings }: PrayerHeroCardProps) => {
                       <img 
                         src={noorLogo} 
                         alt="NOOR Logo" 
-                        className="w-11 h-11 rounded-full object-cover shadow-lg shadow-amber-500/30 border-2 border-amber-400/50"
+                        className="w-14 h-14 rounded-full object-cover shadow-lg shadow-amber-500/40 border-2 border-amber-400/60"
                       />
                       <motion.div 
                         animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.2, 0.5] }}
