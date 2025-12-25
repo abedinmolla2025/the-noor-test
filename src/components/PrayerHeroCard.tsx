@@ -132,7 +132,7 @@ const PrayerHeroCard = ({ prayerData, athanSettings }: PrayerHeroCardProps) => {
       onClick={() => navigate("/prayer-times")}
     >
       {/* Premium Glass Card */}
-      <div className="relative overflow-hidden rounded-[2rem] border border-white/10 shadow-2xl">
+      <div className="relative overflow-hidden rounded-2xl border border-white/10 shadow-xl">
         {/* Dynamic Gradient Background - Matching PrayerTimesPage */}
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-700 via-teal-700 to-cyan-800" />
         
@@ -161,56 +161,41 @@ const PrayerHeroCard = ({ prayerData, athanSettings }: PrayerHeroCardProps) => {
         }} />
 
         {/* Content Container */}
-        <div className="relative z-10 p-4 md:p-6">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div className="relative z-10 p-3 md:p-4">
+          <div className="flex flex-col gap-2">
             
             {/* Left Section - Main Info */}
-            <div className="flex-1 space-y-3 relative z-20">
+            <div className="flex-1 space-y-2 relative z-20">
               
               {/* Top Bar - NOOR Branding & Controls */}
-              <motion.div 
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 }}
-                className="flex flex-wrap items-center justify-between gap-3"
-              >
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 {/* NOOR Branding */}
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2">
-                    <div className="relative w-12 h-12 flex-shrink-0">
-                      {/* Glow Layer */}
-                      <div className="absolute -inset-1 bg-white rounded-full blur-md opacity-30" />
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5">
+                    <div className="relative w-10 h-10 flex-shrink-0">
+                      <div className="absolute -inset-0.5 bg-white rounded-full blur-sm opacity-25" />
                       <img 
                         src={noorLogo} 
                         alt="NOOR Logo" 
-                        className="w-12 h-12 rounded-full object-cover relative z-10"
-                        style={{ 
-                          boxShadow: '0 0 10px 2px rgba(255, 255, 255, 0.3)' 
-                        }}
+                        className="w-10 h-10 rounded-full object-cover relative z-10"
+                        style={{ boxShadow: '0 0 8px 2px rgba(255, 255, 255, 0.25)' }}
                       />
                     </div>
-                    <div className="flex flex-col ml-2">
+                    <div className="flex flex-col ml-1.5">
                       <span 
-                        className="text-xl font-premium font-semibold tracking-[0.25em] relative noor-shine-text"
+                        className="text-lg font-premium font-semibold tracking-[0.2em] noor-shine-text"
                         style={{ 
                           background: 'linear-gradient(135deg, #ffffff 0%, #fef3c7 25%, #ffffff 50%, #fcd34d 75%, #ffffff 100%)',
                           backgroundSize: '200% 100%',
                           WebkitBackgroundClip: 'text',
                           WebkitTextFillColor: 'transparent',
                           backgroundClip: 'text',
-                          filter: 'drop-shadow(0 2px 6px rgba(251, 191, 36, 0.3))'
                         }}
                       >
                         NOOR
                       </span>
                       <span 
-                        className="text-[8px] font-premium uppercase tracking-[0.3em] font-medium"
-                        style={{
-                          background: 'linear-gradient(90deg, #fbbf24 0%, #fef3c7 50%, #fbbf24 100%)',
-                          WebkitBackgroundClip: 'text',
-                          WebkitTextFillColor: 'transparent',
-                          backgroundClip: 'text',
-                        }}
+                        className="text-[7px] font-premium uppercase tracking-[0.2em] font-medium text-amber-300/80"
                       >
                         Islamic App
                       </span>
@@ -218,80 +203,75 @@ const PrayerHeroCard = ({ prayerData, athanSettings }: PrayerHeroCardProps) => {
                   </div>
                 </div>
 
-                {/* Location, Hijri & Bell Controls */}
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5 border border-white/20">
+                {/* Location & Bell */}
+                <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5 bg-white/10 rounded-full px-2 py-1 border border-white/15">
                     {isLoading ? (
-                      <Loader2 size={12} className="animate-spin text-amber-400" />
+                      <Loader2 size={10} className="animate-spin text-amber-400" />
                     ) : (
-                      <MapPin size={12} className="text-amber-400" />
+                      <MapPin size={10} className="text-amber-400" />
                     )}
-                    <span className="text-xs text-white font-medium">{locationStr}</span>
-                  </div>
-                  <div className="hidden sm:flex items-center gap-2 bg-amber-400/15 backdrop-blur-sm rounded-full px-3 py-1.5 border border-amber-400/30">
-                    <span className="font-arabic text-xs text-amber-300">{hijriDateStr}</span>
+                    <span className="text-[10px] text-white font-medium">{locationStr}</span>
                   </div>
                   
                   {/* Athan Bell Button */}
                   {athanSettings && (
-                    <motion.button
-                      whileTap={{ scale: 0.95 }}
+                    <button
                       onClick={(e) => {
                         e.stopPropagation();
                         athanSettings.onOpenSettings();
                       }}
-                      className="relative p-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-colors"
+                      className="relative p-1.5 rounded-full bg-white/10 border border-white/15"
                     >
                       {athanSettings.isPlaying ? (
-                        <BellRing size={16} className="text-amber-400 animate-pulse" />
+                        <BellRing size={12} className="text-amber-400" />
                       ) : athanSettings.enabled ? (
-                        <Bell size={16} className="text-amber-400" />
+                        <Bell size={12} className="text-amber-400" />
                       ) : (
-                        <Bell size={16} className="text-white/50" />
+                        <Bell size={12} className="text-white/50" />
                       )}
                       {athanSettings.enabled && (
-                        <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full border-2 border-emerald-700" />
+                        <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-500 rounded-full" />
                       )}
-                    </motion.button>
+                    </button>
                   )}
                 </div>
-              </motion.div>
+              </div>
 
               {/* Current Time - Hero Display */}
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <Sparkles size={12} className="text-amber-400" />
-                  <span className="text-[10px] text-amber-400 uppercase tracking-[0.15em] font-semibold">
+              <div>
+                <div className="flex items-center gap-1.5 mb-0.5">
+                  <Sparkles size={10} className="text-amber-400" />
+                  <span className="text-[9px] text-amber-400 uppercase tracking-[0.1em] font-semibold">
                     Current Prayer
                   </span>
                 </div>
-                
-                <div className="flex items-baseline gap-3">
-                  <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
+                <div className="flex items-baseline gap-2">
+                  <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
                     {getCurrentPrayer()}
                   </h2>
-                  <span className="text-2xl md:text-3xl font-light text-white/70 tabular-nums">
+                  <span className="text-xl md:text-2xl font-light text-white/70 tabular-nums">
                     {formatTime(currentTime)}
                   </span>
                 </div>
               </div>
 
-              {/* Next Prayer Countdown - Compact */}
-              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-400/20 via-amber-400/15 to-transparent border border-amber-400/30 rounded-xl px-3 py-2 backdrop-blur-md">
-                <Clock size={14} className="text-amber-400" />
-                <div className="flex flex-col">
-                  <span className="text-[9px] uppercase tracking-wider text-white/60">Next Prayer</span>
-                  <span className="text-base font-bold text-white tabular-nums">{getCountdown()}</span>
+              {/* Next Prayer Countdown */}
+              <div className="inline-flex items-center gap-1.5 bg-amber-400/15 border border-amber-400/25 rounded-lg px-2 py-1.5">
+                <Clock size={12} className="text-amber-400" />
+                <div className="flex flex-col leading-tight">
+                  <span className="text-[8px] uppercase tracking-wider text-white/60">Next</span>
+                  <span className="text-sm font-bold text-white tabular-nums">{getCountdown()}</span>
                 </div>
-                <ChevronRight size={14} className="text-amber-400 ml-1" />
+                <ChevronRight size={12} className="text-amber-400" />
               </div>
             </div>
 
           </div>
 
           {/* Bottom Quick Stats */}
-          <div className="mt-4 pt-3 border-t border-white/10">
-            <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5 sm:gap-2">
+          <div className="mt-2 pt-2 border-t border-white/10">
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-1 sm:gap-1.5">
               {prayerSchedule.map((prayer) => {
                 const isCurrentPrayer = getCurrentPrayer() === prayer.name;
                 const isNextPrayer = getNextPrayer().name === prayer.name;
@@ -300,21 +280,21 @@ const PrayerHeroCard = ({ prayerData, athanSettings }: PrayerHeroCardProps) => {
                   <div
                     key={prayer.name}
                     className={`
-                      relative text-center py-2 px-1.5 rounded-lg transition-all duration-300
+                      text-center py-1.5 px-1 rounded-md
                       ${isCurrentPrayer 
-                        ? 'bg-amber-400/25 border border-amber-400/50' 
+                        ? 'bg-amber-400/25 border border-amber-400/40' 
                         : isNextPrayer
-                          ? 'bg-white/10 border border-white/25'
+                          ? 'bg-white/10 border border-white/20'
                           : 'bg-white/5 border border-transparent'
                       }
                     `}
                   >
-                    <p className={`text-[9px] sm:text-[10px] uppercase tracking-wider mb-0.5 ${
+                    <p className={`text-[8px] uppercase tracking-wider ${
                       isCurrentPrayer ? 'text-amber-300 font-semibold' : 'text-white/60'
                     }`}>
                       {prayer.name}
                     </p>
-                    <p className={`text-xs sm:text-sm font-bold tabular-nums ${
+                    <p className={`text-[11px] font-bold tabular-nums ${
                       isCurrentPrayer ? 'text-amber-300' : 'text-white'
                     }`}>
                       {formatPrayerTime(prayer.time)}
