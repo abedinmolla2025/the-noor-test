@@ -96,38 +96,26 @@ const FeatureIcons = () => {
           whileHover={{ scale: 1.05, y: -2 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => navigate(feature.path)}
-          className={`flex-shrink-0 group cursor-pointer w-16 h-16 bg-gradient-to-br ${feature.gradient} backdrop-blur-sm rounded-2xl border border-white/10 hover:border-[hsl(45,93%,58%)]/30 shadow-lg hover:shadow-xl transition-all flex items-center justify-center`}
+          className="flex-shrink-0 flex flex-col items-center gap-1"
         >
-          <motion.span
-            className="text-3xl"
-            animate={feature.animation}
-          >
-            {feature.emoji}
-          </motion.span>
+          <div className={`group cursor-pointer w-14 h-14 bg-gradient-to-br ${feature.gradient} backdrop-blur-sm rounded-2xl border border-white/10 hover:border-[hsl(45,93%,58%)]/30 shadow-lg hover:shadow-xl transition-all flex items-center justify-center`}>
+            <motion.span
+              className="text-2xl"
+              animate={feature.animation}
+            >
+              {feature.emoji}
+            </motion.span>
+          </div>
+          <span className="text-[10px] text-muted-foreground font-medium">
+            {feature.label}
+          </span>
         </motion.button>
       ))}
     </div>
   );
 };
 
-export const FeatureLabels = () => {
-  return (
-    <div className="flex gap-3 mt-2">
-      {features.map((feature, index) => (
-        <motion.div 
-          key={feature.label} 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: index * 0.05 + 0.2 }}
-          className="w-16 flex-shrink-0 text-center"
-        >
-          <span className="text-xs text-muted-foreground font-medium">
-            {feature.label}
-          </span>
-        </motion.div>
-      ))}
-    </div>
-  );
-};
+// FeatureLabels is now integrated into FeatureIcons, keeping export for compatibility
+export const FeatureLabels = () => null;
 
 export default FeatureIcons;
