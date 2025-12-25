@@ -98,8 +98,8 @@ const PrayerHeroCard = ({ prayerData }: PrayerHeroCardProps) => {
     return date.toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
-      hour12: false,
-    });
+      hour12: true,
+    }).replace(" AM", "").replace(" PM", "");
   };
 
   const period = currentTime.getHours() >= 12 ? "PM" : "AM";
