@@ -202,33 +202,83 @@ const PrayerHeroCard = ({ prayerData, athanSettings }: PrayerHeroCardProps) => {
                           boxShadow: '0 0 20px 4px rgba(251, 191, 36, 0.5), 0 0 40px 8px rgba(251, 191, 36, 0.2)' 
                         }}
                       />
-                      {/* Falling Light Particles */}
-                      {[...Array(8)].map((_, i) => (
+                      {/* Falling Light Particles - Large */}
+                      {[...Array(12)].map((_, i) => (
                         <motion.div
-                          key={i}
+                          key={`large-${i}`}
                           initial={{ 
                             opacity: 0, 
                             y: 0, 
-                            x: Math.random() * 40 - 20,
-                            scale: Math.random() * 0.5 + 0.5
+                            x: (i % 4 - 1.5) * 12,
+                            scale: 0.8
                           }}
                           animate={{ 
-                            opacity: [0, 1, 1, 0], 
-                            y: [0, 30, 50, 70],
-                            x: Math.random() * 30 - 15
+                            opacity: [0, 1, 0.8, 0], 
+                            y: [0, 40, 70, 100],
+                            x: [(i % 4 - 1.5) * 12, (i % 4 - 1.5) * 15 + (Math.random() * 10 - 5), (i % 4 - 1.5) * 18]
                           }}
                           transition={{ 
-                            duration: 2 + Math.random() * 1.5, 
+                            duration: 2.5 + (i % 3) * 0.5, 
                             repeat: Infinity, 
-                            delay: i * 0.3,
+                            delay: i * 0.2,
                             ease: "easeOut"
                           }}
-                          className="absolute top-8 left-1/2 w-1 h-1 bg-amber-300 rounded-full shadow-sm shadow-amber-400"
+                          className="absolute top-10 left-1/2 w-1.5 h-1.5 bg-amber-300 rounded-full"
                           style={{ 
-                            filter: 'blur(0.5px)',
-                            boxShadow: '0 0 4px 1px rgba(251, 191, 36, 0.6)'
+                            boxShadow: '0 0 6px 2px rgba(251, 191, 36, 0.7), 0 0 12px 4px rgba(251, 191, 36, 0.3)'
                           }}
                         />
+                      ))}
+                      {/* Falling Light Particles - Small */}
+                      {[...Array(16)].map((_, i) => (
+                        <motion.div
+                          key={`small-${i}`}
+                          initial={{ 
+                            opacity: 0, 
+                            y: 0, 
+                            x: (i % 6 - 2.5) * 8,
+                            scale: 0.5
+                          }}
+                          animate={{ 
+                            opacity: [0, 0.8, 0.6, 0], 
+                            y: [0, 35, 60, 85],
+                          }}
+                          transition={{ 
+                            duration: 1.8 + (i % 4) * 0.4, 
+                            repeat: Infinity, 
+                            delay: i * 0.15,
+                            ease: "easeOut"
+                          }}
+                          className="absolute top-8 left-1/2 w-1 h-1 bg-yellow-200 rounded-full"
+                          style={{ 
+                            boxShadow: '0 0 4px 1px rgba(254, 240, 138, 0.8)'
+                          }}
+                        />
+                      ))}
+                      {/* Sparkle Stars */}
+                      {[...Array(6)].map((_, i) => (
+                        <motion.div
+                          key={`star-${i}`}
+                          initial={{ opacity: 0, scale: 0 }}
+                          animate={{ 
+                            opacity: [0, 1, 0], 
+                            scale: [0, 1, 0],
+                            y: [5, 50, 80],
+                            x: [(i % 3 - 1) * 20, (i % 3 - 1) * 25]
+                          }}
+                          transition={{ 
+                            duration: 2, 
+                            repeat: Infinity, 
+                            delay: i * 0.4 + 0.5,
+                            ease: "easeOut"
+                          }}
+                          className="absolute top-10 left-1/2 text-amber-300 text-[8px]"
+                          style={{ 
+                            textShadow: '0 0 8px rgba(251, 191, 36, 0.9)'
+                          }}
+                        >
+                          ✦
+                        </motion.div>
                       ))}
                     </div>
                     <div className="flex flex-col">
