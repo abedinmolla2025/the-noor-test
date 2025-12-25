@@ -238,32 +238,35 @@ const PrayerHeroCard = ({ prayerData, athanSettings }: PrayerHeroCardProps) => {
                 </div>
               </div>
 
-              {/* Current Time - Hero Display */}
-              <div>
-                <div className="flex items-center gap-1.5 mb-0.5">
-                  <Sparkles size={10} className="text-amber-400" />
-                  <span className="text-[9px] text-amber-400 uppercase tracking-[0.1em] font-semibold">
-                    Current Prayer
-                  </span>
+              {/* Current Prayer & Next Prayer - Side by Side */}
+              <div className="flex items-center justify-between gap-3">
+                {/* Current Prayer */}
+                <div>
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <Sparkles size={10} className="text-amber-400" />
+                    <span className="text-[9px] text-amber-400 uppercase tracking-[0.1em] font-semibold">
+                      Current Prayer
+                    </span>
+                  </div>
+                  <div className="flex items-baseline gap-2">
+                    <h2 className="text-2xl font-bold text-white tracking-tight">
+                      {getCurrentPrayer()}
+                    </h2>
+                    <span className="text-lg font-light text-white/70 tabular-nums">
+                      {formatTime(currentTime)}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-baseline gap-2">
-                  <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
-                    {getCurrentPrayer()}
-                  </h2>
-                  <span className="text-xl md:text-2xl font-light text-white/70 tabular-nums">
-                    {formatTime(currentTime)}
-                  </span>
-                </div>
-              </div>
 
-              {/* Next Prayer Countdown */}
-              <div className="inline-flex items-center gap-1.5 bg-amber-400/15 border border-amber-400/25 rounded-lg px-2 py-1.5">
-                <Clock size={12} className="text-amber-400" />
-                <div className="flex flex-col leading-tight">
-                  <span className="text-[8px] uppercase tracking-wider text-white/60">Next</span>
-                  <span className="text-sm font-bold text-white tabular-nums">{getCountdown()}</span>
+                {/* Next Prayer Countdown */}
+                <div className="flex items-center gap-1.5 bg-amber-400/15 border border-amber-400/25 rounded-lg px-2 py-1.5">
+                  <Clock size={12} className="text-amber-400" />
+                  <div className="flex flex-col leading-tight">
+                    <span className="text-[8px] uppercase tracking-wider text-white/60">Next</span>
+                    <span className="text-sm font-bold text-white tabular-nums">{getCountdown()}</span>
+                  </div>
+                  <ChevronRight size={12} className="text-amber-400" />
                 </div>
-                <ChevronRight size={12} className="text-amber-400" />
               </div>
             </div>
 
