@@ -54,6 +54,50 @@ const Index = () => {
 
       {/* Main Content */}
       <main className="w-full px-3 py-4 space-y-4">
+        {/* NOOR Header/Branding */}
+        <motion.header
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="flex items-center justify-center py-2"
+        >
+          <div className="flex items-center gap-3">
+            {/* Logo Icon */}
+            <div className="relative">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  className="w-6 h-6 text-white"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                >
+                  <path
+                    d="M12 3C7.5 3 4 7 4 12c0 3 1.5 5.5 4 7l1-2c-2-1-3-3-3-5 0-3.5 2.5-6 6-6s6 2.5 6 6c0 2-1 4-3 5l1 2c2.5-1.5 4-4 4-7 0-5-3.5-9-8-9z"
+                    fill="currentColor"
+                  />
+                  <circle cx="12" cy="12" r="3" fill="currentColor" />
+                  <path
+                    d="M12 2v2M12 20v2M2 12h2M20 12h2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </div>
+              {/* Glow effect */}
+              <div className="absolute inset-0 w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-500 blur-lg opacity-40 -z-10" />
+            </div>
+            
+            {/* Brand Name */}
+            <div className="flex flex-col">
+              <h1 className="text-2xl font-bold tracking-wide bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-500 bg-clip-text text-transparent">
+                NOOR
+              </h1>
+              <span className="text-[10px] text-muted-foreground tracking-[0.2em] uppercase -mt-0.5">
+                Islamic Companion
+              </span>
+            </div>
+          </div>
+        </motion.header>
         {/* Prayer Hero Card */}
         <section className="animate-fade-in" style={{ animationDelay: "0ms" }}>
           <PrayerHeroCard 
