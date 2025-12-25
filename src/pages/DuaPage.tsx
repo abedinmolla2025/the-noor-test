@@ -582,20 +582,25 @@ const DuaPage = () => {
 
               {/* Transliteration */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="bg-white/5 rounded-2xl p-4 border border-white/10"
+                transition={{ delay: 0.15 }}
+                className="bg-white/5 rounded-2xl p-5 border border-white/10"
               >
-                <p className="text-xs font-medium text-[hsl(45,93%,58%)] mb-2">
-                  {language === "bengali" ? "উচ্চারণ" : language === "hindi" ? "उच्चारण" : language === "urdu" ? "تلفظ" : "Transliteration"}
+                <div className="flex items-center gap-2 mb-3">
+                  <Sparkles className="w-4 h-4 text-[hsl(45,93%,58%)]" />
+                  <p className="text-xs font-medium text-[hsl(45,93%,58%)]">
+                    {language === "bengali" ? "বাংলা উচ্চারণ" : language === "hindi" ? "उच्चारण" : language === "urdu" ? "تلفظ" : "Transliteration"}
+                  </p>
+                </div>
+                <p className="text-white/90 text-lg md:text-xl leading-relaxed">
+                  {language === "bengali" ? selectedDua.bengaliTransliteration : selectedDua.transliteration}
                 </p>
-                <p className="text-lg italic text-white/80">{selectedDua.transliteration}</p>
               </motion.div>
 
               {/* Translation */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
                 className="bg-gradient-to-br from-[hsl(45,93%,58%)]/10 to-transparent rounded-2xl p-5 border border-[hsl(45,93%,58%)]/20"
