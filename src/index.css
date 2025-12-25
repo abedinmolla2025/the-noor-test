@@ -1,6 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Cairo:wght@400;500;600;700&display=swap');
 
 @tailwind base;
+
+/* NOOR Text Shine Animation */
+@keyframes noor-shine {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.noor-shine-text {
+  animation: noor-shine 4s linear infinite;
+}
 @tailwind components;
 @tailwind utilities;
 

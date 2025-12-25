@@ -177,22 +177,16 @@ const PrayerHeroCard = ({ prayerData, athanSettings }: PrayerHeroCardProps) => {
                 {/* NOOR Branding */}
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2">
-                    <div className="relative">
+                    <div className="relative w-16 h-16 flex-shrink-0">
                       {/* Multiple Glow Layers - White */}
-                      <motion.div 
-                        animate={{ scale: [1, 1.4, 1], opacity: [0.2, 0.1, 0.2] }}
-                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                        className="absolute -inset-3 bg-white rounded-full blur-xl"
+                      <div 
+                        className="absolute -inset-3 bg-white rounded-full blur-xl opacity-20"
                       />
-                      <motion.div 
-                        animate={{ scale: [1.1, 1.3, 1.1], opacity: [0.25, 0.15, 0.25] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                        className="absolute -inset-2 bg-gradient-to-br from-white via-gray-100 to-white rounded-full blur-lg"
+                      <div 
+                        className="absolute -inset-2 bg-gradient-to-br from-white via-gray-100 to-white rounded-full blur-lg opacity-25"
                       />
-                      <motion.div 
-                        animate={{ scale: [1, 1.15, 1], opacity: [0.35, 0.2, 0.35] }}
-                        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                        className="absolute -inset-1 bg-white rounded-full blur-md"
+                      <div 
+                        className="absolute -inset-1 bg-white rounded-full blur-md opacity-35"
                       />
                       <img 
                         src={noorLogo} 
@@ -202,88 +196,10 @@ const PrayerHeroCard = ({ prayerData, athanSettings }: PrayerHeroCardProps) => {
                           boxShadow: '0 0 15px 3px rgba(255, 255, 255, 0.35), 0 0 30px 6px rgba(255, 255, 255, 0.15)' 
                         }}
                       />
-                      {/* Falling Light Particles - Large White */}
-                      {[...Array(12)].map((_, i) => (
-                        <motion.div
-                          key={`large-${i}`}
-                          initial={{ 
-                            opacity: 0, 
-                            y: 0, 
-                            x: (i % 4 - 1.5) * 12,
-                            scale: 0.8
-                          }}
-                          animate={{ 
-                            opacity: [0, 1, 0.8, 0], 
-                            y: [0, 40, 70, 100],
-                            x: [(i % 4 - 1.5) * 12, (i % 4 - 1.5) * 15 + (Math.random() * 10 - 5), (i % 4 - 1.5) * 18]
-                          }}
-                          transition={{ 
-                            duration: 2.5 + (i % 3) * 0.5, 
-                            repeat: Infinity, 
-                            delay: i * 0.2,
-                            ease: "easeOut"
-                          }}
-                          className="absolute top-10 left-1/2 w-1.5 h-1.5 bg-white rounded-full"
-                          style={{ 
-                            boxShadow: '0 0 6px 2px rgba(255, 255, 255, 0.8), 0 0 12px 4px rgba(255, 255, 255, 0.4)'
-                          }}
-                        />
-                      ))}
-                      {/* Falling Light Particles - Small White */}
-                      {[...Array(16)].map((_, i) => (
-                        <motion.div
-                          key={`small-${i}`}
-                          initial={{ 
-                            opacity: 0, 
-                            y: 0, 
-                            x: (i % 6 - 2.5) * 8,
-                            scale: 0.5
-                          }}
-                          animate={{ 
-                            opacity: [0, 0.9, 0.7, 0], 
-                            y: [0, 35, 60, 85],
-                          }}
-                          transition={{ 
-                            duration: 1.8 + (i % 4) * 0.4, 
-                            repeat: Infinity, 
-                            delay: i * 0.15,
-                            ease: "easeOut"
-                          }}
-                          className="absolute top-8 left-1/2 w-1 h-1 bg-white rounded-full"
-                          style={{ 
-                            boxShadow: '0 0 4px 1px rgba(255, 255, 255, 0.9)'
-                          }}
-                        />
-                      ))}
-                      {/* Sparkle Stars - White */}
-                      {[...Array(6)].map((_, i) => (
-                        <motion.div
-                          key={`star-${i}`}
-                          initial={{ opacity: 0, scale: 0 }}
-                          animate={{ 
-                            opacity: [0, 1, 0], 
-                            scale: [0, 1, 0],
-                            y: [5, 50, 80],
-                            x: [(i % 3 - 1) * 20, (i % 3 - 1) * 25]
-                          }}
-                          transition={{ 
-                            duration: 2, 
-                            repeat: Infinity, 
-                            delay: i * 0.4 + 0.5,
-                            ease: "easeOut"
-                          }}
-                          className="absolute top-10 left-1/2 text-white text-[8px]"
-                          style={{ 
-                            textShadow: '0 0 8px rgba(255, 255, 255, 0.95)'
-                          }}
-                        >
-                          ✦
-                        </motion.div>
-                      ))}
                     </div>
                     <div className="flex flex-col ml-3">
-                      <motion.span 
-                        className="text-2xl font-premium font-semibold tracking-[0.3em] relative"
+                      <span 
+                        className="text-2xl font-premium font-semibold tracking-[0.3em] relative noor-shine-text"
                         style={{ 
                           background: 'linear-gradient(135deg, #ffffff 0%, #fef3c7 25%, #ffffff 50%, #fcd34d 75%, #ffffff 100%)',
                           backgroundSize: '200% 100%',
@@ -292,21 +208,10 @@ const PrayerHeroCard = ({ prayerData, athanSettings }: PrayerHeroCardProps) => {
                           backgroundClip: 'text',
                           filter: 'drop-shadow(0 2px 8px rgba(251, 191, 36, 0.4))'
                         }}
-                        animate={{
-                          backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
-                        }}
-                        transition={{
-                          duration: 4,
-                          repeat: Infinity,
-                          ease: "linear"
-                        }}
                       >
                         NOOR
-                      </motion.span>
-                      <motion.span 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.3 }}
+                      </span>
+                      <span 
                         className="text-[9px] font-premium uppercase tracking-[0.4em] font-medium"
                         style={{
                           background: 'linear-gradient(90deg, #fbbf24 0%, #fef3c7 50%, #fbbf24 100%)',
@@ -316,7 +221,7 @@ const PrayerHeroCard = ({ prayerData, athanSettings }: PrayerHeroCardProps) => {
                         }}
                       >
                         Islamic App
-                      </motion.span>
+                      </span>
                     </div>
                   </div>
                 </div>
