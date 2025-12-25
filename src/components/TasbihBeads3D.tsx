@@ -1,4 +1,4 @@
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Environment, Float } from "@react-three/drei";
 import * as THREE from "three";
@@ -76,11 +76,32 @@ interface TasbihMalaProps {
 
 const TasbihMala = ({ count, totalBeads }: TasbihMalaProps) => {
   const groupRef = useRef<THREE.Group>(null);
+  const targetRotation = useRef(0);
+  const currentRotation = useRef(0);
+  const lastCount = useRef(0);
   
-  useFrame((state) => {
+  // Calculate rotation step per bead
+  const rotationPerBead = (Math.PI * 2) / totalBeads;
+  
+  useEffect(() => {
+    if (count !== lastCount.current) {
+      // Rotate to next bead position when count changes
+      const diff = count - lastCount.current;
+      targetRotation.current += rotationPerBead * diff;
+      lastCount.current = count;
+    }
+  }, [count, rotationPerBead]);
+  
+  useFrame((state, delta) => {
     if (groupRef.current) {
-      // Slow rotation
-      groupRef.current.rotation.y = state.clock.elapsedTime * 0.1;
+      // Smooth interpolation to target rotation
+      const speed = 5;
+      currentRotation.current = THREE.MathUtils.lerp(
+        currentRotation.current,
+        targetRotation.current,
+        delta * speed
+      );
+      groupRef.current.rotation.y = -currentRotation.current;
     }
   });
 
