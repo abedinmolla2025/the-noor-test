@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Search, Sparkles, Star } from "lucide-react";
+import { ArrowLeft, Search, Sparkles, Crown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -127,29 +127,35 @@ const NamesOfAllahPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-emerald-950/30 to-slate-950 relative overflow-hidden">
-      {/* Premium Background Effects */}
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 relative overflow-hidden">
+      {/* Premium Royal Background Effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Radial gradient overlay */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-gradient-radial from-emerald-500/10 via-transparent to-transparent blur-3xl" />
+        {/* Gold radial gradient */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-gradient-radial from-amber-300/30 via-yellow-200/20 to-transparent blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-gradient-radial from-orange-300/20 via-amber-200/10 to-transparent blur-3xl" />
         
-        {/* Geometric Islamic pattern overlay */}
-        <div className="absolute inset-0 opacity-[0.03]" 
+        {/* Luxury Islamic geometric pattern */}
+        <div className="absolute inset-0 opacity-[0.06]" 
           style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2310b981' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23b8860b' stroke-width='1'%3E%3Cpath d='M0 0l40 40M40 0l-40 40M40 40l40 40M80 40l-40 40M0 40l40-40M40 80l40-40M40 40l-40 40M0 80l40-40'/%3E%3Ccircle cx='40' cy='40' r='20'/%3E%3Ccircle cx='40' cy='40' r='10'/%3E%3C/g%3E%3C/svg%3E")`,
           }}
         />
         
-        {/* Floating orbs */}
+        {/* Floating golden orbs */}
         <motion.div 
-          animate={{ y: [0, -20, 0], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-20 right-20 w-32 h-32 bg-emerald-400/20 rounded-full blur-2xl"
+          animate={{ y: [0, -30, 0], opacity: [0.4, 0.7, 0.4] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-32 right-16 w-48 h-48 bg-gradient-to-br from-amber-400/30 to-yellow-300/20 rounded-full blur-3xl"
         />
         <motion.div 
-          animate={{ y: [0, 20, 0], opacity: [0.2, 0.4, 0.2] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          className="absolute bottom-40 left-10 w-40 h-40 bg-amber-400/10 rounded-full blur-2xl"
+          animate={{ y: [0, 25, 0], opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          className="absolute bottom-32 left-8 w-56 h-56 bg-gradient-to-br from-orange-300/25 to-amber-200/15 rounded-full blur-3xl"
+        />
+        <motion.div 
+          animate={{ scale: [1, 1.1, 1], opacity: [0.2, 0.4, 0.2] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-br from-yellow-200/10 to-amber-300/10 rounded-full blur-3xl"
         />
       </div>
 
@@ -157,28 +163,28 @@ const NamesOfAllahPage = () => {
       <motion.header 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="sticky top-0 z-50 backdrop-blur-xl bg-slate-950/70 border-b border-emerald-500/10"
+        className="sticky top-0 z-50 backdrop-blur-xl bg-gradient-to-r from-amber-100/80 via-yellow-50/80 to-orange-100/80 border-b border-amber-300/40 shadow-lg shadow-amber-200/20"
       >
         <div className="px-4 py-4 flex items-center justify-between max-w-7xl mx-auto">
           <div className="flex items-center gap-4">
             <button 
               onClick={() => navigate(-1)}
-              className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all duration-300 hover:scale-105"
+              className="p-2.5 rounded-xl bg-gradient-to-br from-amber-200/60 to-yellow-200/60 hover:from-amber-300/80 hover:to-yellow-300/80 border border-amber-400/30 transition-all duration-300 hover:scale-105 shadow-md shadow-amber-300/20"
             >
-              <ArrowLeft className="h-5 w-5 text-white" />
+              <ArrowLeft className="h-5 w-5 text-amber-800" />
             </button>
             <div>
-              <h1 className="text-xl font-bold text-white flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-emerald-400" />
+              <h1 className="text-xl font-bold bg-gradient-to-r from-amber-700 via-yellow-700 to-orange-700 bg-clip-text text-transparent flex items-center gap-2">
+                <Crown className="h-5 w-5 text-amber-600" />
                 আল্লাহর ৯৯ নাম
               </h1>
-              <p className="text-xs text-emerald-400/70">Asmaul Husna</p>
+              <p className="text-xs text-amber-600/80 font-medium">Asmaul Husna</p>
             </div>
           </div>
           
           <div className="flex items-center gap-2">
-            <div className="px-3 py-1.5 rounded-full bg-gradient-to-r from-emerald-500/20 to-amber-500/20 border border-emerald-500/30">
-              <span className="text-sm font-medium text-emerald-300">৯৯</span>
+            <div className="px-4 py-2 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 shadow-lg shadow-amber-400/30">
+              <span className="text-sm font-bold text-white">৯৯</span>
             </div>
           </div>
         </div>
@@ -197,31 +203,37 @@ const NamesOfAllahPage = () => {
           >
             <button 
               onClick={() => setSelectedName(null)}
-              className="mb-8 flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors"
+              className="mb-8 flex items-center gap-2 text-amber-700 hover:text-amber-600 transition-colors font-medium"
             >
               <ArrowLeft className="h-4 w-4" />
               <span className="text-sm">সব নাম দেখুন</span>
             </button>
 
             <motion.div 
-              className="relative rounded-3xl overflow-hidden"
+              className="relative rounded-3xl overflow-hidden shadow-2xl shadow-amber-400/20"
               layoutId={`card-${selectedName.id}`}
             >
               {/* Card Background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 via-slate-800/50 to-amber-500/10" />
-              <div className="absolute inset-0 backdrop-blur-xl" />
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-100 via-yellow-50 to-orange-100" />
+              <div className="absolute inset-0 bg-gradient-to-t from-amber-200/50 via-transparent to-yellow-100/30" />
               
-              {/* Decorative elements */}
-              <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-emerald-400/20 to-transparent rounded-full blur-2xl" />
-              <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-amber-400/10 to-transparent rounded-full blur-xl" />
+              {/* Gold decorative corners */}
+              <div className="absolute top-0 left-0 w-24 h-24 bg-gradient-to-br from-amber-400/30 to-transparent" />
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-yellow-400/30 to-transparent" />
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-orange-400/20 to-transparent" />
+              <div className="absolute bottom-0 right-0 w-24 h-24 bg-gradient-to-tl from-amber-400/30 to-transparent" />
+              
+              {/* Gold border effect */}
+              <div className="absolute inset-0 border-2 border-amber-400/40 rounded-3xl" />
+              <div className="absolute inset-[3px] border border-amber-300/30 rounded-3xl" />
               
               <div className="relative p-8 md:p-12 text-center">
                 {/* Number Badge */}
                 <div className="inline-flex items-center justify-center mb-6">
                   <div className="relative">
-                    <div className="absolute inset-0 bg-emerald-400/20 blur-xl rounded-full" />
-                    <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
-                      <span className="text-2xl font-bold text-white">{selectedName.id}</span>
+                    <div className="absolute inset-0 bg-amber-400/40 blur-xl rounded-full" />
+                    <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-amber-400 via-yellow-400 to-orange-400 flex items-center justify-center shadow-xl shadow-amber-400/40 border-2 border-amber-300/50">
+                      <span className="text-2xl font-bold text-white drop-shadow-md">{selectedName.id}</span>
                     </div>
                   </div>
                 </div>
@@ -233,21 +245,21 @@ const NamesOfAllahPage = () => {
                   transition={{ delay: 0.1 }}
                   className="mb-6"
                 >
-                  <h2 className="text-6xl md:text-7xl font-bold text-white mb-4" style={{ fontFamily: "'Amiri', 'Noto Naskh Arabic', serif" }}>
+                  <h2 className="text-6xl md:text-7xl font-bold text-amber-900 mb-4 drop-shadow-sm" style={{ fontFamily: "'Amiri', 'Noto Naskh Arabic', serif" }}>
                     {selectedName.arabic}
                   </h2>
-                  <div className="flex items-center justify-center gap-2">
-                    <Star className="h-4 w-4 text-amber-400" />
-                    <span className="text-xl text-amber-200/90 font-medium">{selectedName.transliteration}</span>
-                    <Star className="h-4 w-4 text-amber-400" />
+                  <div className="flex items-center justify-center gap-3">
+                    <div className="h-px w-12 bg-gradient-to-r from-transparent via-amber-500 to-transparent" />
+                    <span className="text-xl text-amber-700 font-semibold">{selectedName.transliteration}</span>
+                    <div className="h-px w-12 bg-gradient-to-r from-transparent via-amber-500 to-transparent" />
                   </div>
                 </motion.div>
 
-                {/* Divider */}
+                {/* Royal Divider */}
                 <div className="flex items-center justify-center gap-4 mb-6">
-                  <div className="h-px w-16 bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
-                  <Sparkles className="h-4 w-4 text-emerald-400" />
-                  <div className="h-px w-16 bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
+                  <div className="h-px w-20 bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
+                  <Sparkles className="h-5 w-5 text-amber-500" />
+                  <div className="h-px w-20 bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
                 </div>
 
                 {/* Meanings */}
@@ -257,15 +269,15 @@ const NamesOfAllahPage = () => {
                   transition={{ delay: 0.2 }}
                   className="space-y-4"
                 >
-                  <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
-                    <p className="text-sm text-emerald-400/70 mb-1">English</p>
-                    <p className="text-xl text-white font-medium">{selectedName.meaning}</p>
+                  <div className="p-5 rounded-2xl bg-gradient-to-br from-white/80 to-amber-50/80 border border-amber-300/40 shadow-lg shadow-amber-200/20">
+                    <p className="text-sm text-amber-600 mb-1 font-medium">English</p>
+                    <p className="text-xl text-amber-900 font-semibold">{selectedName.meaning}</p>
                   </div>
                   
                   {selectedName.bengaliMeaning && (
-                    <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
-                      <p className="text-sm text-amber-400/70 mb-1">বাংলা</p>
-                      <p className="text-xl text-white font-medium">{selectedName.bengaliMeaning}</p>
+                    <div className="p-5 rounded-2xl bg-gradient-to-br from-white/80 to-orange-50/80 border border-orange-300/40 shadow-lg shadow-orange-200/20">
+                      <p className="text-sm text-orange-600 mb-1 font-medium">বাংলা</p>
+                      <p className="text-xl text-amber-900 font-semibold">{selectedName.bengaliMeaning}</p>
                     </div>
                   )}
                 </motion.div>
@@ -288,20 +300,20 @@ const NamesOfAllahPage = () => {
               className="mb-8"
             >
               <div className="relative max-w-md mx-auto">
-                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-amber-500/20 rounded-2xl blur-xl opacity-50" />
-                <div className="relative flex items-center bg-slate-900/80 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-sm">
-                  <Search className="h-5 w-5 text-emerald-400/50 ml-4" />
+                <div className="absolute inset-0 bg-gradient-to-r from-amber-400/30 to-yellow-400/30 rounded-2xl blur-xl opacity-60" />
+                <div className="relative flex items-center bg-gradient-to-r from-white/90 to-amber-50/90 border-2 border-amber-300/50 rounded-2xl overflow-hidden backdrop-blur-sm shadow-lg shadow-amber-200/30">
+                  <Search className="h-5 w-5 text-amber-500 ml-4" />
                   <input
                     type="text"
                     placeholder="নাম খুঁজুন..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="flex-1 bg-transparent px-4 py-4 text-white placeholder:text-slate-500 focus:outline-none text-base"
+                    className="flex-1 bg-transparent px-4 py-4 text-amber-900 placeholder:text-amber-400 focus:outline-none text-base font-medium"
                   />
                   {searchQuery && (
                     <button 
                       onClick={() => setSearchQuery("")}
-                      className="mr-4 text-xs text-emerald-400 hover:text-emerald-300"
+                      className="mr-4 text-xs text-amber-600 hover:text-amber-700 font-medium"
                     >
                       Clear
                     </button>
@@ -330,33 +342,38 @@ const NamesOfAllahPage = () => {
                     hidden: { opacity: 0, y: 20 },
                     visible: { opacity: 1, y: 0 }
                   }}
-                  whileHover={{ scale: 1.03, y: -4 }}
+                  whileHover={{ scale: 1.03, y: -6 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setSelectedName(name)}
                   className="group relative rounded-2xl overflow-hidden text-left transition-all duration-300"
                   layoutId={`card-${name.id}`}
                 >
                   {/* Card Background */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-slate-800/80 via-slate-800/60 to-slate-900/80 group-hover:from-emerald-900/40 group-hover:via-slate-800/60 group-hover:to-amber-900/20 transition-all duration-500" />
-                  <div className="absolute inset-0 border border-white/5 group-hover:border-emerald-500/30 rounded-2xl transition-colors duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-white via-amber-50/80 to-yellow-50 group-hover:from-amber-100 group-hover:via-yellow-100 group-hover:to-orange-50 transition-all duration-500" />
+                  
+                  {/* Gold border */}
+                  <div className="absolute inset-0 border-2 border-amber-200/60 group-hover:border-amber-400/80 rounded-2xl transition-colors duration-300" />
                   
                   {/* Hover glow effect */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    <div className="absolute top-0 right-0 w-20 h-20 bg-emerald-400/10 rounded-full blur-xl" />
-                  </div>
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-amber-200/40 to-yellow-200/30" />
+                  
+                  {/* Corner accents */}
+                  <div className="absolute top-0 right-0 w-12 h-12 bg-gradient-to-bl from-amber-300/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   
                   <div className="relative p-4">
-                    {/* Number */}
+                    {/* Number Badge */}
                     <div className="absolute top-2 right-2">
-                      <span className="text-[10px] font-medium text-slate-500 group-hover:text-emerald-400/70 transition-colors">
-                        {String(name.id).padStart(2, '0')}
-                      </span>
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center shadow-md shadow-amber-300/30">
+                        <span className="text-[9px] font-bold text-white">
+                          {name.id}
+                        </span>
+                      </div>
                     </div>
                     
                     {/* Arabic */}
-                    <div className="mb-3 pr-6">
+                    <div className="mb-3 pr-8">
                       <p 
-                        className="text-2xl md:text-3xl font-bold text-white group-hover:text-emerald-100 transition-colors leading-tight"
+                        className="text-2xl md:text-3xl font-bold text-amber-900 group-hover:text-amber-800 transition-colors leading-tight"
                         style={{ fontFamily: "'Amiri', 'Noto Naskh Arabic', serif" }}
                       >
                         {name.arabic}
@@ -364,15 +381,18 @@ const NamesOfAllahPage = () => {
                     </div>
                     
                     {/* Transliteration */}
-                    <p className="text-sm font-medium text-emerald-400/80 mb-1 truncate">
+                    <p className="text-sm font-semibold text-amber-700 mb-1 truncate">
                       {name.transliteration}
                     </p>
                     
                     {/* Bengali Meaning */}
-                    <p className="text-xs text-slate-400 group-hover:text-slate-300 truncate transition-colors">
+                    <p className="text-xs text-amber-600/80 group-hover:text-amber-700 truncate transition-colors font-medium">
                       {name.bengaliMeaning || name.meaning}
                     </p>
                   </div>
+                  
+                  {/* Bottom shine effect */}
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-400/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </motion.button>
               ))}
             </motion.div>
@@ -383,13 +403,13 @@ const NamesOfAllahPage = () => {
                 animate={{ opacity: 1 }}
                 className="text-center py-16"
               >
-                <div className="w-16 h-16 rounded-full bg-slate-800/50 flex items-center justify-center mx-auto mb-4">
-                  <Search className="h-8 w-8 text-slate-600" />
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-200 to-yellow-200 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-amber-200/40">
+                  <Search className="h-10 w-10 text-amber-600" />
                 </div>
-                <p className="text-slate-400">কোনো নাম পাওয়া যায়নি</p>
+                <p className="text-amber-700 font-medium text-lg">কোনো নাম পাওয়া যায়নি</p>
                 <button 
                   onClick={() => setSearchQuery("")}
-                  className="mt-4 text-emerald-400 hover:text-emerald-300 text-sm"
+                  className="mt-4 px-6 py-2 bg-gradient-to-r from-amber-400 to-yellow-400 text-white rounded-full font-medium hover:from-amber-500 hover:to-yellow-500 transition-all shadow-lg shadow-amber-300/30"
                 >
                   সব দেখুন
                 </button>
