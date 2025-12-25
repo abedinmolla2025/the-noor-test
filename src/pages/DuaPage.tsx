@@ -24,6 +24,7 @@ interface Dua {
   id: number;
   arabic: string;
   transliteration: string;
+  bengaliTransliteration: string;
   translations: Record<Language, DuaTranslation>;
 }
 
@@ -33,6 +34,7 @@ const duas: Dua[] = [
     id: 1,
     arabic: "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ",
     transliteration: "Asbahna wa asbahal mulku lillah, walhamdu lillah",
+    bengaliTransliteration: "আসবাহনা ওয়া আসবাহাল মুলকু লিল্লাহ, ওয়ালহামদু লিল্লাহ",
     translations: {
       bengali: { title: "সকালের দোয়া", category: "সকালের আযকার", translation: "আমরা সকালে উপনীত হয়েছি এবং এই সময়ে সমস্ত সার্বভৌমত্ব আল্লাহর। সমস্ত প্রশংসা আল্লাহর জন্য।" },
       english: { title: "Morning Dua", category: "Morning Adhkar", translation: "We have reached the morning and at this very time all sovereignty belongs to Allah. All praise is due to Allah." },
@@ -44,6 +46,7 @@ const duas: Dua[] = [
     id: 2,
     arabic: "اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ النُّشُورُ",
     transliteration: "Allahumma bika asbahna, wa bika amsayna, wa bika nahya, wa bika namutu, wa ilaykan-nushur",
+    bengaliTransliteration: "আল্লাহুম্মা বিকা আসবাহনা, ওয়া বিকা আমসাইনা, ওয়া বিকা নাহইয়া, ওয়া বিকা নামুতু, ওয়া ইলাইকান নুশুর",
     translations: {
       bengali: { title: "সকালে আল্লাহর উপর ভরসা", category: "সকালের আযকার", translation: "হে আল্লাহ, তোমার কারণে আমরা সকালে উপনীত হয়েছি, তোমার কারণে সন্ধ্যায় উপনীত হই, তোমার কারণে জীবিত থাকি, তোমার কারণে মৃত্যুবরণ করি এবং তোমার কাছেই পুনরুত্থান।" },
       english: { title: "Morning Trust in Allah", category: "Morning Adhkar", translation: "O Allah, by You we enter the morning, by You we enter the evening, by You we live, by You we die, and to You is the resurrection." },
@@ -54,7 +57,8 @@ const duas: Dua[] = [
   {
     id: 3,
     arabic: "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ",
-    transliteration: "Allahumma anta rabbi la ilaha illa anta, khalaqtani wa ana 'abduk",
+    transliteration: "Allahumma anta rabbi la ilaha illa anta, khalaqtani wa ana abduk",
+    bengaliTransliteration: "আল্লাহুম্মা আনতা রাব্বী লা ইলাহা ইল্লা আনতা, খালাক্বতানী ওয়া আনা আবদুক",
     translations: {
       bengali: { title: "সাইয়্যিদুল ইস্তিগফার (সকাল)", category: "সকালের আযকার", translation: "হে আল্লাহ, তুমি আমার রব, তুমি ছাড়া কোনো উপাস্য নেই, তুমি আমাকে সৃষ্টি করেছ এবং আমি তোমার বান্দা।" },
       english: { title: "Sayyidul Istighfar (Morning)", category: "Morning Adhkar", translation: "O Allah, You are my Lord, there is no deity except You, You created me and I am Your servant." },
@@ -65,7 +69,8 @@ const duas: Dua[] = [
   {
     id: 4,
     arabic: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، عَدَدَ خَلْقِهِ، وَرِضَا نَفْسِهِ، وَزِنَةَ عَرْشِهِ، وَمِدَادَ كَلِمَاتِهِ",
-    transliteration: "Subhanallahi wa bihamdihi, 'adada khalqihi, wa rida nafsihi, wa zinata 'arshihi, wa midada kalimatihi",
+    transliteration: "Subhanallahi wa bihamdihi, adada khalqihi, wa rida nafsihi, wa zinata arshihi, wa midada kalimatihi",
+    bengaliTransliteration: "সুবহানাল্লাহি ওয়া বিহামদিহী, আদাদা খালক্বিহী, ওয়া রিদা নাফসিহী, ওয়া যিনাতা আরশিহী, ওয়া মিদাদা কালিমাতিহী",
     translations: {
       bengali: { title: "সুবহানাল্লাহি ওয়া বিহামদিহি", category: "সকালের আযকার", translation: "আল্লাহর প্রশংসা ও পবিত্রতা ঘোষণা করি, তাঁর সৃষ্টির সংখ্যা পরিমাণ, তাঁর সন্তুষ্টি পরিমাণ, তাঁর আরশের ওজন পরিমাণ এবং তাঁর বাণীসমূহের কালি পরিমাণ।" },
       english: { title: "Subhanallahi wa Bihamdihi", category: "Morning Adhkar", translation: "Glory and praise be to Allah, as many as His creations, as pleases Him, as heavy as His Throne, and as extensive as His Words." },
@@ -79,6 +84,7 @@ const duas: Dua[] = [
     id: 5,
     arabic: "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ",
     transliteration: "Amsayna wa amsal mulku lillah, walhamdu lillah",
+    bengaliTransliteration: "আমসাইনা ওয়া আমসাল মুলকু লিল্লাহ, ওয়ালহামদু লিল্লাহ",
     translations: {
       bengali: { title: "সন্ধ্যার দোয়া", category: "সন্ধ্যার আযকার", translation: "আমরা সন্ধ্যায় উপনীত হয়েছি এবং এই সময়ে সমস্ত সার্বভৌমত্ব আল্লাহর। সমস্ত প্রশংসা আল্লাহর জন্য।" },
       english: { title: "Evening Dua", category: "Evening Adhkar", translation: "We have reached the evening and at this very time all sovereignty belongs to Allah. All praise is due to Allah." },
@@ -90,6 +96,7 @@ const duas: Dua[] = [
     id: 6,
     arabic: "اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ الْمَصِيرُ",
     transliteration: "Allahumma bika amsayna, wa bika asbahna, wa bika nahya, wa bika namutu, wa ilaykal-masir",
+    bengaliTransliteration: "আল্লাহুম্মা বিকা আমসাইনা, ওয়া বিকা আসবাহনা, ওয়া বিকা নাহইয়া, ওয়া বিকা নামুতু, ওয়া ইলাইকাল মাসীর",
     translations: {
       bengali: { title: "সন্ধ্যায় আল্লাহর উপর ভরসা", category: "সন্ধ্যার আযকার", translation: "হে আল্লাহ, তোমার কারণে আমরা সন্ধ্যায় উপনীত হয়েছি, তোমার কারণে সকালে উপনীত হই, তোমার কারণে জীবিত থাকি, তোমার কারণে মৃত্যুবরণ করি এবং তোমার কাছেই প্রত্যাবর্তন।" },
       english: { title: "Evening Trust in Allah", category: "Evening Adhkar", translation: "O Allah, by You we enter the evening, by You we enter the morning, by You we live, by You we die, and to You is the final return." },
@@ -100,7 +107,8 @@ const duas: Dua[] = [
   {
     id: 7,
     arabic: "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
-    transliteration: "A'udhu bikalimatillahit-tammati min sharri ma khalaq",
+    transliteration: "Audhu bikalimatillahit-tammati min sharri ma khalaq",
+    bengaliTransliteration: "আউযু বিকালিমাতিল্লাহিত তাম্মাতি মিন শাররি মা খালাক্ব",
     translations: {
       bengali: { title: "সন্ধ্যায় সুরক্ষার দোয়া", category: "সন্ধ্যার আযকার", translation: "আমি আল্লাহর পরিপূর্ণ বাণীসমূহের আশ্রয় নিচ্ছি তাঁর সৃষ্টির অনিষ্ট থেকে।" },
       english: { title: "Evening Protection Dua", category: "Evening Adhkar", translation: "I seek refuge in Allah's perfect words from the evil of what He has created." },
@@ -111,7 +119,8 @@ const duas: Dua[] = [
   {
     id: 8,
     arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي الدُّنْيَا وَالْآخِرَةِ",
-    transliteration: "Allahumma inni as'alukal-'afwa wal-'afiyah fid-dunya wal-akhirah",
+    transliteration: "Allahumma inni asalukal-afwa wal-afiyah fid-dunya wal-akhirah",
+    bengaliTransliteration: "আল্লাহুম্মা ইন্নী আসআলুকাল আফওয়া ওয়াল আফিয়াতা ফিদ দুনিয়া ওয়াল আখিরাহ",
     translations: {
       bengali: { title: "ক্ষমা ও নিরাপত্তার দোয়া", category: "সন্ধ্যার আযকার", translation: "হে আল্লাহ, আমি তোমার কাছে দুনিয়া ও আখিরাতে ক্ষমা এবং নিরাপত্তা প্রার্থনা করছি।" },
       english: { title: "Dua for Pardon and Well-being", category: "Evening Adhkar", translation: "O Allah, I ask You for pardon and well-being in this life and the Hereafter." },
@@ -125,6 +134,7 @@ const duas: Dua[] = [
     id: 9,
     arabic: "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ",
     transliteration: "Subhanal-ladhi sakhkhara lana hadha wa ma kunna lahu muqrinin, wa inna ila rabbina lamunqalibun",
+    bengaliTransliteration: "সুবহানাল্লাযী সাখখারা লানা হাযা ওয়া মা কুন্না লাহু মুক্বরিনীন, ওয়া ইন্না ইলা রাব্বিনা লামুনক্বালিবুন",
     translations: {
       bengali: { title: "যানবাহনে চড়ার দোয়া", category: "সফরের দোয়া", translation: "পবিত্র সেই সত্তা যিনি এটিকে আমাদের বশীভূত করে দিয়েছেন, অথচ আমরা এটিকে বশীভূত করতে সক্ষম ছিলাম না এবং নিশ্চয়ই আমরা আমাদের রবের কাছে ফিরে যাব।" },
       english: { title: "Dua When Riding Vehicle", category: "Travel Prayers", translation: "Glory to Him who has subjected this to us, and we could never have subdued it ourselves, and surely to our Lord we shall return." },
@@ -135,7 +145,8 @@ const duas: Dua[] = [
   {
     id: 10,
     arabic: "اللَّهُمَّ إِنَّا نَسْأَلُكَ فِي سَفَرِنَا هَذَا الْبِرَّ وَالتَّقْوَى، وَمِنَ الْعَمَلِ مَا تَرْضَى",
-    transliteration: "Allahumma inna nas'aluka fi safarina hadhal-birra wat-taqwa, wa minal-'amali ma tarda",
+    transliteration: "Allahumma inna nasaluka fi safarina hadhal-birra wat-taqwa, wa minal-amali ma tarda",
+    bengaliTransliteration: "আল্লাহুম্মা ইন্না নাসআলুকা ফী সাফারিনা হাযাল বিররা ওয়াত তাক্বওয়া, ওয়া মিনাল আমালি মা তারদা",
     translations: {
       bengali: { title: "সফরের শুরুতে দোয়া", category: "সফরের দোয়া", translation: "হে আল্লাহ, আমরা তোমার কাছে এই সফরে সৎকর্ম ও তাকওয়া প্রার্থনা করি এবং এমন আমল চাই যা তুমি পছন্দ কর।" },
       english: { title: "Dua at Start of Travel", category: "Travel Prayers", translation: "O Allah, we ask You on this journey for righteousness and piety, and for deeds that please You." },
@@ -146,7 +157,8 @@ const duas: Dua[] = [
   {
     id: 11,
     arabic: "اللَّهُمَّ هَوِّنْ عَلَيْنَا سَفَرَنَا هَذَا، وَاطْوِ عَنَّا بُعْدَهُ",
-    transliteration: "Allahumma hawwin 'alayna safarana hadha, watwi 'anna bu'dahu",
+    transliteration: "Allahumma hawwin alayna safarana hadha, watwi anna budahu",
+    bengaliTransliteration: "আল্লাহুম্মা হাওয়িন আলাইনা সাফারানা হাযা, ওয়াতওয়ি আন্না বু'দাহু",
     translations: {
       bengali: { title: "সফর সহজ করার দোয়া", category: "সফরের দোয়া", translation: "হে আল্লাহ, আমাদের এই সফরকে সহজ করে দাও এবং এর দূরত্ব সংক্ষিপ্ত করে দাও।" },
       english: { title: "Dua for Easy Journey", category: "Travel Prayers", translation: "O Allah, make this journey easy for us and shorten the distance for us." },
@@ -158,6 +170,7 @@ const duas: Dua[] = [
     id: 12,
     arabic: "اللَّهُمَّ أَنْتَ الصَّاحِبُ فِي السَّفَرِ، وَالْخَلِيفَةُ فِي الْأَهْلِ",
     transliteration: "Allahumma antas-sahibu fis-safar, wal-khalifatu fil-ahl",
+    bengaliTransliteration: "আল্লাহুম্মা আনতাস সাহিবু ফিস সাফার, ওয়াল খালীফাতু ফিল আহল",
     translations: {
       bengali: { title: "সফরে সাথী হওয়ার দোয়া", category: "সফরের দোয়া", translation: "হে আল্লাহ, তুমি সফরে আমার সাথী এবং পরিবারে আমার প্রতিনিধি।" },
       english: { title: "Dua for Companionship in Travel", category: "Travel Prayers", translation: "O Allah, You are the Companion in travel and the Guardian of the family." },
@@ -168,7 +181,8 @@ const duas: Dua[] = [
   {
     id: 13,
     arabic: "آيِبُونَ تَائِبُونَ عَابِدُونَ لِرَبِّنَا حَامِدُونَ",
-    transliteration: "Ayibuna, ta'ibuna, 'abiduna, li Rabbina hamidun",
+    transliteration: "Ayibuna, taibuna, abiduna, li Rabbina hamidun",
+    bengaliTransliteration: "আয়িবুনা, তাইবুনা, আবিদুনা, লি রাব্বিনা হামিদুন",
     translations: {
       bengali: { title: "সফর থেকে ফেরার দোয়া", category: "সফরের দোয়া", translation: "আমরা প্রত্যাবর্তনকারী, তওবাকারী, ইবাদতকারী এবং আমাদের রবের প্রশংসাকারী।" },
       english: { title: "Dua When Returning from Travel", category: "Travel Prayers", translation: "We are returning, repentant, worshipping, and praising our Lord." },
@@ -181,7 +195,8 @@ const duas: Dua[] = [
   {
     id: 14,
     arabic: "اللَّهُمَّ رَبَّ النَّاسِ، أَذْهِبِ الْبَاسَ، اشْفِ أَنْتَ الشَّافِي، لَا شِفَاءَ إِلَّا شِفَاؤُكَ، شِفَاءً لَا يُغَادِرُ سَقَمًا",
-    transliteration: "Allahumma rabban-nas, adhhibil-ba's, ishfi antash-shafi, la shifa'a illa shifa'uk, shifa'an la yughadiru saqama",
+    transliteration: "Allahumma rabban-nas, adhhibil-bas, ishfi antash-shafi, la shifaa illa shifauk, shifaan la yughadiru saqama",
+    bengaliTransliteration: "আল্লাহুম্মা রাব্বান নাস, আযহিবিল বা'স, ইশফি আনতাশ শাফী, লা শিফাআ ইল্লা শিফাউক, শিফাআন লা ইউগাদিরু সাক্বামা",
     translations: {
       bengali: { title: "রোগ থেকে সুস্থতার দোয়া", category: "রোগমুক্তির দোয়া", translation: "হে আল্লাহ, মানুষের রব, কষ্ট দূর কর, তুমি আরোগ্যদানকারী, তোমার শিফা ছাড়া কোনো শিফা নেই, এমন আরোগ্য দাও যা কোনো রোগ অবশিষ্ট রাখে না।" },
       english: { title: "Dua for Healing from Illness", category: "Healing Prayers", translation: "O Allah, Lord of mankind, remove the harm, heal him, You are the Healer, there is no healing except Your healing, a healing that leaves no illness." },
@@ -192,7 +207,8 @@ const duas: Dua[] = [
   {
     id: 15,
     arabic: "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ",
-    transliteration: "Bismillahil-ladhi la yadurru ma'asmihi shay'un fil-ardi wa la fis-sama'i, wa huwas-sami'ul-'alim",
+    transliteration: "Bismillahil-ladhi la yadurru maasmihi shayun fil-ardi wa la fis-samai, wa huwas-samiul-alim",
+    bengaliTransliteration: "বিসমিল্লাহিল্লাযী লা ইয়াদুররু মাআসমিহী শাইউন ফিল আরদি ওয়া লা ফিস সামাই, ওয়া হুওয়াস সামীউল আলীম",
     translations: {
       bengali: { title: "ক্ষতি থেকে রক্ষার দোয়া", category: "রোগমুক্তির দোয়া", translation: "আল্লাহর নামে যাঁর নামের সাথে আকাশ ও জমিনে কোনো কিছু ক্ষতি করতে পারে না এবং তিনি সর্বশ্রোতা, সর্বজ্ঞ।" },
       english: { title: "Dua for Protection from Harm", category: "Healing Prayers", translation: "In the name of Allah with whose name nothing can cause harm in the earth or the heavens, and He is the All-Hearing, All-Knowing." },
@@ -203,7 +219,8 @@ const duas: Dua[] = [
   {
     id: 16,
     arabic: "أَسْأَلُ اللَّهَ الْعَظِيمَ رَبَّ الْعَرْشِ الْعَظِيمِ أَنْ يَشْفِيَكَ",
-    transliteration: "As'alullaha al-'Azim, Rabbal-'Arshil-'Azim, an yashfiyak",
+    transliteration: "Asalullaha al-Azim, Rabbal-Arshil-Azim, an yashfiyak",
+    bengaliTransliteration: "আসআলুল্লাহাল আযীম, রাব্বাল আরশিল আযীম, আন ইয়াশফিয়াক",
     translations: {
       bengali: { title: "অসুস্থের জন্য দোয়া", category: "রোগমুক্তির দোয়া", translation: "আমি মহান আল্লাহর কাছে, মহান আরশের রবের কাছে প্রার্থনা করি তোমাকে সুস্থ করার জন্য।" },
       english: { title: "Dua for the Sick Person", category: "Healing Prayers", translation: "I ask Allah the Almighty, Lord of the Magnificent Throne, to cure you." },
@@ -214,7 +231,8 @@ const duas: Dua[] = [
   {
     id: 17,
     arabic: "اللَّهُمَّ عَافِنِي فِي بَدَنِي، اللَّهُمَّ عَافِنِي فِي سَمْعِي، اللَّهُمَّ عَافِنِي فِي بَصَرِي",
-    transliteration: "Allahumma 'afini fi badani, Allahumma 'afini fi sam'i, Allahumma 'afini fi basari",
+    transliteration: "Allahumma afini fi badani, Allahumma afini fi sami, Allahumma afini fi basari",
+    bengaliTransliteration: "আল্লাহুম্মা আফিনী ফী বাদানী, আল্লাহুম্মা আফিনী ফী সামঈ, আল্লাহুম্মা আফিনী ফী বাসারী",
     translations: {
       bengali: { title: "শরীরের সুস্থতার দোয়া", category: "রোগমুক্তির দোয়া", translation: "হে আল্লাহ, আমার শরীরে আমাকে সুস্থতা দাও, হে আল্লাহ, আমার শ্রবণে সুস্থতা দাও, হে আল্লাহ, আমার দৃষ্টিতে সুস্থতা দাও।" },
       english: { title: "Dua for Body Health", category: "Healing Prayers", translation: "O Allah, grant me health in my body, O Allah, grant me health in my hearing, O Allah, grant me health in my sight." },
@@ -222,12 +240,12 @@ const duas: Dua[] = [
       urdu: { title: "جسم کی صحت کی دعا", category: "شفا کی دعا", translation: "اے اللہ، میرے جسم میں مجھے عافیت دے، اے اللہ، میری سماعت میں عافیت دے، اے اللہ، میری بینائی میں عافیت دے۔" },
     },
   },
-
   // Protection Prayers
   {
     id: 18,
     arabic: "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ",
     transliteration: "Allahu la ilaha illa huwal hayyul qayyum",
+    bengaliTransliteration: "আল্লাহু লা ইলাহা ইল্লা হুওয়াল হাইয়্যুল ক্বাইয়্যূম",
     translations: {
       bengali: { title: "আয়াতুল কুরসি", category: "সুরক্ষার দোয়া", translation: "আল্লাহ - তিনি ছাড়া কোনো উপাস্য নেই, তিনি চিরঞ্জীব, সবকিছুর ধারক।" },
       english: { title: "Ayatul Kursi", category: "Protection", translation: "Allah - there is no deity except Him, the Ever-Living, the Sustainer of existence." },
@@ -239,6 +257,7 @@ const duas: Dua[] = [
     id: 19,
     arabic: "قُلْ هُوَ اللَّهُ أَحَدٌ، اللَّهُ الصَّمَدُ، لَمْ يَلِدْ وَلَمْ يُولَدْ، وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ",
     transliteration: "Qul huwal-lahu ahad, Allahus-samad, lam yalid wa lam yulad, wa lam yakun lahu kufuwan ahad",
+    bengaliTransliteration: "ক্বুল হুওয়াল্লাহু আহাদ, আল্লাহুস সামাদ, লাম ইয়ালিদ ওয়া লাম ইউলাদ, ওয়া লাম ইয়াকুন লাহু কুফুওয়ান আহাদ",
     translations: {
       bengali: { title: "সূরা ইখলাস", category: "সুরক্ষার দোয়া", translation: "বল, তিনি আল্লাহ, এক। আল্লাহ অমুখাপেক্ষী। তিনি কাউকে জন্ম দেননি এবং কেউ তাঁকে জন্ম দেয়নি। তাঁর সমতুল্য কেউ নেই।" },
       english: { title: "Surah Ikhlas", category: "Protection", translation: "Say, He is Allah, the One. Allah, the Eternal Refuge. He neither begets nor is born. Nor is there to Him any equivalent." },
@@ -249,7 +268,8 @@ const duas: Dua[] = [
   {
     id: 20,
     arabic: "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ، مِن شَرِّ مَا خَلَقَ",
-    transliteration: "Qul a'udhu birabbil-falaq, min sharri ma khalaq",
+    transliteration: "Qul audhu birabbil-falaq, min sharri ma khalaq",
+    bengaliTransliteration: "ক্বুল আউযু বিরাব্বিল ফালাক্ব, মিন শাররি মা খালাক্ব",
     translations: {
       bengali: { title: "সূরা ফালাক", category: "সুরক্ষার দোয়া", translation: "বল, আমি আশ্রয় নিচ্ছি ভোরের রবের কাছে, তাঁর সৃষ্টির অনিষ্ট থেকে।" },
       english: { title: "Surah Falaq", category: "Protection", translation: "Say, I seek refuge in the Lord of daybreak, from the evil of that which He created." },
@@ -260,7 +280,8 @@ const duas: Dua[] = [
   {
     id: 21,
     arabic: "قُلْ أَعُوذُ بِرَبِّ النَّاسِ، مَلِكِ النَّاسِ، إِلَٰهِ النَّاسِ",
-    transliteration: "Qul a'udhu birabbin-nas, malikin-nas, ilahin-nas",
+    transliteration: "Qul audhu birabbin-nas, malikin-nas, ilahin-nas",
+    bengaliTransliteration: "ক্বুল আউযু বিরাব্বিন নাস, মালিকিন নাস, ইলাহিন নাস",
     translations: {
       bengali: { title: "সূরা নাস", category: "সুরক্ষার দোয়া", translation: "বল, আমি আশ্রয় নিচ্ছি মানুষের রবের কাছে, মানুষের বাদশাহের কাছে, মানুষের উপাস্যের কাছে।" },
       english: { title: "Surah Nas", category: "Protection", translation: "Say, I seek refuge in the Lord of mankind, the King of mankind, the God of mankind." },
@@ -268,12 +289,12 @@ const duas: Dua[] = [
       urdu: { title: "سورہ ناس", category: "حفاظت کی دعا", translation: "کہہ، میں انسانوں کے رب کی پناہ لیتا ہوں، انسانوں کے بادشاہ کی، انسانوں کے معبود کی۔" },
     },
   },
-
   // Sleep Related
   {
     id: 22,
     arabic: "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
     transliteration: "Bismika Allahumma amutu wa ahya",
+    bengaliTransliteration: "বিসমিকা আল্লাহুম্মা আমুতু ওয়া আহইয়া",
     translations: {
       bengali: { title: "ঘুমানোর আগে দোয়া", category: "ঘুমের দোয়া", translation: "হে আল্লাহ, তোমার নামে আমি মৃত্যুবরণ করি এবং জীবিত হই।" },
       english: { title: "Dua Before Sleeping", category: "Sleep", translation: "In Your name O Allah, I live and die." },
@@ -284,7 +305,8 @@ const duas: Dua[] = [
   {
     id: 23,
     arabic: "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ",
-    transliteration: "Alhamdu lillahil-ladhi ahyana ba'da ma amatana wa ilayhin-nushur",
+    transliteration: "Alhamdu lillahil-ladhi ahyana bada ma amatana wa ilayhin-nushur",
+    bengaliTransliteration: "আলহামদু লিল্লাহিল্লাযী আহইয়ানা বা'দা মা আমাতানা ওয়া ইলাইহিন নুশুর",
     translations: {
       bengali: { title: "ঘুম থেকে জাগার দোয়া", category: "ঘুমের দোয়া", translation: "সমস্ত প্রশংসা আল্লাহর যিনি আমাদের মৃত্যুর পর জীবিত করেছেন এবং তাঁর কাছেই পুনরুত্থান।" },
       english: { title: "Dua Upon Waking", category: "Sleep", translation: "All praise is for Allah who gave us life after having taken it from us and unto Him is the resurrection." },
@@ -292,12 +314,12 @@ const duas: Dua[] = [
       urdu: { title: "جاگنے کی دعا", category: "نیند کی دعا", translation: "تمام تعریفیں اللہ کے لیے ہیں جس نے ہمیں موت کے بعد زندہ کیا اور اسی کی طرف لوٹنا ہے۔" },
     },
   },
-
   // Food Related
   {
     id: 24,
     arabic: "بِسْمِ اللَّهِ وَعَلَى بَرَكَةِ اللَّهِ",
-    transliteration: "Bismillahi wa 'ala barakatillah",
+    transliteration: "Bismillahi wa ala barakatillah",
+    bengaliTransliteration: "বিসমিল্লাহি ওয়া আলা বারাকাতিল্লাহ",
     translations: {
       bengali: { title: "খাওয়ার আগে দোয়া", category: "খাবারের দোয়া", translation: "আল্লাহর নামে এবং আল্লাহর বরকতে।" },
       english: { title: "Dua Before Eating", category: "Food", translation: "In the name of Allah and with the blessings of Allah." },
@@ -308,7 +330,8 @@ const duas: Dua[] = [
   {
     id: 25,
     arabic: "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مُسْلِمِينَ",
-    transliteration: "Alhamdu lillahil-ladhi at'amana wa saqana wa ja'alana muslimin",
+    transliteration: "Alhamdu lillahil-ladhi atamana wa saqana wa jaalana muslimin",
+    bengaliTransliteration: "আলহামদু লিল্লাহিল্লাযী আত'আমানা ওয়া সাক্বানা ওয়া জাআলানা মুসলিমীন",
     translations: {
       bengali: { title: "খাওয়ার পরে দোয়া", category: "খাবারের দোয়া", translation: "সমস্ত প্রশংসা আল্লাহর যিনি আমাদের খাওয়ালেন, পান করালেন এবং মুসলিম বানালেন।" },
       english: { title: "Dua After Eating", category: "Food", translation: "All praise is for Allah who fed us, gave us drink and made us Muslims." },
@@ -316,12 +339,12 @@ const duas: Dua[] = [
       urdu: { title: "کھانے کے بعد کی دعا", category: "کھانے کی دعا", translation: "تمام تعریفیں اللہ کے لیے ہیں جس نے ہمیں کھلایا، پلایا اور مسلمان بنایا۔" },
     },
   },
-
   // Home Related
   {
     id: 26,
     arabic: "بِسْمِ اللَّهِ وَلَجْنَا، وَبِسْمِ اللَّهِ خَرَجْنَا، وَعَلَى اللَّهِ رَبِّنَا تَوَكَّلْنَا",
-    transliteration: "Bismillahi walajna, wa bismillahi kharajna, wa 'ala Allahi rabbina tawakkalna",
+    transliteration: "Bismillahi walajna, wa bismillahi kharajna, wa ala Allahi rabbina tawakkalna",
+    bengaliTransliteration: "বিসমিল্লাহি ওয়ালাজনা, ওয়া বিসমিল্লাহি খারাজনা, ওয়া আলা আল্লাহি রাব্বিনা তাওয়াক্কালনা",
     translations: {
       bengali: { title: "বাড়িতে প্রবেশের দোয়া", category: "বাড়ির দোয়া", translation: "আল্লাহর নামে আমরা প্রবেশ করি এবং আল্লাহর নামে বের হই, এবং আমাদের রবের উপর ভরসা করি।" },
       english: { title: "Dua When Entering Home", category: "Home", translation: "In the name of Allah we enter and in the name of Allah we leave, and upon our Lord we place our trust." },
@@ -332,7 +355,8 @@ const duas: Dua[] = [
   {
     id: 27,
     arabic: "بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ، لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",
-    transliteration: "Bismillahi tawakkaltu 'alallah, la hawla wa la quwwata illa billah",
+    transliteration: "Bismillahi tawakkaltu alallah, la hawla wa la quwwata illa billah",
+    bengaliTransliteration: "বিসমিল্লাহি তাওয়াক্কালতু আলাল্লাহ, লা হাওলা ওয়া লা ক্বুওয়াতা ইল্লা বিল্লাহ",
     translations: {
       bengali: { title: "বাড়ি থেকে বের হওয়ার দোয়া", category: "বাড়ির দোয়া", translation: "আল্লাহর নামে, আমি আল্লাহর উপর ভরসা করি, আল্লাহ ছাড়া কোনো শক্তি ও ক্ষমতা নেই।" },
       english: { title: "Dua When Leaving Home", category: "Home", translation: "In the name of Allah, I place my trust in Allah, and there is no might nor power except with Allah." },
@@ -340,12 +364,12 @@ const duas: Dua[] = [
       urdu: { title: "گھر سے نکلنے کی دعا", category: "گھر کی دعا", translation: "اللہ کے نام پر، میں اللہ پر بھروسہ کرتا ہوں، اللہ کے سوا کوئی طاقت اور قوت نہیں۔" },
     },
   },
-
   // Forgiveness
   {
     id: 28,
     arabic: "رَبَّنَا ظَلَمْنَا أَنفُسَنَا وَإِن لَّمْ تَغْفِرْ لَنَا وَتَرْحَمْنَا لَنَكُونَنَّ مِنَ الْخَاسِرِينَ",
     transliteration: "Rabbana zalamna anfusana wa illam taghfir lana wa tarhamna lanakunanna minal khasireen",
+    bengaliTransliteration: "রাব্বানা যালামনা আনফুসানা ওয়া ইল্লাম তাগফির লানা ওয়া তারহামনা লানাকুনান্না মিনাল খাসিরীন",
     translations: {
       bengali: { title: "ক্ষমা প্রার্থনার দোয়া", category: "ক্ষমার দোয়া", translation: "হে আমাদের রব, আমরা নিজেদের উপর জুলুম করেছি, যদি তুমি আমাদের ক্ষমা না কর এবং রহম না কর, তাহলে আমরা ক্ষতিগ্রস্তদের অন্তর্ভুক্ত হব।" },
       english: { title: "Seeking Forgiveness", category: "Forgiveness", translation: "Our Lord, we have wronged ourselves, and if You do not forgive us and have mercy upon us, we will surely be among the losers." },
@@ -356,7 +380,8 @@ const duas: Dua[] = [
   {
     id: 29,
     arabic: "أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ الَّذِي لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ وَأَتُوبُ إِلَيْهِ",
-    transliteration: "Astaghfirullaha al-'Azima alladhi la ilaha illa huwal-Hayyul-Qayyumu wa atubu ilayh",
+    transliteration: "Astaghfirullaha al-Azima alladhi la ilaha illa huwal-Hayyul-Qayyumu wa atubu ilayh",
+    bengaliTransliteration: "আস্তাগফিরুল্লাহাল আযীমাল্লাযী লা ইলাহা ইল্লা হুওয়াল হাইয়্যুল ক্বাইয়্যুমু ওয়া আতুবু ইলাইহ",
     translations: {
       bengali: { title: "সাইয়্যিদুল ইস্তিগফার", category: "ক্ষমার দোয়া", translation: "আমি মহান আল্লাহর কাছে ক্ষমা চাই যিনি ছাড়া কোনো উপাস্য নেই, যিনি চিরঞ্জীব, সবকিছুর ধারক এবং তাঁর কাছে তওবা করি।" },
       english: { title: "Master of Seeking Forgiveness", category: "Forgiveness", translation: "I seek forgiveness from Allah the Almighty, besides whom there is no deity, the Ever-Living, the Sustainer of existence, and I repent to Him." },
@@ -364,12 +389,12 @@ const duas: Dua[] = [
       urdu: { title: "سید الاستغفار", category: "معافی کی دعا", translation: "میں اللہ عظیم سے معافی مانگتا ہوں جس کے سوا کوئی معبود نہیں، جو ہمیشہ زندہ ہے، سب کا سہارا ہے اور اس کی طرف توبہ کرتا ہوں۔" },
     },
   },
-
   // Anxiety & Distress
   {
     id: 30,
     arabic: "لَا إِلَٰهَ إِلَّا أَنتَ سُبْحَانَكَ إِنِّي كُنتُ مِنَ الظَّالِمِينَ",
     transliteration: "La ilaha illa anta subhanaka inni kuntu minaz-zalimin",
+    bengaliTransliteration: "লা ইলাহা ইল্লা আনতা সুবহানাকা ইন্নী কুনতু মিনায যালিমীন",
     translations: {
       bengali: { title: "বিপদ থেকে মুক্তির দোয়া (ইউনুস আ.)", category: "বিপদের দোয়া", translation: "তুমি ছাড়া কোনো উপাস্য নেই, তুমি পবিত্র, নিশ্চয়ই আমি জালিমদের অন্তর্ভুক্ত ছিলাম।" },
       english: { title: "Dua of Prophet Yunus", category: "Distress", translation: "There is no deity except You; exalted are You. Indeed, I have been of the wrongdoers." },
@@ -380,7 +405,8 @@ const duas: Dua[] = [
   {
     id: 31,
     arabic: "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
-    transliteration: "Hasbunallahu wa ni'mal-wakil",
+    transliteration: "Hasbunallahu wa nimal-wakil",
+    bengaliTransliteration: "হাসবুনাল্লাহু ওয়া নি'মাল ওয়াকীল",
     translations: {
       bengali: { title: "আল্লাহ যথেষ্ট", category: "বিপদের দোয়া", translation: "আল্লাহ আমাদের জন্য যথেষ্ট এবং তিনি কতই না উত্তম কর্মবিধায়ক।" },
       english: { title: "Allah is Sufficient", category: "Distress", translation: "Allah is sufficient for us and He is the best disposer of affairs." },
@@ -391,7 +417,8 @@ const duas: Dua[] = [
   {
     id: 32,
     arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَأَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ",
-    transliteration: "Allahumma inni a'udhu bika minal-hammi wal-hazan, wa a'udhu bika minal-'ajzi wal-kasal",
+    transliteration: "Allahumma inni audhu bika minal-hammi wal-hazan, wa audhu bika minal-ajzi wal-kasal",
+    bengaliTransliteration: "আল্লাহুম্মা ইন্নী আউযু বিকা মিনাল হাম্মি ওয়াল হাযান, ওয়া আউযু বিকা মিনাল আজযি ওয়াল কাসাল",
     translations: {
       bengali: { title: "চিন্তা ও দুশ্চিন্তা থেকে মুক্তি", category: "বিপদের দোয়া", translation: "হে আল্লাহ, আমি তোমার কাছে দুশ্চিন্তা ও বিষণ্ণতা থেকে আশ্রয় চাই এবং অক্ষমতা ও অলসতা থেকে আশ্রয় চাই।" },
       english: { title: "Relief from Worry and Grief", category: "Distress", translation: "O Allah, I seek refuge in You from worry and grief, and I seek refuge in You from incapacity and laziness." },
@@ -399,12 +426,12 @@ const duas: Dua[] = [
       urdu: { title: "پریشانی اور غم سے چھٹکارا", category: "مشکل کی دعا", translation: "اے اللہ، میں تیری پناہ لیتا ہوں پریشانی اور غم سے، اور مجبوری اور سستی سے۔" },
     },
   },
-
   // Mosque Related
   {
     id: 33,
     arabic: "اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ",
     transliteration: "Allahummaf-tah li abwaba rahmatik",
+    bengaliTransliteration: "আল্লাহুম্মাফতাহ লী আবওয়াবা রাহমাতিক",
     translations: {
       bengali: { title: "মসজিদে প্রবেশের দোয়া", category: "মসজিদের দোয়া", translation: "হে আল্লাহ, আমার জন্য তোমার রহমতের দরজাসমূহ খুলে দাও।" },
       english: { title: "Dua When Entering Mosque", category: "Mosque", translation: "O Allah, open for me the doors of Your mercy." },
@@ -415,7 +442,8 @@ const duas: Dua[] = [
   {
     id: 34,
     arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ",
-    transliteration: "Allahumma inni as'aluka min fadlik",
+    transliteration: "Allahumma inni asaluka min fadlik",
+    bengaliTransliteration: "আল্লাহুম্মা ইন্নী আসআলুকা মিন ফাদলিক",
     translations: {
       bengali: { title: "মসজিদ থেকে বের হওয়ার দোয়া", category: "মসজিদের দোয়া", translation: "হে আল্লাহ, আমি তোমার অনুগ্রহ প্রার্থনা করছি।" },
       english: { title: "Dua When Leaving Mosque", category: "Mosque", translation: "O Allah, I ask You from Your bounty." },
@@ -423,12 +451,12 @@ const duas: Dua[] = [
       urdu: { title: "مسجد سے نکلنے کی دعا", category: "مسجد کی دعا", translation: "اے اللہ، میں تجھ سے تیرے فضل کی دعا کرتا ہوں۔" },
     },
   },
-
   // Parents
   {
     id: 35,
     arabic: "رَّبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",
     transliteration: "Rabbir-hamhuma kama rabbayani saghira",
+    bengaliTransliteration: "রাব্বির হামহুমা কামা রাব্বায়ানী সাগীরা",
     translations: {
       bengali: { title: "পিতামাতার জন্য দোয়া", category: "পরিবারের দোয়া", translation: "হে আমার রব, তাদের প্রতি রহম কর যেমন তারা আমাকে ছোটবেলায় লালন-পালন করেছেন।" },
       english: { title: "Dua for Parents", category: "Family", translation: "My Lord, have mercy upon them as they brought me up when I was small." },
