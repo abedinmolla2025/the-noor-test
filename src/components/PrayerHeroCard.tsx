@@ -1,14 +1,21 @@
 import { useState, useEffect } from "react";
-import { MapPin, Clock, Loader2, ChevronRight, Sparkles } from "lucide-react";
+import { MapPin, Clock, Loader2, ChevronRight, Sparkles, Bell, BellRing } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 
-interface PrayerHeroCardProps {
-  prayerData?: ReturnType<typeof usePrayerTimes>;
+interface AthanSettings {
+  enabled: boolean;
+  isPlaying: boolean;
+  onOpenSettings: () => void;
 }
 
-const PrayerHeroCard = ({ prayerData }: PrayerHeroCardProps) => {
+interface PrayerHeroCardProps {
+  prayerData?: ReturnType<typeof usePrayerTimes>;
+  athanSettings?: AthanSettings;
+}
+
+const PrayerHeroCard = ({ prayerData, athanSettings }: PrayerHeroCardProps) => {
   const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(new Date());
   const localPrayerData = usePrayerTimes();
@@ -165,19 +172,44 @@ const PrayerHeroCard = ({ prayerData }: PrayerHeroCardProps) => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.1 }}
-                className="flex flex-wrap items-center gap-3"
+                className="flex flex-wrap items-center justify-between gap-3"
               >
-                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
-                  {isLoading ? (
-                    <Loader2 size={14} className="animate-spin text-amber-400" />
-                  ) : (
-                    <MapPin size={14} className="text-amber-400" />
-                  )}
-                  <span className="text-sm text-white font-medium">{locationStr}</span>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
+                    {isLoading ? (
+                      <Loader2 size={14} className="animate-spin text-amber-400" />
+                    ) : (
+                      <MapPin size={14} className="text-amber-400" />
+                    )}
+                    <span className="text-sm text-white font-medium">{locationStr}</span>
+                  </div>
+                  <div className="hidden sm:flex items-center gap-2 bg-amber-400/15 backdrop-blur-sm rounded-full px-4 py-2 border border-amber-400/30">
+                    <span className="font-arabic text-sm text-amber-300">{hijriDateStr}</span>
+                  </div>
                 </div>
-                <div className="hidden sm:flex items-center gap-2 bg-amber-400/15 backdrop-blur-sm rounded-full px-4 py-2 border border-amber-400/30">
-                  <span className="font-arabic text-sm text-amber-300">{hijriDateStr}</span>
-                </div>
+                
+                {/* Athan Bell Button */}
+                {athanSettings && (
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      athanSettings.onOpenSettings();
+                    }}
+                    className="relative p-2.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-colors"
+                  >
+                    {athanSettings.isPlaying ? (
+                      <BellRing size={18} className="text-amber-400 animate-pulse" />
+                    ) : athanSettings.enabled ? (
+                      <Bell size={18} className="text-amber-400" />
+                    ) : (
+                      <Bell size={18} className="text-white/50" />
+                    )}
+                    {athanSettings.enabled && (
+                      <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-emerald-700" />
+                    )}
+                  </motion.button>
+                )}
               </motion.div>
 
               {/* Current Time - Hero Display */}
