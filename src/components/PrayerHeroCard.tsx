@@ -262,7 +262,7 @@ const PrayerHeroCard = ({ prayerData, athanSettings }: PrayerHeroCardProps) => {
                 {/* Praying Man 3D Image - Fixed Position with Light Rays */}
                 <div className="absolute right-32 top-1/2 -translate-y-1/2">
                   {/* Light Rays from Above */}
-                  <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-32 h-24 overflow-visible pointer-events-none">
+                  <div className="absolute -top-16 left-1/4 -translate-x-1/2 w-32 h-24 overflow-visible pointer-events-none">
                     {/* Main Light Beam */}
                     <motion.div
                       animate={{
