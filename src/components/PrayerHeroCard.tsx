@@ -178,31 +178,31 @@ const PrayerHeroCard = ({ prayerData, athanSettings }: PrayerHeroCardProps) => {
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2">
                     <div className="relative">
-                      {/* Multiple Glow Layers */}
+                      {/* Multiple Glow Layers - White */}
                       <motion.div 
-                        animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0.15, 0.3] }}
+                        animate={{ scale: [1, 1.4, 1], opacity: [0.4, 0.2, 0.4] }}
                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                        className="absolute -inset-3 bg-amber-400 rounded-full blur-xl"
+                        className="absolute -inset-3 bg-white rounded-full blur-xl"
                       />
                       <motion.div 
-                        animate={{ scale: [1.1, 1.3, 1.1], opacity: [0.5, 0.25, 0.5] }}
+                        animate={{ scale: [1.1, 1.3, 1.1], opacity: [0.5, 0.3, 0.5] }}
                         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                        className="absolute -inset-2 bg-gradient-to-br from-amber-300 via-yellow-400 to-orange-400 rounded-full blur-lg"
+                        className="absolute -inset-2 bg-gradient-to-br from-white via-gray-100 to-white rounded-full blur-lg"
                       />
                       <motion.div 
-                        animate={{ scale: [1, 1.15, 1], opacity: [0.6, 0.3, 0.6] }}
+                        animate={{ scale: [1, 1.15, 1], opacity: [0.7, 0.4, 0.7] }}
                         transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                        className="absolute -inset-1 bg-amber-400 rounded-full blur-md"
+                        className="absolute -inset-1 bg-white rounded-full blur-md"
                       />
                       <img 
                         src={noorLogo} 
                         alt="NOOR Logo" 
-                        className="w-14 h-14 rounded-full object-cover shadow-lg shadow-amber-500/50 border-2 border-amber-400/70 relative z-10"
+                        className="w-14 h-14 rounded-full object-cover shadow-lg border-2 border-white/70 relative z-10"
                         style={{ 
-                          boxShadow: '0 0 20px 4px rgba(251, 191, 36, 0.5), 0 0 40px 8px rgba(251, 191, 36, 0.2)' 
+                          boxShadow: '0 0 20px 4px rgba(255, 255, 255, 0.6), 0 0 40px 8px rgba(255, 255, 255, 0.3)' 
                         }}
                       />
-                      {/* Falling Light Particles - Large */}
+                      {/* Falling Light Particles - Large White */}
                       {[...Array(12)].map((_, i) => (
                         <motion.div
                           key={`large-${i}`}
@@ -223,13 +223,13 @@ const PrayerHeroCard = ({ prayerData, athanSettings }: PrayerHeroCardProps) => {
                             delay: i * 0.2,
                             ease: "easeOut"
                           }}
-                          className="absolute top-10 left-1/2 w-1.5 h-1.5 bg-amber-300 rounded-full"
+                          className="absolute top-10 left-1/2 w-1.5 h-1.5 bg-white rounded-full"
                           style={{ 
-                            boxShadow: '0 0 6px 2px rgba(251, 191, 36, 0.7), 0 0 12px 4px rgba(251, 191, 36, 0.3)'
+                            boxShadow: '0 0 6px 2px rgba(255, 255, 255, 0.8), 0 0 12px 4px rgba(255, 255, 255, 0.4)'
                           }}
                         />
                       ))}
-                      {/* Falling Light Particles - Small */}
+                      {/* Falling Light Particles - Small White */}
                       {[...Array(16)].map((_, i) => (
                         <motion.div
                           key={`small-${i}`}
@@ -240,7 +240,7 @@ const PrayerHeroCard = ({ prayerData, athanSettings }: PrayerHeroCardProps) => {
                             scale: 0.5
                           }}
                           animate={{ 
-                            opacity: [0, 0.8, 0.6, 0], 
+                            opacity: [0, 0.9, 0.7, 0], 
                             y: [0, 35, 60, 85],
                           }}
                           transition={{ 
@@ -249,13 +249,13 @@ const PrayerHeroCard = ({ prayerData, athanSettings }: PrayerHeroCardProps) => {
                             delay: i * 0.15,
                             ease: "easeOut"
                           }}
-                          className="absolute top-8 left-1/2 w-1 h-1 bg-yellow-200 rounded-full"
+                          className="absolute top-8 left-1/2 w-1 h-1 bg-white rounded-full"
                           style={{ 
-                            boxShadow: '0 0 4px 1px rgba(254, 240, 138, 0.8)'
+                            boxShadow: '0 0 4px 1px rgba(255, 255, 255, 0.9)'
                           }}
                         />
                       ))}
-                      {/* Sparkle Stars */}
+                      {/* Sparkle Stars - White */}
                       {[...Array(6)].map((_, i) => (
                         <motion.div
                           key={`star-${i}`}
@@ -272,9 +272,9 @@ const PrayerHeroCard = ({ prayerData, athanSettings }: PrayerHeroCardProps) => {
                             delay: i * 0.4 + 0.5,
                             ease: "easeOut"
                           }}
-                          className="absolute top-10 left-1/2 text-amber-300 text-[8px]"
+                          className="absolute top-10 left-1/2 text-white text-[8px]"
                           style={{ 
-                            textShadow: '0 0 8px rgba(251, 191, 36, 0.9)'
+                            textShadow: '0 0 8px rgba(255, 255, 255, 0.95)'
                           }}
                         >
                           ✦
