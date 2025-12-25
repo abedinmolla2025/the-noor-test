@@ -135,87 +135,164 @@ const DailyHadith = () => {
 
   return (
     <motion.div 
-      className="relative bg-gradient-to-br from-[hsl(158,64%,22%)] via-[hsl(168,55%,25%)] to-[hsl(158,50%,20%)] rounded-2xl p-5 shadow-xl overflow-hidden"
+      className="relative overflow-hidden rounded-[1.5rem] md:rounded-[2rem] shadow-2xl"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      {/* Decorative elements */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-[hsl(45,93%,58%)]/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl" />
-      <div className="absolute bottom-0 left-0 w-24 h-24 bg-[hsl(158,64%,40%)]/10 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl" />
+      {/* Premium Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-emerald-800 via-teal-800 to-cyan-900" />
       
-      {/* Border accent */}
-      <div className="absolute inset-0 rounded-2xl border border-[hsl(45,93%,58%)]/10" />
+      {/* Animated Orbs for depth */}
+      <motion.div 
+        animate={{ 
+          scale: [1, 1.15, 1],
+          opacity: [0.2, 0.35, 0.2]
+        }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute -top-16 -right-16 w-56 h-56 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full blur-[60px]"
+      />
+      <motion.div 
+        animate={{ 
+          scale: [1, 1.2, 1],
+          opacity: [0.15, 0.25, 0.15]
+        }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        className="absolute -bottom-16 -left-16 w-48 h-48 bg-gradient-to-tr from-teal-400 to-cyan-500 rounded-full blur-[50px]"
+      />
+      
+      {/* Mesh Pattern Texture */}
+      <div className="absolute inset-0 opacity-[0.04]" style={{
+        backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+        backgroundSize: '20px 20px'
+      }} />
+      
+      {/* Islamic Geometric Pattern Overlay */}
+      <div className="absolute inset-0 opacity-[0.02]" style={{
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+      }} />
+      
+      {/* Inner Border Accent */}
+      <div className="absolute inset-0 rounded-[1.5rem] md:rounded-[2rem] border border-white/10" />
+      <div className="absolute inset-[1px] rounded-[1.5rem] md:rounded-[2rem] border border-amber-400/5" />
 
-      {/* Header */}
-      <div className="relative z-10 flex items-center gap-3 mb-4">
-        <motion.div 
-          animate={{ 
-            boxShadow: ['0 0 10px hsl(45,93%,58%,0.2)', '0 0 20px hsl(45,93%,58%,0.4)', '0 0 10px hsl(45,93%,58%,0.2)']
-          }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="w-12 h-12 bg-gradient-to-br from-[hsl(45,93%,58%)]/20 to-[hsl(45,93%,58%)]/10 border border-[hsl(45,93%,58%)]/30 rounded-xl flex items-center justify-center"
-        >
-          <BookOpen size={24} className="text-[hsl(45,93%,58%)]" />
-        </motion.div>
-        <div>
-          <div className="flex items-center gap-2">
-            <h3 className="text-lg font-semibold text-white">হাদীস টুডে</h3>
-            <Sparkles size={14} className="text-[hsl(45,93%,58%)]" />
+      {/* Content Container */}
+      <div className="relative z-10 p-5 md:p-7 lg:p-8">
+        
+        {/* Header */}
+        <div className="flex items-center justify-between mb-5 md:mb-6">
+          <div className="flex items-center gap-3 md:gap-4">
+            <motion.div 
+              animate={{ 
+                boxShadow: ['0 0 15px rgba(251,191,36,0.15)', '0 0 25px rgba(251,191,36,0.3)', '0 0 15px rgba(251,191,36,0.15)']
+              }}
+              transition={{ duration: 3, repeat: Infinity }}
+              className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-amber-400/20 to-amber-500/10 border border-amber-400/30 rounded-xl md:rounded-2xl flex items-center justify-center backdrop-blur-sm"
+            >
+              <BookOpen size={24} className="text-amber-400 md:w-7 md:h-7" />
+            </motion.div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg md:text-xl font-bold text-white">হাদীস টুডে</h3>
+                <motion.div
+                  animate={{ rotate: [0, 15, -15, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <Sparkles size={16} className="text-amber-400" />
+                </motion.div>
+              </div>
+              <p className="text-sm text-white/50">Daily Wisdom from the Prophet ﷺ</p>
+            </div>
           </div>
-          <p className="text-sm text-white/60">Daily Hadith</p>
+          
+          {/* Decorative Badge */}
+          <div className="hidden sm:flex items-center gap-2 bg-amber-400/10 border border-amber-400/20 rounded-full px-3 py-1.5">
+            <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" />
+            <span className="text-xs text-amber-300 font-medium">Today</span>
+          </div>
         </div>
-      </div>
 
-      {/* Hadith Text */}
-      <div className="relative z-10 bg-white/5 border border-white/10 rounded-xl p-4 mb-4 backdrop-blur-sm">
-        <p className={`text-white font-medium leading-relaxed ${
-          selectedLang === "arabic" || selectedLang === "urdu" ? "text-right" : ""
-        }`}>
-          {dailyHadith.translations[selectedLang]}
-        </p>
-
-        {/* Arabic Original */}
-        {selectedLang !== "arabic" && (
-          <p className="text-right text-[hsl(45,93%,58%)]/80 text-sm leading-relaxed mt-3 pt-3 border-t border-white/10" dir="rtl">
-            {dailyHadith.arabicOriginal}
-          </p>
-        )}
-      </div>
-
-      {/* Language Selector */}
-      <div className="relative z-10 flex flex-wrap gap-2 mb-4">
-        {languages.map((lang) => (
-          <motion.button
-            key={lang.key}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setSelectedLang(lang.key)}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
-              selectedLang === lang.key
-                ? "bg-gradient-to-r from-[hsl(45,93%,58%)] to-[hsl(45,93%,48%)] text-[hsl(158,64%,15%)] shadow-lg"
-                : "bg-white/10 text-white hover:bg-white/20 border border-white/10"
-            }`}
-          >
-            {lang.label}
-          </motion.button>
-        ))}
-      </div>
-
-      {/* Footer */}
-      <div className="relative z-10 flex items-center justify-between pt-3 border-t border-white/10">
-        <div>
-          <p className="font-semibold text-[hsl(45,93%,58%)]">{dailyHadith.source}</p>
-          <p className="text-white/60 text-sm">{dailyHadith.chapter}</p>
-        </div>
-        <motion.button 
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={() => navigate("/bukhari")}
-          className="flex items-center gap-1 px-4 py-2 bg-gradient-to-r from-[hsl(45,93%,58%)]/20 to-[hsl(45,93%,58%)]/10 border border-[hsl(45,93%,58%)]/30 hover:border-[hsl(45,93%,58%)]/50 text-white font-medium rounded-full transition-all"
+        {/* Hadith Text Card */}
+        <motion.div 
+          className="relative bg-white/[0.07] border border-white/10 rounded-xl md:rounded-2xl p-4 md:p-6 mb-5 md:mb-6 backdrop-blur-md overflow-hidden"
+          whileHover={{ backgroundColor: "rgba(255,255,255,0.09)" }}
+          transition={{ duration: 0.3 }}
         >
-          <span>Read More</span>
-          <ChevronRight size={16} className="text-[hsl(45,93%,58%)]" />
-        </motion.button>
+          {/* Quote Decoration */}
+          <div className="absolute top-2 left-3 text-amber-400/10 text-6xl md:text-7xl font-serif leading-none select-none">"</div>
+          
+          <div className="relative z-10">
+            <p className={`text-white text-base md:text-lg font-medium leading-relaxed md:leading-loose ${
+              selectedLang === "arabic" || selectedLang === "urdu" 
+                ? "text-right font-arabic" 
+                : ""
+            }`}>
+              {dailyHadith.translations[selectedLang]}
+            </p>
+
+            {/* Arabic Original - Shown when not Arabic selected */}
+            {selectedLang !== "arabic" && (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="mt-4 pt-4 border-t border-white/10"
+              >
+                <p className="text-right text-amber-300/80 text-sm md:text-base leading-relaxed font-arabic" dir="rtl">
+                  {dailyHadith.arabicOriginal}
+                </p>
+              </motion.div>
+            )}
+          </div>
+          
+          {/* Bottom Quote */}
+          <div className="absolute bottom-2 right-3 text-amber-400/10 text-6xl md:text-7xl font-serif leading-none rotate-180 select-none">"</div>
+        </motion.div>
+
+        {/* Language Selector - Scrollable on mobile */}
+        <div className="mb-5 md:mb-6">
+          <div className="flex flex-wrap gap-2 md:gap-2.5">
+            {languages.map((lang, index) => (
+              <motion.button
+                key={lang.key}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setSelectedLang(lang.key)}
+                className={`px-3.5 md:px-4 py-2 md:py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ${
+                  selectedLang === lang.key
+                    ? "bg-gradient-to-r from-amber-400 to-amber-500 text-emerald-900 shadow-lg shadow-amber-400/25"
+                    : "bg-white/10 text-white hover:bg-white/15 border border-white/10 hover:border-white/20"
+                }`}
+              >
+                {lang.label}
+              </motion.button>
+            ))}
+          </div>
+        </div>
+
+        {/* Footer - Source & Action */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 md:pt-5 border-t border-white/10">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-amber-400/10 border border-amber-400/20 rounded-lg flex items-center justify-center">
+              <BookOpen size={18} className="text-amber-400" />
+            </div>
+            <div>
+              <p className="font-bold text-amber-400 text-base md:text-lg">{dailyHadith.source}</p>
+              <p className="text-white/50 text-sm">Chapter: {dailyHadith.chapter}</p>
+            </div>
+          </div>
+          
+          <motion.button 
+            whileHover={{ scale: 1.02, x: 3 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => navigate("/bukhari")}
+            className="flex items-center justify-center gap-2 px-5 py-2.5 md:py-3 bg-gradient-to-r from-amber-400/15 to-amber-500/10 border border-amber-400/30 hover:border-amber-400/50 text-white font-semibold rounded-xl transition-all group"
+          >
+            <span>আরও পড়ুন</span>
+            <ChevronRight size={18} className="text-amber-400 group-hover:translate-x-1 transition-transform" />
+          </motion.button>
+        </div>
       </div>
     </motion.div>
   );
