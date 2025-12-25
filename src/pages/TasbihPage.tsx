@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { RotateCcw, Volume2, VolumeX, ArrowLeft, Vibrate } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import TasbihBeads3D from "@/components/TasbihBeads3D";
 
 const dhikrList = [
   { arabic: "سُبْحَانَ اللَّهِ", transliteration: "SubhanAllah", meaning: "Glory be to Allah", target: 33, virtue: "Plants a tree in Paradise" },
@@ -176,6 +177,23 @@ const TasbihPage = () => {
           <div className="mt-4 pt-4 border-t border-white/10">
             <p className="text-xs text-amber-200/80 italic">✨ {currentDhikr.virtue}</p>
           </div>
+        </motion.div>
+
+        {/* 3D Tasbih Mala Visualization */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.15 }}
+          className="w-full max-w-sm mt-6"
+        >
+          <Suspense fallback={
+            <div className="w-full h-64 md:h-80 rounded-3xl bg-white/5 flex items-center justify-center">
+              <div className="w-10 h-10 border-4 border-amber-400/30 border-t-amber-400 rounded-full animate-spin" />
+            </div>
+          }>
+            <TasbihBeads3D count={count} totalBeads={currentDhikr.target > 50 ? 33 : currentDhikr.target} />
+          </Suspense>
+          <p className="text-center text-white/40 text-xs mt-2">ড্র্যাগ করে ঘুরান • Drag to rotate</p>
         </motion.div>
 
         {/* Main Counter Button */}
