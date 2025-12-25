@@ -3,7 +3,7 @@ import { MapPin, Clock, Loader2, ChevronRight, Sparkles, Bell, BellRing } from "
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { usePrayerTimes } from "@/hooks/usePrayerTimes";
-
+import noorLogo from "@/assets/noor-logo.png";
 interface AthanSettings {
   enabled: boolean;
   isPlaying: boolean;
@@ -178,13 +178,15 @@ const PrayerHeroCard = ({ prayerData, athanSettings }: PrayerHeroCardProps) => {
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2">
                     <div className="relative">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/30">
-                        <span className="text-lg font-bold text-white">N</span>
-                      </div>
+                      <img 
+                        src={noorLogo} 
+                        alt="NOOR Logo" 
+                        className="w-11 h-11 rounded-full object-cover shadow-lg shadow-amber-500/30 border-2 border-amber-400/50"
+                      />
                       <motion.div 
-                        animate={{ scale: [1, 1.2, 1], opacity: [0.6, 0.3, 0.6] }}
+                        animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.2, 0.5] }}
                         transition={{ duration: 2, repeat: Infinity }}
-                        className="absolute inset-0 bg-amber-400 rounded-xl blur-md -z-10"
+                        className="absolute inset-0 bg-amber-400 rounded-full blur-md -z-10"
                       />
                     </div>
                     <div className="flex flex-col">
