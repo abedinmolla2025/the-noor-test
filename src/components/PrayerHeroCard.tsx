@@ -266,41 +266,41 @@ const PrayerHeroCard = ({ prayerData, athanSettings }: PrayerHeroCardProps) => {
                     {/* Main Light Beam */}
                     <motion.div
                       animate={{
-                        opacity: [0.4, 0.8, 0.4],
+                        opacity: [0.7, 1, 0.7],
                         scaleY: [1, 1.1, 1],
                       }}
                       transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                      className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-28"
+                      className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-32"
                       style={{
-                        background: 'linear-gradient(180deg, rgba(251, 191, 36, 0.6) 0%, rgba(251, 191, 36, 0.3) 40%, rgba(255, 255, 255, 0.1) 100%)',
+                        background: 'linear-gradient(180deg, rgba(255, 215, 0, 0.95) 0%, rgba(251, 191, 36, 0.7) 40%, rgba(255, 255, 255, 0.3) 100%)',
                         clipPath: 'polygon(35% 0%, 65% 0%, 100% 100%, 0% 100%)',
-                        filter: 'blur(4px)',
+                        filter: 'blur(3px)',
                       }}
                     />
                     
                     {/* Shimmer Particles */}
-                    {[...Array(8)].map((_, i) => (
+                    {[...Array(12)].map((_, i) => (
                       <motion.div
                         key={i}
                         animate={{
                           y: [0, 60, 80],
                           opacity: [0, 1, 0],
-                          scale: [0.5, 1, 0.3],
+                          scale: [0.5, 1.2, 0.3],
                         }}
                         transition={{
-                          duration: 1.5 + Math.random() * 1,
+                          duration: 1.2 + Math.random() * 0.8,
                           repeat: Infinity,
-                          delay: i * 0.2,
+                          delay: i * 0.15,
                           ease: "easeOut",
                         }}
                         className="absolute rounded-full"
                         style={{
-                          left: `${35 + Math.random() * 30}%`,
+                          left: `${30 + Math.random() * 40}%`,
                           top: 0,
-                          width: 3 + Math.random() * 3,
-                          height: 3 + Math.random() * 3,
-                          background: 'radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(251, 191, 36, 0.6) 100%)',
-                          boxShadow: '0 0 6px 2px rgba(251, 191, 36, 0.5)',
+                          width: 4 + Math.random() * 4,
+                          height: 4 + Math.random() * 4,
+                          background: 'radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 215, 0, 0.9) 100%)',
+                          boxShadow: '0 0 10px 4px rgba(255, 215, 0, 0.8)',
                         }}
                       />
                     ))}
@@ -308,26 +308,26 @@ const PrayerHeroCard = ({ prayerData, athanSettings }: PrayerHeroCardProps) => {
                     {/* Side Light Rays */}
                     <motion.div
                       animate={{
-                        opacity: [0.2, 0.5, 0.2],
+                        opacity: [0.5, 0.9, 0.5],
                       }}
                       transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                      className="absolute top-0 left-1/2 -translate-x-[70%] w-10 h-24"
+                      className="absolute top-0 left-1/2 -translate-x-[70%] w-12 h-28"
                       style={{
-                        background: 'linear-gradient(180deg, rgba(251, 191, 36, 0.4) 0%, transparent 100%)',
+                        background: 'linear-gradient(180deg, rgba(255, 215, 0, 0.8) 0%, transparent 100%)',
                         clipPath: 'polygon(60% 0%, 100% 0%, 100% 100%, 0% 100%)',
-                        filter: 'blur(3px)',
+                        filter: 'blur(2px)',
                       }}
                     />
                     <motion.div
                       animate={{
-                        opacity: [0.2, 0.5, 0.2],
+                        opacity: [0.5, 0.9, 0.5],
                       }}
                       transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                      className="absolute top-0 left-1/2 -translate-x-[30%] w-10 h-24"
+                      className="absolute top-0 left-1/2 -translate-x-[30%] w-12 h-28"
                       style={{
-                        background: 'linear-gradient(180deg, rgba(251, 191, 36, 0.4) 0%, transparent 100%)',
+                        background: 'linear-gradient(180deg, rgba(255, 215, 0, 0.8) 0%, transparent 100%)',
                         clipPath: 'polygon(0% 0%, 40% 0%, 100% 100%, 0% 100%)',
-                        filter: 'blur(3px)',
+                        filter: 'blur(2px)',
                       }}
                     />
                   </div>
