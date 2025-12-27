@@ -90,7 +90,7 @@ const Index = () => {
               <AudioRecitationCard />
             </div>
 
-            <Card className="relative overflow-hidden bg-gradient-to-br from-primary/15 via-amber-500/10 to-emerald-500/15 border-primary/30 shadow-lg hover-scale">
+            <Card className="relative overflow-hidden rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/15 via-background to-emerald-500/10 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-shadow duration-200">
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_60%)]" />
               <CardHeader className="relative z-10 pb-3 flex flex-row items-start justify-between gap-2">
                 <div>
@@ -110,10 +110,16 @@ const Index = () => {
                   <span className="rounded-full bg-background/40 px-2 py-0.5">Daily • 3 Qs</span>
                 </div>
                 <Button
-                  className="w-full h-9 text-sm bg-gradient-to-r from-primary to-amber-500 text-primary-foreground shadow-md hover:opacity-95"
+                  className="group w-full h-9 text-sm justify-between bg-gradient-to-r from-primary via-primary to-amber-500 text-primary-foreground shadow-md shadow-primary/30 hover:shadow-lg hover:shadow-primary/40 hover:opacity-100 border border-white/10 px-3"
                   onClick={() => navigate("/quiz")}
                 >
-                  Start today&apos;s quiz
+                  <span className="flex items-center gap-1.5">
+                    <Trophy className="w-4 h-4" />
+                    আজকের কুইজ দিন
+                  </span>
+                  <span className="text-[10px] uppercase tracking-wide text-primary-foreground/80 group-hover:translate-x-0.5 transition-transform">
+                    Start • 3 questions
+                  </span>
                 </Button>
               </CardContent>
             </Card>
