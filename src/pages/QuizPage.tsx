@@ -175,11 +175,11 @@ const mockLeaderboard: LeaderboardEntry[] = [
 ];
 
 const badges = [
-  { id: 1, name: "প্রথম পদক্ষেপ", icon: Star, color: "text-yellow-500", requirement: 10 },
-  { id: 2, name: "কুইজ মাস্টার", icon: Trophy, color: "text-amber-500", requirement: 50 },
-  { id: 3, name: "জ্ঞানী", icon: Medal, color: "text-blue-500", requirement: 100 },
-  { id: 4, name: "চ্যাম্পিয়ন", icon: Crown, color: "text-purple-500", requirement: 200 },
-  { id: 5, name: "কুরআন বিশেষজ্ঞ", icon: Sparkles, color: "text-emerald-500", requirement: 300 },
+  { id: 1, name: "First Steps", nameBn: "প্রথম পদক্ষেপ", icon: Star, color: "text-yellow-500", bgGradient: "from-yellow-500/20 to-amber-500/20", requirement: 10 },
+  { id: 2, name: "Quiz Master", nameBn: "কুইজ মাস্টার", icon: Trophy, color: "text-amber-500", bgGradient: "from-amber-500/20 to-orange-500/20", requirement: 50 },
+  { id: 3, name: "Knowledge Seeker", nameBn: "জ্ঞানী", icon: Medal, color: "text-blue-500", bgGradient: "from-blue-500/20 to-cyan-500/20", requirement: 100 },
+  { id: 4, name: "Champion", nameBn: "চ্যাম্পিয়ন", icon: Crown, color: "text-purple-500", bgGradient: "from-purple-500/20 to-pink-500/20", requirement: 200 },
+  { id: 5, name: "Quran Expert", nameBn: "কুরআন বিশেষজ্ঞ", icon: Sparkles, color: "text-emerald-500", bgGradient: "from-emerald-500/20 to-teal-500/20", requirement: 300 },
 ];
 
 const QuizPage = () => {
@@ -594,37 +594,91 @@ const QuizPage = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
             >
-                <Card className="mb-4">
-                  <CardContent className="p-4 text-center">
-                    <p className="text-sm text-muted-foreground">Badges collected</p>
-                    <p className="text-4xl font-bold text-primary">{earnedBadges.length}/{badges.length}</p>
+              <Card className="mb-4 bg-gradient-to-br from-primary/5 to-amber-500/5">
+                <CardContent className="p-6 text-center">
+                  <p className="text-sm text-muted-foreground mb-2">Badges collected</p>
+                  <p className="text-5xl font-bold text-primary mb-1">{earnedBadges.length}/{badges.length}</p>
+                  <Progress value={(earnedBadges.length / badges.length) * 100} className="h-2" />
                 </CardContent>
               </Card>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-4">
                 {badges.map((badge, index) => {
                   const isEarned = totalPoints >= badge.requirement;
+                  const isNext = !isEarned && (index === 0 || totalPoints >= badges[index - 1].requirement);
+                  const pointsNeeded = badge.requirement - totalPoints;
+                  const progress = isEarned ? 100 : Math.min(100, (totalPoints / badge.requirement) * 100);
+
                   return (
                     <motion.div
                       key={badge.id}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
                     >
-                      <Card className={`${
+                      <Card className={`relative overflow-hidden transition-all ${
                         isEarned 
-                          ? "bg-gradient-to-br from-primary/10 to-amber-500/10 border-primary/30" 
-                          : "opacity-50 grayscale"
+                          ? `bg-gradient-to-br ${badge.bgGradient} border-2 border-primary/30 shadow-lg` 
+                          : isNext
+                          ? "bg-muted/30 border-2 border-dashed border-primary/20"
+                          : "bg-muted/10 opacity-60"
                       }`}>
-                        <CardContent className="p-4 text-center">
-                          <badge.icon className={`w-12 h-12 mx-auto mb-2 ${badge.color}`} />
-                          <p className="font-semibold text-sm">{badge.name}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {badge.requirement} points
-                          </p>
-                          {isEarned && (
-                            <Badge className="mt-2 bg-emerald-500">Unlocked ✓</Badge>
-                          )}
+                        <CardContent className="p-5">
+                          <div className="flex items-start gap-4">
+                            {/* Badge Icon */}
+                            <div className={`relative ${
+                              isEarned 
+                                ? `bg-gradient-to-br ${badge.bgGradient}` 
+                                : "bg-muted/50"
+                            } rounded-2xl p-4 shrink-0`}>
+                              {!isEarned && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[2px] rounded-2xl">
+                                  <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                                  </svg>
+                                </div>
+                              )}
+                              <badge.icon className={`w-10 h-10 ${isEarned ? badge.color : "text-muted-foreground"}`} />
+                            </div>
+
+                            {/* Badge Info */}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between mb-1">
+                                <h3 className="font-bold text-base">{badge.name}</h3>
+                                {isEarned && (
+                                  <Badge className="bg-emerald-500 text-white shrink-0">
+                                    <CheckCircle2 className="w-3 h-3 mr-1" />
+                                    Unlocked
+                                  </Badge>
+                                )}
+                                {isNext && !isEarned && (
+                                  <Badge variant="outline" className="shrink-0">Next</Badge>
+                                )}
+                              </div>
+                              <p className="text-sm text-muted-foreground mb-2">{badge.nameBn}</p>
+                              
+                              {/* Progress Bar */}
+                              {!isEarned && (
+                                <div className="space-y-1">
+                                  <div className="flex justify-between text-xs text-muted-foreground">
+                                    <span>{totalPoints} points</span>
+                                    <span>{badge.requirement} needed</span>
+                                  </div>
+                                  <Progress value={progress} className="h-1.5" />
+                                  {isNext && (
+                                    <p className="text-xs text-primary font-medium">
+                                      {pointsNeeded} points to unlock
+                                    </p>
+                                  )}
+                                </div>
+                              )}
+                              {isEarned && (
+                                <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+                                  Unlocked at {badge.requirement} points ✓
+                                </p>
+                              )}
+                            </div>
+                          </div>
                         </CardContent>
                       </Card>
                     </motion.div>
