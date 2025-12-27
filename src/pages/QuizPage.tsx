@@ -9,6 +9,7 @@ import { ArrowLeft, Trophy, Star, Medal, Crown, Zap, CheckCircle2, XCircle, Spar
 import { useNavigate } from "react-router-dom";
 import { playSfx } from "@/utils/quizSfx";
 import { StarBadge, TrophyBadge, MedalBadge, CrownBadge, SparklesBadge } from "@/components/BadgeIcons";
+import Confetti from "react-confetti";
 
 interface QuizQuestion {
   id: number;
@@ -203,6 +204,16 @@ const QuizPage = () => {
   const [lastPlayedDate, setLastPlayedDate] = useState(() => {
     return localStorage.getItem("lastQuizDate") || "";
   });
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const today = new Date().toDateString();
   const hasPlayedToday = lastPlayedDate === today;
@@ -262,7 +273,13 @@ const QuizPage = () => {
       
       setLastPlayedDate(today);
       setQuizCompleted(true);
-      playSfx("result"); // Play result fanfare
+      playSfx("result");
+      
+      // Show confetti for perfect score
+      if (score === 3) {
+        setShowConfetti(true);
+        setTimeout(() => setShowConfetti(false), 5000);
+      }
     }
   };
 
@@ -367,15 +384,39 @@ const QuizPage = () => {
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                 >
-                  <Card className="text-center py-8 bg-gradient-to-br from-primary/10 to-amber-500/10">
-                    <CardContent>
+                  {score === 3 && showConfetti && (
+                    <Confetti
+                      width={windowSize.width}
+                      height={windowSize.height}
+                      recycle={false}
+                      numberOfPieces={500}
+                      gravity={0.3}
+                    />
+                  )}
+                  <Card className={`text-center py-8 relative overflow-hidden ${
+                    score === 3 
+                      ? "bg-gradient-to-br from-amber-500/20 via-yellow-500/20 to-orange-500/20 border-2 border-amber-500/50" 
+                      : "bg-gradient-to-br from-primary/10 to-amber-500/10"
+                  }`}>
+                    {score === 3 && (
+                      <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-yellow-500/10 to-orange-500/10 animate-pulse" />
+                    )}
+                    <CardContent className="relative z-10">
                       <motion.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ type: "spring", delay: 0.2 }}
                       >
                         {score === 3 ? (
-                          <Crown className="w-20 h-20 mx-auto text-amber-500 mb-4" />
+                          <motion.div
+                            animate={{
+                              rotate: [0, -5, 5, -5, 0],
+                              scale: [1, 1.1, 1.1, 1.1, 1],
+                            }}
+                            transition={{ duration: 0.8, repeat: 2, delay: 0.3 }}
+                          >
+                            <Crown className="w-24 h-24 mx-auto text-amber-500 mb-4 drop-shadow-2xl" />
+                          </motion.div>
                         ) : score >= 2 ? (
                           <Trophy className="w-20 h-20 mx-auto text-primary mb-4" />
                         ) : (
@@ -385,11 +426,17 @@ const QuizPage = () => {
                       
                       <h2 className="text-2xl font-bold mb-2">
                         {score === 3
-                          ? "Perfect! 🎉"
+                          ? "🎉 PERFECT SCORE! 🎉"
                           : score >= 2
                           ? "Great job! 👏"
                           : "Good effort! 💪"}
                       </h2>
+                      
+                      {score === 3 && (
+                        <p className="text-lg text-amber-600 dark:text-amber-400 font-semibold mb-2 animate-pulse">
+                          ⭐ You're a Quiz Champion! ⭐
+                        </p>
+                      )}
                       
                       <p className="text-4xl font-bold text-primary my-4">{score}/3</p>
                       
