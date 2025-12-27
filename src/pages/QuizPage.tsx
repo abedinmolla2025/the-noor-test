@@ -282,7 +282,7 @@ const QuizPage = () => {
             <ArrowLeft className="w-5 h-5" />
           </button>
           <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-amber-500 bg-clip-text text-transparent">
-            দৈনিক কুইজ
+            Daily Quiz
           </h1>
           <div className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full">
             <Zap className="w-4 h-4 text-primary" />
@@ -293,9 +293,9 @@ const QuizPage = () => {
         {/* Tab Navigation */}
         <div className="flex gap-2 px-4 pb-3">
           {[
-            { id: "quiz", label: "কুইজ", icon: Sparkles },
-            { id: "leaderboard", label: "লিডারবোর্ড", icon: Trophy },
-            { id: "badges", label: "ব্যাজ", icon: Medal },
+            { id: "quiz", label: "Quiz", icon: Sparkles },
+            { id: "leaderboard", label: "Leaderboard", icon: Trophy },
+            { id: "badges", label: "Badges", icon: Medal },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -329,15 +329,15 @@ const QuizPage = () => {
                   <div className="flex justify-between items-center">
                     <div className="text-center">
                       <p className="text-2xl font-bold text-primary">{streak}</p>
-                      <p className="text-xs text-muted-foreground">দিনের ধারা 🔥</p>
+                      <p className="text-xs text-muted-foreground">Day streak 🔥</p>
                     </div>
                     <div className="text-center">
                       <p className="text-2xl font-bold text-amber-500">{earnedBadges.length}</p>
-                      <p className="text-xs text-muted-foreground">ব্যাজ অর্জিত</p>
+                      <p className="text-xs text-muted-foreground">Badges earned</p>
                     </div>
                     <div className="text-center">
                       <p className="text-2xl font-bold text-emerald-500">{totalPoints}</p>
-                      <p className="text-xs text-muted-foreground">মোট পয়েন্ট</p>
+                      <p className="text-xs text-muted-foreground">Total points</p>
                     </div>
                   </div>
                 </CardContent>
@@ -347,11 +347,11 @@ const QuizPage = () => {
                 <Card className="text-center py-8">
                   <CardContent>
                     <CheckCircle2 className="w-16 h-16 mx-auto text-emerald-500 mb-4" />
-                    <h2 className="text-xl font-bold mb-2">আজকের কুইজ সম্পন্ন!</h2>
-                    <p className="text-muted-foreground">আগামীকাল নতুন প্রশ্নের জন্য ফিরে আসুন</p>
+                    <h2 className="text-xl font-bold mb-2">Today's quiz completed!</h2>
+                    <p className="text-muted-foreground">Come back tomorrow for new questions.</p>
                     <div className="mt-4 p-4 bg-primary/10 rounded-xl">
-                      <p className="text-sm">পরবর্তী কুইজ:</p>
-                      <p className="text-lg font-bold text-primary">আগামীকাল সকাল ১২:০০</p>
+                      <p className="text-sm">Next quiz:</p>
+                      <p className="text-lg font-bold text-primary">Tomorrow 12:00 AM</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -377,36 +377,40 @@ const QuizPage = () => {
                       </motion.div>
                       
                       <h2 className="text-2xl font-bold mb-2">
-                        {score === 3 ? "পারফেক্ট! 🎉" : score >= 2 ? "অসাধারণ! 👏" : "ভালো চেষ্টা! 💪"}
+                        {score === 3
+                          ? "Perfect! 🎉"
+                          : score >= 2
+                          ? "Great job! 👏"
+                          : "Good effort! 💪"}
                       </h2>
                       
                       <p className="text-4xl font-bold text-primary my-4">{score}/3</p>
                       
                       <div className="bg-background/50 rounded-xl p-4 mb-4 space-y-3">
                         <div>
-                          <p className="text-sm text-muted-foreground">অর্জিত পয়েন্ট</p>
+                          <p className="text-sm text-muted-foreground">Points earned</p>
                           <p className="text-2xl font-bold text-emerald-500">
                             +{score * 10 + (score === 3 ? 20 : 0)}
                           </p>
                           {score === 3 && (
-                            <Badge className="mt-2 bg-amber-500">পারফেক্ট বোনাস +20</Badge>
+                            <Badge className="mt-2 bg-amber-500">Perfect bonus +20</Badge>
                           )}
                         </div>
                         <div className="grid grid-cols-2 gap-3 text-sm">
                           <div className="rounded-lg bg-primary/5 p-3">
-                            <p className="text-xs text-muted-foreground">আজকের স্ট্রীক</p>
-                            <p className="text-lg font-semibold text-primary">{streak} দিন</p>
+                            <p className="text-xs text-muted-foreground">Today streak</p>
+                            <p className="text-lg font-semibold text-primary">{streak} days</p>
                           </div>
                           <div className="rounded-lg bg-emerald-500/5 p-3">
-                            <p className="text-xs text-muted-foreground">মোট পয়েন্ট</p>
+                            <p className="text-xs text-muted-foreground">Total points</p>
                             <p className="text-lg font-semibold text-emerald-500">{totalPoints}</p>
                           </div>
                         </div>
                       </div>
                       
-                      <p className="text-muted-foreground mb-2">আগামীকাল নতুন প্রশ্নের জন্য ফিরে আসুন!</p>
+                      <p className="text-muted-foreground mb-2">Come back tomorrow for new questions!</p>
                       <p className="text-xs text-muted-foreground">
-                        ধীরে ধীরে শিখুন, প্রতিদিন সামান্য উন্নতিই সবচেয়ে বড় অগ্রগতি।
+                        Learn slowly, a little improvement every day becomes a big change.
                       </p>
                     </CardContent>
                   </Card>
@@ -421,8 +425,8 @@ const QuizPage = () => {
                   {/* Progress */}
                   <div className="mb-4">
                     <div className="flex justify-between text-sm mb-2">
-                      <span>প্রশ্ন {currentQuestionIndex + 1}/3</span>
-                      <span>স্কোর: {score}</span>
+                      <span>Question {currentQuestionIndex + 1}/3</span>
+                      <span>Score: {score}</span>
                     </div>
                     <Progress value={((currentQuestionIndex + 1) / 3) * 100} className="h-2" />
                   </div>
@@ -436,7 +440,7 @@ const QuizPage = () => {
                       <p className="text-sm text-muted-foreground">{currentQuestion.question}</p>
                     </CardHeader>
                     <CardContent className="space-y-3">
-                      {currentQuestion.optionsBn.map((option, index) => (
+                      {currentQuestion.options.map((option, index) => (
                         <motion.button
                           key={index}
                           whileTap={{ scale: 0.98 }}
@@ -457,9 +461,6 @@ const QuizPage = () => {
                           <div className="flex items-center justify-between">
                             <div>
                               <p className="font-medium">{option}</p>
-                              <p className="text-xs text-muted-foreground">
-                                {currentQuestion.options[index]}
-                              </p>
                             </div>
                             {showResult && index === currentQuestion.correctAnswer && (
                               <CheckCircle2 className="w-6 h-6 text-emerald-500" />
@@ -473,22 +474,22 @@ const QuizPage = () => {
                     </CardContent>
                   </Card>
 
-                  {showResult && currentQuestion && (
-                    <div className="mb-4">
-                      <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4 text-sm">
-                        <p className="font-semibold flex items-center gap-2 mb-1">
-                          <Sparkles className="w-4 h-4 text-emerald-500" />
-                          সঠিক উত্তর ব্যাখ্যা
-                        </p>
-                        <p className="text-muted-foreground text-[13px]">
-                          {currentQuestion.explanationBn}
-                        </p>
-                        <p className="mt-1 text-[11px] text-muted-foreground/80">
-                          {currentQuestion.explanation}
-                        </p>
-                      </div>
+                {showResult && currentQuestion && (
+                  <div className="mb-4">
+                    <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4 text-sm">
+                      <p className="font-semibold flex items-center gap-2 mb-1">
+                        <Sparkles className="w-4 h-4 text-emerald-500" />
+                        Correct answer explanation
+                      </p>
+                      <p className="text-muted-foreground text-[13px]">
+                        {currentQuestion.explanationBn}
+                      </p>
+                      <p className="mt-1 text-[11px] text-muted-foreground/80">
+                        {currentQuestion.explanation}
+                      </p>
                     </div>
-                  )}
+                  </div>
+                )}
 
                   {!showResult ? (
                     <Button
@@ -496,14 +497,14 @@ const QuizPage = () => {
                       disabled={selectedAnswer === null}
                       className="w-full h-12 text-lg"
                     >
-                      উত্তর জমা দিন
+                      Submit answer
                     </Button>
                   ) : (
                     <Button
                       onClick={handleNextQuestion}
                       className="w-full h-12 text-lg bg-gradient-to-r from-primary to-amber-500"
                     >
-                      {currentQuestionIndex < 2 ? "পরবর্তী প্রশ্ন" : "ফলাফল দেখুন"}
+                      {currentQuestionIndex < 2 ? "Next question" : "View result"}
                     </Button>
                   )}
                 </motion.div>
@@ -519,20 +520,20 @@ const QuizPage = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
             >
-              <Card className="mb-4 bg-gradient-to-r from-amber-500/20 to-primary/20 border-amber-500/30">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">আপনার র‍্যাংক</p>
-                      <p className="text-3xl font-bold">#9</p>
+                <Card className="mb-4 bg-gradient-to-r from-amber-500/20 to-primary/20 border-amber-500/30">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Your rank</p>
+                        <p className="text-3xl font-bold">#9</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-muted-foreground">Your points</p>
+                        <p className="text-3xl font-bold text-primary">{totalPoints}</p>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-sm text-muted-foreground">আপনার পয়েন্ট</p>
-                      <p className="text-3xl font-bold text-primary">{totalPoints}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
 
               <div className="space-y-3">
                 {mockLeaderboard.map((entry, index) => (
@@ -565,7 +566,7 @@ const QuizPage = () => {
                         </div>
                         <div className="flex-1">
                           <p className="font-semibold">{entry.name}</p>
-                          <p className="text-xs text-muted-foreground">{entry.badges} ব্যাজ</p>
+                          <p className="text-xs text-muted-foreground">{entry.badges} badges</p>
                         </div>
                         <div className="text-right">
                           <p className="font-bold text-primary">{entry.points}</p>
@@ -587,10 +588,10 @@ const QuizPage = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
             >
-              <Card className="mb-4">
-                <CardContent className="p-4 text-center">
-                  <p className="text-sm text-muted-foreground">অর্জিত ব্যাজ</p>
-                  <p className="text-4xl font-bold text-primary">{earnedBadges.length}/{badges.length}</p>
+                <Card className="mb-4">
+                  <CardContent className="p-4 text-center">
+                    <p className="text-sm text-muted-foreground">Badges collected</p>
+                    <p className="text-4xl font-bold text-primary">{earnedBadges.length}/{badges.length}</p>
                 </CardContent>
               </Card>
 
@@ -613,10 +614,10 @@ const QuizPage = () => {
                           <badge.icon className={`w-12 h-12 mx-auto mb-2 ${badge.color}`} />
                           <p className="font-semibold text-sm">{badge.name}</p>
                           <p className="text-xs text-muted-foreground">
-                            {badge.requirement} পয়েন্ট
+                            {badge.requirement} points
                           </p>
                           {isEarned && (
-                            <Badge className="mt-2 bg-emerald-500">অর্জিত ✓</Badge>
+                            <Badge className="mt-2 bg-emerald-500">Unlocked ✓</Badge>
                           )}
                         </CardContent>
                       </Card>
