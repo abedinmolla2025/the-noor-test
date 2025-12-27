@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BellRing, Sparkles, Trophy } from "lucide-react";
+import { BellRing, Sparkles, Trophy, Circle, Star, BookOpen } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import PrayerHeroCard from "@/components/PrayerHeroCard";
@@ -123,6 +123,85 @@ const Index = () => {
         {/* Prayer Times List */}
         <section className="animate-fade-in" style={{ animationDelay: "200ms" }}>
           <PrayerTimesList />
+        </section>
+
+        {/* Premium Tools Section */}
+        <section className="space-y-3 animate-fade-in" style={{ animationDelay: "260ms" }}>
+          <div className="flex items-center justify-between px-1">
+            <div>
+              <p className="text-xs uppercase tracking-wide text-muted-foreground flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-primary" />
+                Premium tools
+              </p>
+              <h2 className="text-sm font-semibold">Deepen your daily practice</h2>
+            </div>
+          </div>
+
+          <div className="grid gap-3 md:grid-cols-2">
+            <Card className="relative overflow-hidden bg-gradient-to-br from-emerald-500/10 via-emerald-500/5 to-primary/10 border-emerald-500/40 shadow-lg hover-scale cursor-pointer"
+              onClick={() => navigate("/tasbih")}>
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_65%)]" />
+              <CardHeader className="relative z-10 pb-2 flex flex-row items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-500">
+                  <Circle className="w-4 h-4" />
+                </div>
+                <div>
+                  <CardTitle className="text-sm">Tasbih Tracker</CardTitle>
+                  <CardDescription className="text-xs mt-0.5">
+                    ডিজিটাল তাসবিহ দিয়ে সুবহানাল্লাহ, আলহামদুলিল্লাহ, আল্লাহু আকবার গুনে রাখুন।
+                  </CardDescription>
+                </div>
+              </CardHeader>
+            </Card>
+
+            <Card className="relative overflow-hidden bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-primary/10 border-amber-500/40 shadow-lg hover-scale cursor-pointer"
+              onClick={() => navigate("/99-names")}>
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_65%)]" />
+              <CardHeader className="relative z-10 pb-2 flex flex-row items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-500/20 text-amber-500">
+                  <Star className="w-4 h-4" />
+                </div>
+                <div>
+                  <CardTitle className="text-sm">99 Names of Allah</CardTitle>
+                  <CardDescription className="text-xs mt-0.5">
+                    আল্লাহর সুন্দর নামগুলো অর্থসহ শিখুন ও বারবার রিভাইস করুন।
+                  </CardDescription>
+                </div>
+              </CardHeader>
+            </Card>
+
+            <Card className="relative overflow-hidden bg-gradient-to-br from-primary/15 via-primary/5 to-emerald-500/10 border-primary/40 shadow-lg hover-scale cursor-pointer"
+              onClick={() => navigate("/quran")}>
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_65%)]" />
+              <CardHeader className="relative z-10 pb-2 flex flex-row items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/20 text-primary">
+                  <BookOpen className="w-4 h-4" />
+                </div>
+                <div>
+                  <CardTitle className="text-sm">Quran Reader</CardTitle>
+                  <CardDescription className="text-xs mt-0.5">
+                    সুন্দর UI দিয়ে সূরা ব্রাউজ করুন, তিলাওয়াত শুনুন ও শান্তি নিন।
+                  </CardDescription>
+                </div>
+              </CardHeader>
+            </Card>
+
+            <Card className="relative overflow-hidden bg-gradient-to-br from-pink-500/10 via-pink-500/5 to-amber-500/10 border-pink-500/40 shadow-lg hover-scale cursor-pointer"
+              onClick={() => navigate("/baby-names")}>
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_65%)]" />
+              <CardHeader className="relative z-10 pb-2 flex flex-row items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-pink-500/20 text-pink-500">
+                  <Sparkles className="w-4 h-4" />
+                </div>
+                <div>
+                  <CardTitle className="text-sm">Islamic Baby Names</CardTitle>
+                  <CardDescription className="text-xs mt-0.5">
+                    সুন্দর অর্থসহ ছেলে-মেয়ের ইসলামি নাম সার্চ ও ফেভারিট করুন।
+                  </CardDescription>
+                </div>
+              </CardHeader>
+            </Card>
+          </div>
         </section>
 
         {/* Daily Hadith */}
