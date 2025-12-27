@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import BottomNavigation from "@/components/BottomNavigation";
 import { ArrowLeft, Trophy, Star, Medal, Crown, Zap, CheckCircle2, XCircle, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { playSfx } from "@/utils/quizSfx";
 
 interface QuizQuestion {
   id: number;
@@ -224,8 +225,12 @@ const QuizPage = () => {
     if (selectedAnswer === null) return;
     setShowResult(true);
     
-    if (selectedAnswer === dailyQuestions[currentQuestionIndex].correctAnswer) {
+    const isCorrect = selectedAnswer === dailyQuestions[currentQuestionIndex].correctAnswer;
+    if (isCorrect) {
       setScore(prev => prev + 1);
+      playSfx("correct");
+    } else {
+      playSfx("wrong");
     }
   };
 
@@ -236,7 +241,7 @@ const QuizPage = () => {
       setShowResult(false);
     } else {
       // Quiz completed
-      const earnedPoints = score * 10 + (score === 3 ? 20 : 0); // Bonus for perfect score
+      const earnedPoints = score * 10 + (score === 3 ? 20 : 0);
       const newTotal = totalPoints + earnedPoints;
       setTotalPoints(newTotal);
       localStorage.setItem("quizPoints", newTotal.toString());
@@ -256,6 +261,7 @@ const QuizPage = () => {
       
       setLastPlayedDate(today);
       setQuizCompleted(true);
+      playSfx("result"); // Play result fanfare
     }
   };
 
