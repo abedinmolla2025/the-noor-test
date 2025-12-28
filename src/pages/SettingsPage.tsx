@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, Moon, Sun, Bell, BellOff, Globe, Volume2, VolumeX, Palette, Info } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,13 @@ const SettingsPage = () => {
   const { toast } = useToast();
   
   // Settings state
-  const [darkMode, setDarkMode] = useState(true);
+  const [darkMode, setDarkMode] = useState(() => {
+    if (typeof window === "undefined") return true;
+    const stored = localStorage.getItem("theme");
+    if (stored === "dark") return true;
+    if (stored === "light") return false;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
   const [notifications, setNotifications] = useState(true);
   const [athanSound, setAthanSound] = useState(true);
   const [language, setLanguage] = useState("bn");
@@ -29,6 +35,17 @@ const SettingsPage = () => {
   const [quizNotifications, setQuizNotifications] = useState(true);
   const [dailyReminder, setDailyReminder] = useState(false);
   const [marketingNotifications, setMarketingNotifications] = useState(false);
+
+  // Sync initial dark mode with document class
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [darkMode]);
 
   const handleDarkModeToggle = (checked: boolean) => {
     setDarkMode(checked);
