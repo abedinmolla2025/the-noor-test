@@ -172,6 +172,12 @@ const Index = () => {
                 <Settings className="h-3.5 w-3.5 text-primary group-hover:scale-110 transition-transform" />
                 <span>সেটিংস</span>
               </button>
+              <button onClick={() => navigate("/privacy-policy")} className="group inline-flex items-center gap-1.5 hover:text-foreground hover-scale">
+                <span>Privacy Policy</span>
+              </button>
+              <button onClick={() => navigate("/terms")} className="group inline-flex items-center gap-1.5 hover:text-foreground hover-scale">
+                <span>Terms &amp; Conditions</span>
+              </button>
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-between gap-2 border border-border/60 rounded-xl px-3 py-2 bg-background/80">
