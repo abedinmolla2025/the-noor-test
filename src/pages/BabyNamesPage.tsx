@@ -559,6 +559,48 @@ const babyNames: BabyName[] = [
     origin: "Arabic" 
   },
   { 
+    id: 40, 
+    name: "Yasin", 
+    arabic: "يٰسۤٓۚیۡنَ", 
+    meanings: {
+      bn: "কুরআনের একটি সূরার নাম",
+      en: "A chapter of the Qur'an (Ya-Sin)",
+      ar: "اسم من أسماء سور القرآن (يس)",
+      hi: "कुरआन की एक सूरह का नाम",
+      ur: "قرآن की ایک سورت का نام"
+    },
+    gender: "boy", 
+    origin: "Arabic" 
+  },
+  { 
+    id: 41, 
+    name: "Nabil", 
+    arabic: "نَبِيل", 
+    meanings: {
+      bn: "মর্যাদাবান, মহৎ",
+      en: "Noble, distinguished",
+      ar: "النبيل، المميز",
+      hi: "सम्मानित, महान",
+      ur: "باوقار، معزز"
+    },
+    gender: "boy", 
+    origin: "Arabic" 
+  },
+  { 
+    id: 42, 
+    name: "Mahira", 
+    arabic: "مَاهِرَة", 
+    meanings: {
+      bn: "দক্ষ, পারদর্শী",
+      en: "Skilled, expert",
+      ar: "الماهرة، الخبيرة",
+      hi: "कुशल, निपुण",
+      ur: "ماہر، ماہر فن"
+    },
+    gender: "girl", 
+    origin: "Arabic" 
+  },
+  { 
     id: 31, 
     name: "Hafsa", 
     arabic: "حَفْصَة", 
