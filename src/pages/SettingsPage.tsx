@@ -364,10 +364,13 @@ const SettingsPage = () => {
                 </div>
               </div>
               <Separator className="my-4" />
-              <p className="text-xs text-muted-foreground text-center mb-3">
+              <p className="text-xs text-muted-foreground text-center mb-1">
                 All praise is due to Allah alone 🤲
               </p>
-              <div className="flex items-center justify-center gap-3 text-[11px] text-muted-foreground">
+              <p className="text-[11px] text-muted-foreground text-center">
+                Developed by <span className="font-semibold">ABEDIN MOLLA</span> – India
+              </p>
+              <div className="mt-3 flex items-center justify-center gap-3 text-[11px] text-muted-foreground">
                 <button
                   type="button"
                   onClick={() => navigate("/privacy-policy")}
