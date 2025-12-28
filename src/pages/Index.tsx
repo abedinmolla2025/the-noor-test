@@ -138,10 +138,6 @@ const Index = () => {
         <section className="animate-fade-in" style={{ animationDelay: "350ms" }}>
           <DailyHadith />
         </section>
-
-        <p className="mt-4 text-[11px] text-center text-muted-foreground">
-          Developed by <span className="font-semibold">ABEDIN MOLLA</span> – India
-        </p>
       </main>
 
       {/* Athan Settings Modal */}
