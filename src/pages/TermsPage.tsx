@@ -62,7 +62,20 @@ const TermsPage = () => {
         </section>
 
         <section className="bg-card/70 border border-border/60 rounded-2xl shadow-soft p-5 space-y-2">
-          <h2 className="text-lg font-semibold">4. Changes to these terms / শর্তাবলি পরিবর্তন</h2>
+          <h2 className="text-lg font-semibold">4. Developer information / ডেভেলপার তথ্য</h2>
+          <p className="text-muted-foreground">
+            This app has been developed and maintained by <span className="font-semibold">ABEDIN MOLLA</span>
+            {' '}from India, with the intention of serving the Muslim community with a clean and
+            focused Islamic experience.
+          </p>
+          <p className="text-muted-foreground">
+            এই অ্যাপটি ভারতের <span className="font-semibold">আবিদিন মোল্লা (ABEDIN MOLLA)</span> কর্তৃক
+            ডেভেলপ ও পরিচালিত, যেন মুসলিম উম্মাহ একটি সুন্দর, মনোযোগী ইসলামিক অ্যাপ ব্যবহার করতে পারে।
+          </p>
+        </section>
+
+        <section className="bg-card/70 border border-border/60 rounded-2xl shadow-soft p-5 space-y-2">
+          <h2 className="text-lg font-semibold">5. Changes to these terms / শর্তাবলি পরিবর্তন</h2>
           <p className="text-muted-foreground">
             These terms may be updated over time as the app improves. Continued use of the app
             after changes means you accept the updated terms.
