@@ -625,7 +625,7 @@ const QuizPage = () => {
   const earnedBadges = badges.filter(b => totalPoints >= b.requirement);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 pb-24">
+    <div className="font-quizEn min-h-screen bg-gradient-to-br from-background via-background to-primary/5 pb-24">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-lg border-b border-border/50">
         <div className="flex items-center justify-between p-4">
@@ -846,16 +846,25 @@ const QuizPage = () => {
                   <Card className="mb-3">
                     <CardHeader>
                       <CardTitle className="text-xl leading-relaxed">
-                        {languageMode === "bn"
-                          ? currentQuestion.questionBn
-                          : currentQuestion.question}
+                        {languageMode === "bn" && (
+                          <span className="font-bangla text-2xl leading-relaxed">
+                            {currentQuestion.questionBn}
+                          </span>
+                        )}
+                        {languageMode === "en" && (
+                          <span className="font-quizEn">
+                            {currentQuestion.question}
+                          </span>
+                        )}
+                        {languageMode === "mixed" && (
+                          <span className="font-bangla text-2xl leading-relaxed">
+                            {currentQuestion.questionBn}
+                          </span>
+                        )}
                       </CardTitle>
                       {languageMode === "mixed" && (
                         <div className="mt-1 space-y-0.5">
-                          <p className="text-[17px] leading-relaxed">
-                            {currentQuestion.questionBn}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
+                          <p className="text-xs text-muted-foreground font-quizEn">
                             {currentQuestion.question}
                           </p>
                         </div>
@@ -882,16 +891,22 @@ const QuizPage = () => {
                         >
                           <div className="flex items-center justify-between">
                             <div>
-                          <p className="font-semibold text-[15px] leading-snug">
-                            {languageMode === "bn"
-                              ? currentQuestion.optionsBn?.[index] ?? option
-                              : option}
-                          </p>
-                          {languageMode === "mixed" && currentQuestion.optionsBn?.[index] && (
-                            <p className="text-[11px] text-muted-foreground mt-0.5">
-                              {option}
-                            </p>
-                          )}
+                              <p
+                                className={`font-semibold leading-snug ${
+                                  languageMode === "bn" || languageMode === "mixed"
+                                    ? "font-bangla text-[16px]"
+                                    : "font-quizEn text-[14px]"
+                                }`}
+                              >
+                                {languageMode === "bn" || languageMode === "mixed"
+                                  ? currentQuestion.optionsBn?.[index] ?? option
+                                  : option}
+                              </p>
+                              {languageMode === "mixed" && (
+                                <p className="text-[11px] text-muted-foreground mt-0.5 font-quizEn">
+                                  {option}
+                                </p>
+                              )}
                             </div>
                             {showResult && index === currentQuestion.correctAnswer && (
                               <CheckCircle2 className="w-6 h-6 text-emerald-500" />
@@ -912,13 +927,19 @@ const QuizPage = () => {
                         <Sparkles className="w-4 h-4 text-emerald-500" />
                         Correct answer explanation
                       </p>
-                      <p className="text-muted-foreground text-[13px]">
+                      <p
+                        className={`text-muted-foreground text-[13px] ${
+                          languageMode === "bn" || languageMode === "mixed"
+                            ? "font-bangla text-[14px]"
+                            : "font-quizEn"
+                        }`}
+                      >
                         {languageMode === "bn" || languageMode === "mixed"
                           ? currentQuestion.explanationBn
                           : currentQuestion.explanation}
                       </p>
                       {languageMode === "mixed" && (
-                        <p className="mt-1 text-[11px] text-muted-foreground/80">
+                        <p className="mt-1 text-[11px] text-muted-foreground/80 font-quizEn">
                           {currentQuestion.explanation}
                         </p>
                       )}
@@ -1005,7 +1026,7 @@ const QuizPage = () => {
                         </div>
                         <div className="text-right">
                           <p className="font-bold text-primary">{entry.points}</p>
-                          <p className="text-xs text-muted-foreground">পয়েন্ট</p>
+                          <p className="text-xs text-muted-foreground font-bangla">পয়েন্ট</p>
                         </div>
                       </CardContent>
                     </Card>
@@ -1084,7 +1105,7 @@ const QuizPage = () => {
                                   <Badge variant="outline" className="shrink-0">Next</Badge>
                                 )}
                               </div>
-                              <p className="text-sm text-muted-foreground mb-2">{badge.nameBn}</p>
+                              <p className="text-sm text-muted-foreground font-bangla mb-2">{badge.nameBn}</p>
                               
                               {/* Progress Bar */}
                               {!isEarned && (
