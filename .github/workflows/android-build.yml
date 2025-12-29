@@ -29,6 +29,14 @@ jobs:
       - name: Add Android platform
         run: npx cap add android
 
+      - name: Commit Android folder
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add android
+          git commit -m "Add Android platform"
+          git push
+
       - name: Sync Capacitor
         run: npx cap sync android
 
@@ -40,11 +48,3 @@ jobs:
         with:
           name: NOOR-AAB
           path: android/app/build/outputs/bundle/release/app-release.aab
-      - name: Commit Android folder
-        run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add android
-          git commit -m "Add Android platform"
-          git push
-          
