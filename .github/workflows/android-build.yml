@@ -24,6 +24,7 @@ jobs:
           api-level: 33
 
       - run: npm install
+      - run: npx cap add android
       - run: npx cap sync android
       - run: cd android && ./gradlew bundleRelease
 
