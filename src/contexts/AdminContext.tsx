@@ -20,43 +20,103 @@ export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      const session = data.session;
+    let isMounted = true;
+    const AUTH_TIMEOUT_MS = 3000;
+    let timeoutId: number | undefined;
 
-      setUser(session?.user ?? null);
+    const logAuthState = (label: string, session: any) => {
+      console.log("[AdminAuth]", label, {
+        userId: session?.user?.id ?? null,
+        hasSession: !!session,
+      });
+    };
 
-      if (session?.user) {
-        await fetchUserRoles(session.user.id);
-      } else {
-        setLoading(false);
+    const finishLoading = () => {
+      if (!isMounted) return;
+      setLoading(false);
+    };
+
+    const loadSession = async (reason: "initial" | "timeout_refresh") => {
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error("[AdminAuth] getSession error", { reason, error });
+        }
+
+        const session = data.session;
+        logAuthState(`getSession (${reason})`, session);
+
+        setUser(session?.user ?? null);
+
+        if (session?.user) {
+          await fetchUserRoles(session.user.id);
+        } else {
+          setRoles([]);
+        }
+      } catch (error) {
+        console.error("[AdminAuth] Unexpected error in loadSession", {
+          reason,
+          error,
+        });
+        setUser(null);
+        setRoles([]);
+      } finally {
+        if (timeoutId) {
+          window.clearTimeout(timeoutId);
+          timeoutId = undefined;
+        }
+        finishLoading();
       }
     };
 
-    loadSession();
-
-    const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
-      setUser(session?.user ?? null);
-
-      // Log auth events to audit log
-      if (session?.user && (event === 'SIGNED_IN' || event === 'SIGNED_OUT')) {
-        await supabase.from('admin_audit_log').insert({
-          action: event === 'SIGNED_IN' ? 'auth.login' : 'auth.logout',
-          actor_id: session.user.id,
-          resource_type: 'auth',
-          metadata: { event, timestamp: new Date().toISOString() },
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log("[AdminAuth] onAuthStateChange", {
+          event,
+          userId: session?.user?.id ?? null,
         });
-      }
 
-      if (session?.user) {
-        fetchUserRoles(session.user.id);
-      } else {
-        setRoles([]);
-        setLoading(false);
+        setUser(session?.user ?? null);
+
+        // Log auth events to audit log
+        if (session?.user && (event === "SIGNED_IN" || event === "SIGNED_OUT")) {
+          try {
+            await supabase.from("admin_audit_log").insert({
+              action: event === "SIGNED_IN" ? "auth.login" : "auth.logout",
+              actor_id: session.user.id,
+              resource_type: "auth",
+              metadata: { event, timestamp: new Date().toISOString() },
+            });
+          } catch (error) {
+            console.error("[AdminAuth] Failed to log auth event", { event, error });
+          }
+        }
+
+        if (session?.user) {
+          await fetchUserRoles(session.user.id);
+        } else {
+          setRoles([]);
+        }
+
+        finishLoading();
       }
-    });
+    );
+
+    timeoutId = window.setTimeout(() => {
+      console.warn(
+        "[AdminAuth] Auth loading timeout reached, forcing session refresh"
+      );
+      loadSession("timeout_refresh");
+    }, AUTH_TIMEOUT_MS);
+
+    // Initial session load
+    loadSession("initial");
 
     return () => {
+      isMounted = false;
+      if (timeoutId) {
+        window.clearTimeout(timeoutId);
+      }
       listener.subscription.unsubscribe();
     };
   }, []);
