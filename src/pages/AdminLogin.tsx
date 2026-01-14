@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState, useRef } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,7 +23,8 @@ const adminLoginSchema = z.object({
 });
 
 const AdminLogin = () => {
-  const { user, isAdmin, loading } = useAdmin();
+  const { user, isAdmin, loading, forceClearLoading } = useAdmin();
+  const loadingRenderCount = useRef(0);
   const [allowed, setAllowed] = useState<boolean | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -38,6 +39,19 @@ const AdminLogin = () => {
       setAllowed(true);
     }
   }, []);
+
+  // Safety: if auth loading persists across renders, force clear so UI can proceed
+  useEffect(() => {
+    if (loading) {
+      loadingRenderCount.current += 1;
+      if (loadingRenderCount.current > 1) {
+        console.warn("[AdminLogin] loading persisted across renders, forcing clear");
+        forceClearLoading();
+      }
+    } else {
+      loadingRenderCount.current = 0;
+    }
+  }, [loading, forceClearLoading]);
 
   // If already logged in as admin, go straight to admin panel
   if (!loading && user && isAdmin) {
