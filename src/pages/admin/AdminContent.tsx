@@ -23,8 +23,14 @@ interface AdminContentRow {
   content_type: string;
   title: string;
   title_arabic: string | null;
+  title_en: string | null;
+  title_hi: string | null;
+  title_ur: string | null;
   content: string | null;
   content_arabic: string | null;
+  content_en: string | null;
+  content_hi: string | null;
+  content_ur: string | null;
   content_pronunciation: string | null;
   category: string | null;
   is_published: boolean | null;
@@ -92,8 +98,14 @@ export default function AdminContent() {
     content_type: 'dua',
     title: '',
     title_arabic: '',
+    title_en: '',
+    title_hi: '',
+    title_ur: '',
     content: '',
     content_arabic: '',
+    content_en: '',
+    content_hi: '',
+    content_ur: '',
     content_pronunciation: '',
     category: '',
   });
@@ -178,8 +190,14 @@ export default function AdminContent() {
         content_type: 'dua',
         title: '',
         title_arabic: '',
+        title_en: '',
+        title_hi: '',
+        title_ur: '',
         content: '',
         content_arabic: '',
+        content_en: '',
+        content_hi: '',
+        content_ur: '',
         content_pronunciation: '',
         category: '',
       });
@@ -191,8 +209,14 @@ export default function AdminContent() {
       content_type: item.content_type,
       title: item.title,
       title_arabic: item.title_arabic ?? '',
+      title_en: item.title_en ?? '',
+      title_hi: item.title_hi ?? '',
+      title_ur: item.title_ur ?? '',
       content: item.content ?? '',
       content_arabic: item.content_arabic ?? '',
+      content_en: item.content_en ?? '',
+      content_hi: item.content_hi ?? '',
+      content_ur: item.content_ur ?? '',
       content_pronunciation: item.content_pronunciation ?? '',
       category: item.category ?? '',
     });
@@ -229,8 +253,14 @@ export default function AdminContent() {
         content_type: editForm.content_type,
         title: editForm.title,
         title_arabic: editForm.title_arabic || null,
+        title_en: editForm.title_en || null,
+        title_hi: editForm.title_hi || null,
+        title_ur: editForm.title_ur || null,
         content: editForm.content || null,
         content_arabic: editForm.content_arabic || null,
+        content_en: editForm.content_en || null,
+        content_hi: editForm.content_hi || null,
+        content_ur: editForm.content_ur || null,
         content_pronunciation: editForm.content_pronunciation || null,
         category: editForm.category || null,
       };
