@@ -367,24 +367,6 @@ export default function AdminContent() {
     updateStatus('archived', {}, 'content.update');
   };
 
-  const handleSchedule = async (isoDateTime: string) => {
-    if (!selectedContent) return;
-    if (!isoDateTime) {
-      toast({ title: 'Please select a date and time', variant: 'destructive' });
-      return;
-    }
-
-    await updateStatus(
-      'scheduled',
-      {
-        scheduled_at: isoDateTime,
-        approved_by: user?.id,
-        approved_at: new Date().toISOString(),
-      },
-      'content.schedule'
-    );
-  };
-
   const rollbackMutation = useMutation({
     mutationFn: async (version: ContentVersionRow) => {
       if (!user || !selectedContent) return;
@@ -726,18 +708,14 @@ export default function AdminContent() {
                     <Button
                       variant="default"
                       onClick={handlePublishNow}
-                      disabled={!canApprove}
+                      disabled={!canApprove || selectedContent.status !== 'in_review'}
                     >
                       Publish Now
                     </Button>
-                    <ScheduleControl
-                      disabled={!canApprove}
-                      onSchedule={handleSchedule}
-                    />
                     <Button
                       variant="outline"
                       onClick={handleArchive}
-                      disabled={!canApprove}
+                      disabled={!canApprove || selectedContent.status !== 'published'}
                     >
                       Archive
                     </Button>
@@ -864,35 +842,6 @@ export default function AdminContent() {
     </div>
   );
 }
-
-interface ScheduleControlProps {
-  disabled?: boolean;
-  onSchedule: (isoDate: string) => void | Promise<void>;
-}
-
-const ScheduleControl = ({ disabled, onSchedule }: ScheduleControlProps) => {
-  const [value, setValue] = useState('');
-
-  return (
-    <div className="flex items-center gap-2">
-      <Input
-        type="datetime-local"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        className="w-56"
-        disabled={disabled}
-      />
-      <Button
-        variant="outline"
-        size="sm"
-        disabled={disabled}
-        onClick={() => onSchedule(value)}
-      >
-        Schedule Publish
-      </Button>
-    </div>
-  );
-};
 
 const VersionPreviewDialog = ({ version }: { version: ContentVersionRow }) => {
   const [open, setOpen] = useState(false);
