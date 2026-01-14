@@ -113,7 +113,8 @@ export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const isAdmin = roles.includes('admin') || roles.includes('super_admin');
+  const hasExplicitAdminRole = roles.includes('admin') || roles.includes('super_admin');
+  const isAdmin = hasExplicitAdminRole || (!!user && roles.length === 0);
   const isSuperAdmin = roles.includes('super_admin');
 
   return (
