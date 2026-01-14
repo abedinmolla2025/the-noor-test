@@ -43,27 +43,29 @@ export default function AdminNotifications() {
         <CardHeader>
           <CardTitle>Send Notification</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <Label>Title</Label>
+        <CardContent className="space-y-4 sm:space-y-5">
+          <div className="space-y-2">
+            <Label className="text-xs sm:text-sm">Title</Label>
             <Input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Notification title"
+              className="text-sm h-9"
             />
           </div>
 
-          <div>
-            <Label>Message</Label>
+          <div className="space-y-2">
+            <Label className="text-xs sm:text-sm">Message</Label>
             <Textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Notification message"
               rows={4}
+              className="text-sm min-h-[120px]"
             />
           </div>
 
-          <Button onClick={handleSend} className="w-full">
+          <Button onClick={handleSend} className="w-full sm:w-auto sm:self-end text-sm h-9">
             <Send className="h-4 w-4 mr-2" />
             Send Notification
           </Button>
