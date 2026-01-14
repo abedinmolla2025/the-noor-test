@@ -32,8 +32,14 @@ interface Dua {
 interface AdminContentDuaRow {
   id: string;
   title: string | null;
+  title_en: string | null;
+  title_hi: string | null;
+  title_ur: string | null;
   content: string | null;
   content_arabic: string | null;
+  content_en: string | null;
+  content_hi: string | null;
+  content_ur: string | null;
   content_pronunciation: string | null;
   category: string | null;
 }
@@ -79,19 +85,19 @@ const DuaPage = () => {
             translation: row.content || "",
           },
           english: {
-            title: row.title || "Dua",
+            title: row.title_en || row.title || "Dua",
             category: row.category || "Dua",
-            translation: row.content || "",
+            translation: row.content_en || row.content || "",
           },
           hindi: {
-            title: row.title || "दुआ",
+            title: row.title_hi || row.title || "दुआ",
             category: row.category || "दुआ",
-            translation: row.content || "",
+            translation: row.content_hi || row.content || "",
           },
           urdu: {
-            title: row.title || "دعا",
+            title: row.title_ur || row.title || "دعا",
             category: row.category || "دعا",
-            translation: row.content || "",
+            translation: row.content_ur || row.content || "",
           },
         },
       }));

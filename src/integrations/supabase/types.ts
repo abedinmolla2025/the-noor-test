@@ -61,8 +61,11 @@ export type Database = {
           category: string | null
           content: string | null
           content_arabic: string | null
+          content_en: string | null
+          content_hi: string | null
           content_pronunciation: string | null
           content_type: string
+          content_ur: string | null
           created_at: string | null
           created_by: string | null
           current_version_id: string | null
@@ -77,6 +80,9 @@ export type Database = {
           status: string
           title: string
           title_arabic: string | null
+          title_en: string | null
+          title_hi: string | null
+          title_ur: string | null
           updated_at: string | null
         }
         Insert: {
@@ -87,8 +93,11 @@ export type Database = {
           category?: string | null
           content?: string | null
           content_arabic?: string | null
+          content_en?: string | null
+          content_hi?: string | null
           content_pronunciation?: string | null
           content_type: string
+          content_ur?: string | null
           created_at?: string | null
           created_by?: string | null
           current_version_id?: string | null
@@ -103,6 +112,9 @@ export type Database = {
           status?: string
           title: string
           title_arabic?: string | null
+          title_en?: string | null
+          title_hi?: string | null
+          title_ur?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -113,8 +125,11 @@ export type Database = {
           category?: string | null
           content?: string | null
           content_arabic?: string | null
+          content_en?: string | null
+          content_hi?: string | null
           content_pronunciation?: string | null
           content_type?: string
+          content_ur?: string | null
           created_at?: string | null
           created_by?: string | null
           current_version_id?: string | null
@@ -129,6 +144,9 @@ export type Database = {
           status?: string
           title?: string
           title_arabic?: string | null
+          title_en?: string | null
+          title_hi?: string | null
+          title_ur?: string | null
           updated_at?: string | null
         }
         Relationships: [
