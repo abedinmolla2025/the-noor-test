@@ -162,8 +162,8 @@ export default function AdminSettings() {
               <CardTitle>Branding</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2">
-                <div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
                   <Label htmlFor="appName">App name</Label>
                   <Input
                     id="appName"
@@ -172,7 +172,7 @@ export default function AdminSettings() {
                     placeholder="NOOR"
                   />
                 </div>
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="tagline">Tagline</Label>
                   <Input
                     id="tagline"
@@ -233,8 +233,8 @@ export default function AdminSettings() {
                 Colors are HSL values (e.g. <code>158 64% 35%</code>) that map directly to the
                 Tailwind design tokens like <code>--primary</code>.
               </p>
-              <div className="grid gap-4 md:grid-cols-2">
-                <div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
                   <Label htmlFor="primaryColor">Primary color (HSL)</Label>
                   <Input
                     id="primaryColor"
@@ -243,7 +243,7 @@ export default function AdminSettings() {
                     placeholder="158 64% 35%"
                   />
                 </div>
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="secondaryColor">Secondary color (HSL)</Label>
                   <Input
                     id="secondaryColor"
