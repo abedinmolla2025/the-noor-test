@@ -57,7 +57,7 @@ const DuaPage = () => {
         .from("admin_content")
         .select("*")
         .eq("status", "published")
-        .eq("content_type", "dua")
+        .in("content_type", ["dua", "Dua"]) // Support both lowercase and capitalized types
         .order("published_at", { ascending: false });
 
       if (error) {
