@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState, useRef } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,8 +23,7 @@ const adminLoginSchema = z.object({
 });
 
 const AdminLogin = () => {
-  const { user, isAdmin, loading, forceClearLoading } = useAdmin();
-  const loadingRenderCount = useRef(0);
+  const { user, isAdmin, loading } = useAdmin();
   const [allowed, setAllowed] = useState<boolean | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -39,19 +38,6 @@ const AdminLogin = () => {
       setAllowed(true);
     }
   }, []);
-
-  // Safety: if auth loading persists across renders, force clear so UI can proceed
-  useEffect(() => {
-    if (loading) {
-      loadingRenderCount.current += 1;
-      if (loadingRenderCount.current > 1) {
-        console.warn("[AdminLogin] loading persisted across renders, forcing clear");
-        forceClearLoading();
-      }
-    } else {
-      loadingRenderCount.current = 0;
-    }
-  }, [loading, forceClearLoading]);
 
   // If already logged in as admin, go straight to admin panel
   if (!loading && user && isAdmin) {
@@ -83,46 +69,23 @@ const AdminLogin = () => {
     }
 
     setSubmitting(true);
-
-    const AUTH_TIMEOUT_MS = 10000; // 10s hard timeout
-
-    const withTimeout = <T,>(promise: Promise<T>): Promise<T> => {
-      return new Promise((resolve, reject) => {
-        const timeoutId = setTimeout(() => {
-          console.warn("[AdminLogin] Auth request timed out");
-          reject(new Error("Request timed out. Please check your connection and try again."));
-        }, AUTH_TIMEOUT_MS);
-
-        promise
-          .then((result) => {
-            clearTimeout(timeoutId);
-            resolve(result);
-          })
-          .catch((error) => {
-            clearTimeout(timeoutId);
-            reject(error);
-          });
-      });
-    };
-
     try {
-      const { error: signInError } = await withTimeout(
-        supabase.auth.signInWithPassword({
-          email: parsed.data.email,
-          password: parsed.data.password,
-        })
-      );
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: parsed.data.email,
+        password: parsed.data.password,
+      });
 
       if (signInError) {
+        // Do not leak exact error details
         setError("Invalid email or password.");
         return;
       }
 
       // AdminContext listener will pick up session and isAdmin,
       // which will cause the redirect above to /admin for admin users.
-    } catch (err: any) {
-      console.error("[AdminLogin] Error during admin email login", err);
-      setError(err.message ?? "Something went wrong. Please try again.");
+    } catch (err) {
+      console.error("Error during admin email login", err);
+      setError("Something went wrong. Please try again.");
     } finally {
       setSubmitting(false);
     }

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -13,64 +13,22 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
-  const [timeoutError, setTimeoutError] = useState<string | null>(null);
-  const loadingRenderCount = useRef(0);
   const navigate = useNavigate();
   const { toast } = useToast();
-
-  // Safety: if loading persists across renders, force clear so UI doesn't get stuck
-  useEffect(() => {
-    if (loading) {
-      loadingRenderCount.current += 1;
-      if (loadingRenderCount.current > 60) {
-        // ~10 seconds at typical 6fps React renders
-        console.warn('[LoginPage] auth request taking too long, resetting loading state');
-        setLoading(false);
-        setTimeoutError('Network is slow or unreachable. Please try again.');
-      }
-    } else {
-      loadingRenderCount.current = 0;
-      setTimeoutError(null);
-    }
-  }, [loading]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setTimeoutError(null);
-
-    const AUTH_TIMEOUT_MS = 10000; // 10s hard timeout so spinner can never be infinite
-
-    const withTimeout = <T,>(promise: Promise<T>): Promise<T> => {
-      return new Promise((resolve, reject) => {
-        const timeoutId = setTimeout(() => {
-          console.warn('[LoginPage] Auth request timed out');
-          reject(new Error('Request timed out. Please check your connection and try again.'));
-        }, AUTH_TIMEOUT_MS);
-
-        promise
-          .then((result) => {
-            clearTimeout(timeoutId);
-            resolve(result);
-          })
-          .catch((error) => {
-            clearTimeout(timeoutId);
-            reject(error);
-          });
-      });
-    };
 
     try {
       if (isSignUp) {
-        const { error } = await withTimeout(
-          supabase.auth.signUp({
-            email,
-            password,
-            options: {
-              emailRedirectTo: `${window.location.origin}/`,
-            },
-          })
-        );
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/`,
+          },
+        });
 
         if (error) throw error;
 
@@ -79,12 +37,10 @@ export default function LoginPage() {
           description: 'Please check your email to confirm your account.',
         });
       } else {
-        const { error } = await withTimeout(
-          supabase.auth.signInWithPassword({
-            email,
-            password,
-          })
-        );
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
 
         if (error) throw error;
 
@@ -96,13 +52,11 @@ export default function LoginPage() {
         navigate('/');
       }
     } catch (error: any) {
-      console.error('[LoginPage] Auth error', error);
       toast({
         title: 'Error',
-        description: error.message ?? 'Something went wrong. Please try again.',
+        description: error.message,
         variant: 'destructive',
       });
-      setTimeoutError('Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -149,12 +103,6 @@ export default function LoginPage() {
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {isSignUp ? 'Sign Up' : 'Login'}
             </Button>
-
-            {timeoutError && (
-              <p className="text-sm text-destructive text-center" role="alert">
-                {timeoutError}
-              </p>
-            )}
 
             <Button
               type="button"
