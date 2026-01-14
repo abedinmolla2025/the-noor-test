@@ -19,6 +19,7 @@ import QuizPage from "./pages/QuizPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import TermsPage from "./pages/TermsPage";
 import LoginPage from "./pages/LoginPage";
+import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminContent from "./pages/admin/AdminContent";
@@ -57,6 +58,7 @@ const App = () => (
               <Route path="/quiz" element={<QuizPage />} />
               <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
               <Route path="/terms" element={<TermsPage />} />
+              <Route path="/admin/login" element={<AdminLogin />} />
               
               {/* Admin Routes - all wrapped with AdminLayout (includes ProtectedRoute) */}
               <Route
