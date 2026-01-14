@@ -11,6 +11,7 @@ import {
   Settings,
   LogOut,
   Activity,
+  Shield,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
@@ -35,6 +36,7 @@ export const AdminSidebar = () => {
     { to: '/admin/reports', icon: BarChart3, label: 'Reports' },
     { to: '/admin/finance', icon: DollarSign, label: 'Finance' },
     { to: '/admin/audit', icon: Activity, label: 'Audit' },
+    { to: '/admin/permissions', icon: Shield, label: 'Permissions' },
     { to: '/admin/settings', icon: Settings, label: 'Settings' },
   ];
 
