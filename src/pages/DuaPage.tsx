@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, BookOpen, ChevronRight, ArrowLeft, Sparkles, Heart, Volume2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import DuaAudioPlayer from "@/components/DuaAudioPlayer";
+import { supabase } from "@/integrations/supabase/client";
 
 type Language = "bengali" | "english" | "hindi" | "urdu";
 
