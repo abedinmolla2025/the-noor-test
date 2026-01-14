@@ -142,7 +142,8 @@ const SettingsPage = () => {
     if (next >= 7) {
       setAdminUnlocked(true);
       setVersionTapCount(0);
-      navigate("/admin");
+      localStorage.setItem("noor_admin_unlock", "1");
+      navigate("/admin/login");
     } else {
       setVersionTapCount(next);
     }
