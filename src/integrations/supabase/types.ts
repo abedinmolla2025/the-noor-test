@@ -14,8 +14,49 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_audit_log: {
+        Row: {
+          action: string
+          actor_id: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          resource_id: string | null
+          resource_type: string | null
+        }
+        Insert: {
+          action: string
+          actor_id: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          resource_id?: string | null
+          resource_type?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          resource_id?: string | null
+          resource_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_audit_log_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       admin_content: {
         Row: {
+          approval_required: boolean
+          approved_at: string | null
+          approved_by: string | null
           audio_url: string | null
           category: string | null
           content: string | null
@@ -23,17 +64,24 @@ export type Database = {
           content_type: string
           created_at: string | null
           created_by: string | null
+          current_version_id: string | null
           id: string
           image_url: string | null
           is_published: boolean | null
           metadata: Json | null
           order_index: number | null
           pdf_url: string | null
+          published_at: string | null
+          scheduled_at: string | null
+          status: string
           title: string
           title_arabic: string | null
           updated_at: string | null
         }
         Insert: {
+          approval_required?: boolean
+          approved_at?: string | null
+          approved_by?: string | null
           audio_url?: string | null
           category?: string | null
           content?: string | null
@@ -41,17 +89,24 @@ export type Database = {
           content_type: string
           created_at?: string | null
           created_by?: string | null
+          current_version_id?: string | null
           id?: string
           image_url?: string | null
           is_published?: boolean | null
           metadata?: Json | null
           order_index?: number | null
           pdf_url?: string | null
+          published_at?: string | null
+          scheduled_at?: string | null
+          status?: string
           title: string
           title_arabic?: string | null
           updated_at?: string | null
         }
         Update: {
+          approval_required?: boolean
+          approved_at?: string | null
+          approved_by?: string | null
           audio_url?: string | null
           category?: string | null
           content?: string | null
@@ -59,17 +114,36 @@ export type Database = {
           content_type?: string
           created_at?: string | null
           created_by?: string | null
+          current_version_id?: string | null
           id?: string
           image_url?: string | null
           is_published?: boolean | null
           metadata?: Json | null
           order_index?: number | null
           pdf_url?: string | null
+          published_at?: string | null
+          scheduled_at?: string | null
+          status?: string
           title?: string
           title_arabic?: string | null
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "admin_content_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_content_current_version_id_fkey"
+            columns: ["current_version_id"]
+            isOneToOne: false
+            referencedRelation: "content_versions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       admin_notifications: {
         Row: {
@@ -136,6 +210,128 @@ export type Database = {
           updated_by?: string | null
         }
         Relationships: []
+      }
+      content_approvals: {
+        Row: {
+          approved_by: string | null
+          content_id: string
+          created_at: string
+          id: string
+          reason: string | null
+          requested_by: string
+          status: string
+          updated_at: string
+          version_id: string | null
+        }
+        Insert: {
+          approved_by?: string | null
+          content_id: string
+          created_at?: string
+          id?: string
+          reason?: string | null
+          requested_by: string
+          status: string
+          updated_at?: string
+          version_id?: string | null
+        }
+        Update: {
+          approved_by?: string | null
+          content_id?: string
+          created_at?: string
+          id?: string
+          reason?: string | null
+          requested_by?: string
+          status?: string
+          updated_at?: string
+          version_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_approvals_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_approvals_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "admin_content"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_approvals_requested_by_fkey"
+            columns: ["requested_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_approvals_version_id_fkey"
+            columns: ["version_id"]
+            isOneToOne: false
+            referencedRelation: "content_versions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content_versions: {
+        Row: {
+          change_summary: string | null
+          content: string | null
+          content_arabic: string | null
+          content_id: string
+          created_at: string
+          created_by: string
+          id: string
+          metadata: Json | null
+          title: string
+          title_arabic: string | null
+          version_number: number
+        }
+        Insert: {
+          change_summary?: string | null
+          content?: string | null
+          content_arabic?: string | null
+          content_id: string
+          created_at?: string
+          created_by: string
+          id?: string
+          metadata?: Json | null
+          title: string
+          title_arabic?: string | null
+          version_number: number
+        }
+        Update: {
+          change_summary?: string | null
+          content?: string | null
+          content_arabic?: string | null
+          content_id?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          metadata?: Json | null
+          title?: string
+          title_arabic?: string | null
+          version_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_versions_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "admin_content"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_versions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
