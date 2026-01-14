@@ -20,6 +20,7 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import TermsPage from "./pages/TermsPage";
 import LoginPage from "./pages/LoginPage";
 import AdminLogin from "./pages/AdminLogin";
+import AdminResetPassword from "./pages/AdminResetPassword";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminContent from "./pages/admin/AdminContent";
@@ -59,6 +60,7 @@ const App = () => (
               <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
               <Route path="/terms" element={<TermsPage />} />
               <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin/reset-password" element={<AdminResetPassword />} />
               
               {/* Admin Routes - all wrapped with AdminLayout (includes ProtectedRoute) */}
               <Route
