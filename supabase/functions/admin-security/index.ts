@@ -29,6 +29,7 @@ Deno.serve(async (req) => {
   try {
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
     const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY");
 
     if (!SUPABASE_URL || !SERVICE_KEY) {
       return json(
@@ -44,6 +45,20 @@ Deno.serve(async (req) => {
 
     const DEFAULT_ADMIN_EMAIL = "admin@noor.app";
     const DEFAULT_PASSCODE = "noor-admin-1234";
+
+    const authHeader = req.headers.get("authorization") ?? "";
+
+    // Use ANON_KEY for validating end-user JWTs (service role key is for privileged admin ops).
+    const authClient = createClient(SUPABASE_URL, ANON_KEY ?? SERVICE_KEY, {
+      global: { headers: { Authorization: authHeader } },
+    });
+
+    const getRequesterId = async (): Promise<string | null> => {
+      if (!authHeader || !authHeader.toLowerCase().startsWith("bearer ")) return null;
+      const { data, error } = await authClient.auth.getUser();
+      if (error || !data?.user) return null;
+      return data.user.id;
+    };
 
     // Load config (service role bypasses RLS). If missing/invalid, auto-create a safe default.
     const ensureConfig = async () => {
@@ -135,12 +150,7 @@ Deno.serve(async (req) => {
 
     if (action === "log_event") {
       const actionName = String(payload?.action_name ?? "");
-      const authHeader = req.headers.get("authorization") ?? "";
-      const authed = createClient(SUPABASE_URL, SERVICE_KEY, {
-        global: { headers: { authorization: authHeader } },
-      });
-      const claimsRes = await authed.auth.getClaims();
-      const sub = (claimsRes.data?.claims as any)?.sub as string | undefined;
+      const sub = await getRequesterId();
 
       // If not authenticated, still record attempt with the dedicated admin actor.
       const actor = sub ?? (await ensureAdminUser()).id;
@@ -148,16 +158,10 @@ Deno.serve(async (req) => {
       return json({ ok: true });
     }
 
-
     if (action === "set_require_fingerprint") {
       const requireFingerprint = Boolean(payload?.require_fingerprint);
 
-      const authHeader = req.headers.get("authorization") ?? "";
-      const authed = createClient(SUPABASE_URL, SERVICE_KEY, {
-        global: { headers: { authorization: authHeader } },
-      });
-      const claimsRes = await authed.auth.getClaims();
-      const sub = (claimsRes.data?.claims as any)?.sub as string | undefined;
+      const sub = await getRequesterId();
       if (!sub) return json({ ok: false, error: "permission_denied" }, 401);
 
       await supabase
@@ -231,12 +235,7 @@ Deno.serve(async (req) => {
       }
 
       // Require a valid authenticated caller (admin)
-      const authHeader = req.headers.get("authorization") ?? "";
-      const authed = createClient(SUPABASE_URL, SERVICE_KEY, {
-        global: { headers: { authorization: authHeader } },
-      });
-      const claimsRes = await authed.auth.getClaims();
-      const sub = (claimsRes.data?.claims as any)?.sub as string | undefined;
+      const sub = await getRequesterId();
       if (!sub) return json({ ok: false, error: "permission_denied" }, 401);
 
       const { data: cfgRow, error: cfgRowErr } = await supabase
@@ -302,12 +301,7 @@ Deno.serve(async (req) => {
     }
 
     if (action === "revoke_sessions") {
-      const authHeader = req.headers.get("authorization") ?? "";
-      const authed = createClient(SUPABASE_URL, SERVICE_KEY, {
-        global: { headers: { authorization: authHeader } },
-      });
-      const claimsRes = await authed.auth.getClaims();
-      const sub = (claimsRes.data?.claims as any)?.sub as string | undefined;
+      const sub = await getRequesterId();
       if (!sub) return json({ ok: false, error: "permission_denied" }, 401);
 
       const adminUser = await ensureAdminUser();
@@ -317,12 +311,7 @@ Deno.serve(async (req) => {
     }
 
     if (action === "history") {
-      const authHeader = req.headers.get("authorization") ?? "";
-      const authed = createClient(SUPABASE_URL, SERVICE_KEY, {
-        global: { headers: { authorization: authHeader } },
-      });
-      const claimsRes = await authed.auth.getClaims();
-      const sub = (claimsRes.data?.claims as any)?.sub as string | undefined;
+      const sub = await getRequesterId();
       if (!sub) return json({ ok: false, error: "permission_denied" }, 401);
 
       const { data: events } = await supabase
