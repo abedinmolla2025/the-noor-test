@@ -103,7 +103,47 @@ CREATE FUNCTION public.is_admin(_user_id uuid) RETURNS boolean
 $$;
 
 
+--
+-- Name: update_updated_at_column(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.update_updated_at_column() RETURNS trigger
+    LANGUAGE plpgsql
+    SET search_path TO 'public'
+    AS $$
+BEGIN
+  NEW.updated_at = now();
+  RETURN NEW;
+END;
+$$;
+
+
 SET default_table_access_method = heap;
+
+--
+-- Name: admin_ads; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.admin_ads (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    title text NOT NULL,
+    zone text NOT NULL,
+    platform text DEFAULT 'both'::text NOT NULL,
+    ad_type text NOT NULL,
+    ad_code text NOT NULL,
+    status text DEFAULT 'paused'::text NOT NULL,
+    start_at timestamp with time zone,
+    end_at timestamp with time zone,
+    priority integer DEFAULT 1 NOT NULL,
+    frequency integer,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT admin_ads_ad_type_check CHECK ((ad_type = ANY (ARRAY['html'::text, 'script'::text, 'image'::text, 'admob'::text]))),
+    CONSTRAINT admin_ads_platform_check CHECK ((platform = ANY (ARRAY['web'::text, 'android'::text, 'both'::text]))),
+    CONSTRAINT admin_ads_status_check CHECK ((status = ANY (ARRAY['active'::text, 'paused'::text]))),
+    CONSTRAINT admin_ads_zone_check CHECK ((zone = ANY (ARRAY['HOME_TOP'::text, 'DUA_INLINE'::text, 'QURAN_BOTTOM'::text, 'ARTICLE_SIDEBAR'::text, 'FULLSCREEN_SPLASH'::text])))
+);
+
 
 --
 -- Name: admin_audit_log; Type: TABLE; Schema: public; Owner: -
@@ -309,6 +349,14 @@ CREATE TABLE public.user_roles (
 
 
 --
+-- Name: admin_ads admin_ads_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.admin_ads
+    ADD CONSTRAINT admin_ads_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: admin_audit_log admin_audit_log_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -445,6 +493,41 @@ ALTER TABLE ONLY public.user_roles
 
 
 --
+-- Name: idx_admin_ads_platform; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_admin_ads_platform ON public.admin_ads USING btree (platform);
+
+
+--
+-- Name: idx_admin_ads_priority; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_admin_ads_priority ON public.admin_ads USING btree (priority);
+
+
+--
+-- Name: idx_admin_ads_schedule; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_admin_ads_schedule ON public.admin_ads USING btree (start_at, end_at);
+
+
+--
+-- Name: idx_admin_ads_status; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_admin_ads_status ON public.admin_ads USING btree (status);
+
+
+--
+-- Name: idx_admin_ads_zone; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_admin_ads_zone ON public.admin_ads USING btree (zone);
+
+
+--
 -- Name: idx_admin_content_published; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -477,6 +560,13 @@ CREATE INDEX idx_user_activity_user_id ON public.user_activity USING btree (user
 --
 
 CREATE INDEX idx_user_roles_user_id ON public.user_roles USING btree (user_id);
+
+
+--
+-- Name: admin_ads update_admin_ads_updated_at; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_admin_ads_updated_at BEFORE UPDATE ON public.admin_ads FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 
 --
@@ -636,6 +726,20 @@ CREATE POLICY "Admins and editors manage review comments" ON public.content_revi
 
 
 --
+-- Name: admin_ads Admins can delete ads; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Admins can delete ads" ON public.admin_ads FOR DELETE USING (public.is_admin(auth.uid()));
+
+
+--
+-- Name: admin_ads Admins can insert ads; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Admins can insert ads" ON public.admin_ads FOR INSERT WITH CHECK (public.is_admin(auth.uid()));
+
+
+--
 -- Name: admin_notifications Admins can manage notifications; Type: POLICY; Schema: public; Owner: -
 --
 
@@ -647,6 +751,13 @@ CREATE POLICY "Admins can manage notifications" ON public.admin_notifications US
 --
 
 CREATE POLICY "Admins can manage settings" ON public.app_settings USING (public.is_admin(auth.uid()));
+
+
+--
+-- Name: admin_ads Admins can update ads; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Admins can update ads" ON public.admin_ads FOR UPDATE USING (public.is_admin(auth.uid())) WITH CHECK (public.is_admin(auth.uid()));
 
 
 --
@@ -715,6 +826,13 @@ CREATE POLICY "Anyone can view settings" ON public.app_settings FOR SELECT USING
 
 
 --
+-- Name: admin_ads Public can read active scheduled ads; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Public can read active scheduled ads" ON public.admin_ads FOR SELECT USING (((status = 'active'::text) AND ((start_at IS NULL) OR (start_at <= now())) AND ((end_at IS NULL) OR (end_at >= now()))));
+
+
+--
 -- Name: user_roles Super admins can manage roles; Type: POLICY; Schema: public; Owner: -
 --
 
@@ -762,6 +880,12 @@ CREATE POLICY "Users can view all profiles" ON public.profiles FOR SELECT USING 
 
 CREATE POLICY "Users manage own mfa settings" ON public.user_mfa_settings USING ((auth.uid() = user_id)) WITH CHECK ((auth.uid() = user_id));
 
+
+--
+-- Name: admin_ads; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.admin_ads ENABLE ROW LEVEL SECURITY;
 
 --
 -- Name: admin_audit_log; Type: ROW SECURITY; Schema: public; Owner: -
