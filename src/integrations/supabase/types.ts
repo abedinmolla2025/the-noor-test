@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_ads: {
+        Row: {
+          ad_code: string
+          ad_type: string
+          created_at: string
+          end_at: string | null
+          frequency: number | null
+          id: string
+          platform: string
+          priority: number
+          start_at: string | null
+          status: string
+          title: string
+          updated_at: string
+          zone: string
+        }
+        Insert: {
+          ad_code: string
+          ad_type: string
+          created_at?: string
+          end_at?: string | null
+          frequency?: number | null
+          id?: string
+          platform?: string
+          priority?: number
+          start_at?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          zone: string
+        }
+        Update: {
+          ad_code?: string
+          ad_type?: string
+          created_at?: string
+          end_at?: string | null
+          frequency?: number | null
+          id?: string
+          platform?: string
+          priority?: number
+          start_at?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          zone?: string
+        }
+        Relationships: []
+      }
       admin_audit_log: {
         Row: {
           action: string
