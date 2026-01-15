@@ -26,11 +26,6 @@ const SettingsPage = () => {
   const [quizNotifications, setQuizNotifications] = useState(true);
   const [dailyReminder, setDailyReminder] = useState(false);
   const [marketingNotifications, setMarketingNotifications] = useState(false);
-
-  // Hidden admin unlock via version tap
-  const [versionTapCount, setVersionTapCount] = useState(0);
-  const [adminUnlocked, setAdminUnlocked] = useState(false);
-
   // Sync context theme with document class on first mount
   useEffect(() => {
     // ensure current theme is applied (context already handles this on mount)
@@ -135,18 +130,6 @@ const SettingsPage = () => {
       title: "🕒 Prayer time adjusted",
       description: `${prayer} ${sign}${minutes} মিনিট offset করা হয়েছে`,
     });
-  };
- 
-  const handleVersionTap = () => {
-    const next = versionTapCount + 1;
-    if (next >= 7) {
-      setAdminUnlocked(true);
-      setVersionTapCount(0);
-      localStorage.setItem("noor_admin_unlock", "1");
-      navigate("/admin/login");
-    } else {
-      setVersionTapCount(next);
-    }
   };
  
   const settingsGroups = [
@@ -388,32 +371,9 @@ const SettingsPage = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold">NOOR – Islamic App</h3>
-                  <button
-                    type="button"
-                    onClick={handleVersionTap}
-                    className="text-xs text-muted-foreground hover:underline text-left"
-                  >
-                    Version 1.0.0
-                  </button>
+                  <p className="text-xs text-muted-foreground text-left">Version 1.0.0</p>
                 </div>
               </div>
-              <Separator className="my-4" />
-
-              <button
-                type="button"
-                onClick={() => navigate("/backend-status")}
-                className="w-full rounded-xl border border-border/60 bg-background/60 px-3 py-2 text-left"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-semibold">Backend status</span>
-                  <span className="text-xs text-muted-foreground">Diagnostics</span>
-                </div>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Read-only checks for tables, RLS, and auth session health.
-                </p>
-              </button>
-
-              <Separator className="my-4" />
               <p className="text-xs text-muted-foreground text-center mb-1">
                 All praise is due to Allah alone 🤲
               </p>

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +22,7 @@ type AuditRow = {
 };
 
 const AdminSecurity = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -163,14 +165,33 @@ const AdminSecurity = () => {
 
           <Separator />
 
+          <Button
+            variant="secondary"
+            onClick={() => navigate("/admin/security/backend-status")}
+          >
+            Backend status
+          </Button>
+
+          <Separator />
+
           <div className="grid gap-3 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="current">Current passcode</Label>
-              <Input id="current" type="password" value={currentPasscode} onChange={(e) => setCurrentPasscode(e.target.value)} />
+              <Input
+                id="current"
+                type="password"
+                value={currentPasscode}
+                onChange={(e) => setCurrentPasscode(e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="next">New passcode</Label>
-              <Input id="next" type="password" value={newPasscode} onChange={(e) => setNewPasscode(e.target.value)} />
+              <Input
+                id="next"
+                type="password"
+                value={newPasscode}
+                onChange={(e) => setNewPasscode(e.target.value)}
+              />
             </div>
           </div>
 
