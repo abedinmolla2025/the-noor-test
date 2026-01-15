@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import BottomNavigation from "@/components/BottomNavigation";
 import { supabase } from "@/integrations/supabase/client";
 
 type CheckStatus = "pending" | "pass" | "fail";
@@ -231,9 +230,9 @@ const BackendStatusPage = () => {
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-lg border-b border-border">
         <div className="max-w-lg mx-auto px-4 py-4 flex items-center gap-4">
           <button
-            onClick={() => navigate("/settings")}
+            onClick={() => navigate("/admin/security")}
             className="p-2 rounded-full hover:bg-muted/70 border border-border/60 transition-colors"
-            aria-label="Back to settings"
+            aria-label="Back to security"
           >
             <ArrowLeft size={22} />
           </button>
@@ -348,8 +347,6 @@ const BackendStatusPage = () => {
           </CardContent>
         </Card>
       </main>
-
-      <BottomNavigation />
     </div>
   );
 };

@@ -54,9 +54,7 @@ const adminNavItems: AdminNavItem[] = [
 ];
 
 function isAdminRoute(pathname: string) {
-  return pathname.startsWith("/admin") &&
-    pathname !== "/admin/login" &&
-    pathname !== "/admin/reset-password";
+  return pathname.startsWith("/admin");
 }
 
 function isActivePath(pathname: string, item: AdminNavItem) {

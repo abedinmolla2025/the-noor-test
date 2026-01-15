@@ -19,9 +19,6 @@ import BackendStatusPage from "./pages/BackendStatusPage";
 import QuizPage from "./pages/QuizPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import TermsPage from "./pages/TermsPage";
-import LoginPage from "./pages/LoginPage";
-import AdminLogin from "./pages/AdminLogin";
-import AdminResetPassword from "./pages/AdminResetPassword";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminContent from "./pages/admin/AdminContent";
@@ -43,7 +40,6 @@ const queryClient = new QueryClient();
 const AppRoutes = () => (
   <Routes>
     <Route path="/" element={<Index />} />
-    <Route path="/login" element={<LoginPage />} />
     <Route path="/baby-names" element={<BabyNamesPage />} />
     <Route path="/qibla" element={<QiblaPage />} />
     <Route path="/tasbih" element={<TasbihPage />} />
@@ -54,13 +50,10 @@ const AppRoutes = () => (
     <Route path="/bukhari" element={<BukhariPage />} />
     <Route path="/calendar" element={<IslamicCalendarPage />} />
     <Route path="/settings" element={<SettingsPage />} />
-    <Route path="/backend-status" element={<BackendStatusPage />} />
     <Route path="/quiz" element={<QuizPage />} />
     <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
     <Route path="/terms" element={<TermsPage />} />
-    <Route path="/admin/login" element={<AdminLogin />} />
-    <Route path="/admin/reset-password" element={<AdminResetPassword />} />
-    
+
     {/* Admin Routes - all wrapped with AdminLayout (includes ProtectedRoute) */}
     <Route
       path="/admin"
@@ -177,6 +170,14 @@ const AppRoutes = () => (
       }
     />
     <Route
+      path="/admin/security/backend-status"
+      element={
+        <AdminLayout>
+          <BackendStatusPage />
+        </AdminLayout>
+      }
+    />
+    <Route
       path="/admin/audit"
       element={
         <AdminLayout>
@@ -184,8 +185,6 @@ const AppRoutes = () => (
         </AdminLayout>
       }
     />
-    
-    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
     <Route path="*" element={<NotFound />} />
   </Routes>
 );
