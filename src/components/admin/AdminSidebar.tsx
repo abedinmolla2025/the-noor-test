@@ -11,7 +11,8 @@ import {
   LogOut,
   Activity,
   Zap,
-} from 'lucide-react';
+  Shield,
+} from "lucide-react";
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
@@ -64,11 +65,12 @@ export const AdminSidebar = ({ showQuickShortcuts = false }: AdminSidebarProps) 
       ],
     },
     {
-      title: 'System',
+      title: "System",
       items: [
-        { to: '/admin/ads', icon: DollarSign, label: 'Ads' },
-        { to: '/admin/finance', icon: DollarSign, label: 'Finance' },
-        { to: '/admin/settings', icon: Settings, label: 'Settings' },
+        { to: "/admin/ads", icon: DollarSign, label: "Ads" },
+        { to: "/admin/finance", icon: DollarSign, label: "Finance" },
+        { to: "/admin/settings", icon: Settings, label: "Settings" },
+        { to: "/admin/security", icon: Shield, label: "Security" },
       ],
     },
   ];
