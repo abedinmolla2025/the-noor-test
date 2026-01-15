@@ -6,6 +6,7 @@ import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 import noorLogo from "@/assets/noor-logo.png";
 import prayingMan3D from "@/assets/praying-man-3d.png";
 import { useGlobalConfig } from "@/context/GlobalConfigContext";
+import { AdminUnlockModal } from "@/components/admin/AdminUnlockModal";
 
 interface AthanSettings {
   enabled: boolean;
@@ -21,6 +22,8 @@ interface PrayerHeroCardProps {
 const PrayerHeroCard = ({ prayerData, athanSettings }: PrayerHeroCardProps) => {
   const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [logoTapCount, setLogoTapCount] = useState(0);
+  const [unlockOpen, setUnlockOpen] = useState(false);
   const localPrayerData = usePrayerTimes();
   const { branding } = useGlobalConfig();
   const { prayerTimes, location, hijriDate, isLoading } = prayerData || localPrayerData;
@@ -164,12 +167,29 @@ const PrayerHeroCard = ({ prayerData, athanSettings }: PrayerHeroCardProps) => {
                   <div className="flex items-center gap-1.5">
                     <div className="relative w-10 h-10 flex-shrink-0">
                       <div className="absolute -inset-0.5 bg-white rounded-full blur-sm opacity-25" />
-                      <img 
-                        src={branding.logoUrl || noorLogo}
-                        alt={branding.appName || "NOOR Logo"}
-                        className="w-10 h-10 rounded-full object-cover relative z-10"
-                        style={{ boxShadow: '0 0 8px 2px rgba(255, 255, 255, 0.25)' }}
-                      />
+                      <button
+                        type="button"
+                        aria-label="NOOR logo"
+                        className="relative z-10 block rounded-full"
+                        onClick={(e) => {
+                          // prevent navigating to /prayer-times when triggering admin unlock
+                          e.stopPropagation();
+                          const next = logoTapCount + 1;
+                          if (next >= 7) {
+                            setLogoTapCount(0);
+                            setUnlockOpen(true);
+                          } else {
+                            setLogoTapCount(next);
+                          }
+                        }}
+                      >
+                        <img
+                          src={branding.logoUrl || noorLogo}
+                          alt={branding.appName || "NOOR Logo"}
+                          className="w-10 h-10 rounded-full object-cover"
+                          style={{ boxShadow: "0 0 8px 2px rgba(255, 255, 255, 0.25)" }}
+                        />
+                      </button>
                     </div>
                     <div className="flex flex-col ml-1.5">
                       <span 
@@ -355,6 +375,12 @@ const PrayerHeroCard = ({ prayerData, athanSettings }: PrayerHeroCardProps) => {
 
       {/* Outer Glow Effect on Hover */}
       <div className="absolute -inset-1 bg-gradient-to-r from-amber-400/0 via-amber-400/15 to-amber-400/0 rounded-[2.5rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 blur-xl" />
+
+      <AdminUnlockModal
+        open={unlockOpen}
+        onOpenChange={setUnlockOpen}
+        onUnlocked={() => navigate("/admin")}
+      />
     </motion.div>
   );
 };

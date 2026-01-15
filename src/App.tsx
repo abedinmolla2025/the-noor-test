@@ -32,6 +32,7 @@ import AdminNotifications from "./pages/admin/AdminNotifications";
 import AdminMedia from "./pages/admin/AdminMedia";
 import AdminAnalytics from "./pages/admin/AdminAnalytics";
 import AdminSettings from "./pages/admin/AdminSettings";
+import AdminSecurity from "./pages/admin/AdminSecurity";
 import { AppSettingsProvider } from "./context/AppSettingsContext";
 import { AdminProvider } from "./contexts/AdminContext";
 import { AdminLayout } from "./components/admin/AdminLayout";
@@ -164,6 +165,14 @@ const AppRoutes = () => (
       element={
         <AdminLayout>
           <AdminSettings />
+        </AdminLayout>
+      }
+    />
+    <Route
+      path="/admin/security"
+      element={
+        <AdminLayout>
+          <AdminSecurity />
         </AdminLayout>
       }
     />
