@@ -622,7 +622,7 @@ export type Database = {
       is_admin: { Args: { _user_id: string }; Returns: boolean }
       set_admin_passcode: { Args: { new_passcode: string }; Returns: boolean }
       verify_admin_passcode: {
-        Args: { device_fingerprint: string; passcode: string }
+        Args: { _device_fingerprint: string; _passcode: string }
         Returns: {
           locked_until: string
           ok: boolean
