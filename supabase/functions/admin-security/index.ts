@@ -230,8 +230,10 @@ Deno.serve(async (req) => {
       const current = String(payload?.current_passcode ?? "");
       const next = String(payload?.new_passcode ?? "");
 
+      // Always return 200 + ok=false for expected/handled errors so the client
+      // doesn't surface a generic "non-2xx" message.
       if (next.trim().length < 6 || next.length > 128) {
-        return json({ ok: false, error: "weak_passcode" }, 400);
+        return json({ ok: false, error: "weak_passcode" }, 200);
       }
 
       // Require a valid authenticated caller (admin)
@@ -256,7 +258,7 @@ Deno.serve(async (req) => {
           reason: "change_passcode_invalid_current",
           ip: getIp(req),
         });
-        return json({ ok: false, error: "invalid_current" }, 403);
+        return json({ ok: false, error: "invalid_current" }, 200);
       }
 
       const { data: historyData, error: historyErr } = await supabase
@@ -269,7 +271,7 @@ Deno.serve(async (req) => {
 
       for (const h of historyData ?? []) {
         if (await bcrypt.compare(next, String((h as any).passcode_hash))) {
-          return json({ ok: false, error: "passcode_reused" }, 409);
+          return json({ ok: false, error: "passcode_reused" }, 200);
         }
       }
 
