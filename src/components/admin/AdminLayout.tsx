@@ -17,6 +17,7 @@ const pageTitleFromPath = (pathname: string) => {
   if (pathname.startsWith('/admin/notifications')) return 'Notifications';
   if (pathname.startsWith('/admin/analytics') || pathname.startsWith('/admin/reports')) return 'Reports';
   if (pathname.startsWith('/admin/layout')) return 'Layout';
+  if (pathname.startsWith('/admin/seo')) return 'SEO';
   if (pathname.startsWith('/admin/ads')) return 'Ads';
   if (pathname.startsWith('/admin/finance') || pathname.startsWith('/admin/monetization')) return 'Finance';
   if (pathname.startsWith('/admin/audit')) return 'Audit';
