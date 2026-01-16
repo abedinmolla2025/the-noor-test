@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdsBackendHealthPanel } from "@/components/admin/AdsBackendHealthPanel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -279,6 +280,8 @@ export default function AdminAds() {
         </TabsList>
 
         <TabsContent value="controls" className="space-y-4">
+          <AdsBackendHealthPanel />
+
           <Card>
             <CardHeader>
               <CardTitle>Emergency Controls</CardTitle>
@@ -293,10 +296,7 @@ export default function AdminAds() {
                       <p className="text-sm font-medium">Web Ads</p>
                       <p className="text-xs text-muted-foreground">Disable all ads on web.</p>
                     </div>
-                    <Switch
-                      checked={controls.web_enabled}
-                      onCheckedChange={(v) => updateControls.mutate({ web_enabled: v })}
-                    />
+                    <Switch checked={controls.web_enabled} onCheckedChange={(v) => updateControls.mutate({ web_enabled: v })} />
                   </div>
 
                   <div className="flex items-center justify-between gap-3 rounded-lg border border-border p-3">
@@ -304,10 +304,7 @@ export default function AdminAds() {
                       <p className="text-sm font-medium">App Ads</p>
                       <p className="text-xs text-muted-foreground">Disable ads on Android/iOS.</p>
                     </div>
-                    <Switch
-                      checked={controls.app_enabled}
-                      onCheckedChange={(v) => updateControls.mutate({ app_enabled: v })}
-                    />
+                    <Switch checked={controls.app_enabled} onCheckedChange={(v) => updateControls.mutate({ app_enabled: v })} />
                   </div>
 
                   <div className="flex items-center justify-between gap-3 rounded-lg border border-border p-3">
@@ -315,10 +312,7 @@ export default function AdminAds() {
                       <p className="text-sm font-medium">Kill Switch</p>
                       <p className="text-xs text-muted-foreground">Disable everything instantly.</p>
                     </div>
-                    <Switch
-                      checked={controls.kill_switch}
-                      onCheckedChange={(v) => updateControls.mutate({ kill_switch: v })}
-                    />
+                    <Switch checked={controls.kill_switch} onCheckedChange={(v) => updateControls.mutate({ kill_switch: v })} />
                   </div>
                 </div>
               )}
