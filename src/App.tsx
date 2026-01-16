@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { SeoHead } from "@/components/seo/SeoHead";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import BabyNamesPage from "./pages/BabyNamesPage";
@@ -32,6 +33,7 @@ import AdminSettings from "./pages/admin/AdminSettings";
 import AdminSecurity from "./pages/admin/AdminSecurity";
 import AdminAds from "./pages/admin/AdminAds";
 import AdminLayoutControl from "./pages/admin/AdminLayoutControl";
+import AdminSeoPage from "./pages/admin/AdminSeo";
 import { AppSettingsProvider } from "./context/AppSettingsContext";
 import { AdminProvider } from "./contexts/AdminContext";
 import { AdminLayout } from "./components/admin/AdminLayout";
@@ -40,8 +42,10 @@ import { GlobalConfigProvider } from "./context/GlobalConfigContext";
 const queryClient = new QueryClient();
 
 const AppRoutes = () => (
-  <Routes>
-    <Route path="/" element={<Index />} />
+  <>
+    <SeoHead />
+    <Routes>
+      <Route path="/" element={<Index />} />
     <Route path="/baby-names" element={<BabyNamesPage />} />
     <Route path="/qibla" element={<QiblaPage />} />
     <Route path="/tasbih" element={<TasbihPage />} />
@@ -164,6 +168,14 @@ const AppRoutes = () => (
       }
     />
     <Route
+      path="/admin/seo"
+      element={
+        <AdminLayout>
+          <AdminSeoPage />
+        </AdminLayout>
+      }
+    />
+    <Route
       path="/admin/settings"
       element={
         <AdminLayout>
@@ -195,8 +207,9 @@ const AppRoutes = () => (
         </AdminLayout>
       }
     />
-    <Route path="*" element={<NotFound />} />
-  </Routes>
+     <Route path="*" element={<NotFound />} />
+    </Routes>
+  </>
 );
 
 const App = () => (

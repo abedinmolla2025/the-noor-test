@@ -715,6 +715,45 @@ export type Database = {
         }
         Relationships: []
       }
+      seo_pages: {
+        Row: {
+          canonical_url: string | null
+          created_at: string
+          description: string | null
+          id: string
+          json_ld: Json | null
+          path: string
+          robots: string | null
+          title: string | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          canonical_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          json_ld?: Json | null
+          path: string
+          robots?: string | null
+          title?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          canonical_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          json_ld?: Json | null
+          path?: string
+          robots?: string | null
+          title?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       user_activity: {
         Row: {
           activity_data: Json | null
