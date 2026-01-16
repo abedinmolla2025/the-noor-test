@@ -39,6 +39,7 @@ import { AppSettingsProvider } from "./context/AppSettingsContext";
 import { AdminProvider } from "./contexts/AdminContext";
 import { AdminLayout } from "./components/admin/AdminLayout";
 import { GlobalConfigProvider } from "./context/GlobalConfigContext";
+import { usePushTokenRegistration } from "@/hooks/usePushTokenRegistration";
 
 const queryClient = new QueryClient();
 
@@ -214,22 +215,27 @@ const AppRoutes = () => (
   </>
 );
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <AdminProvider>
-        <GlobalConfigProvider>
-          <AppSettingsProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <AppRoutes />
-            </BrowserRouter>
-          </AppSettingsProvider>
-        </GlobalConfigProvider>
-      </AdminProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  // Native-only: register device token for future push delivery.
+  usePushTokenRegistration();
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <AdminProvider>
+          <GlobalConfigProvider>
+            <AppSettingsProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <AppRoutes />
+              </BrowserRouter>
+            </AppSettingsProvider>
+          </GlobalConfigProvider>
+        </AdminProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
