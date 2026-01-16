@@ -770,6 +770,10 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
+      is_recent_admin_passcode: {
+        Args: { _limit?: number; _passcode: string }
+        Returns: boolean
+      }
       set_admin_passcode: { Args: { new_passcode: string }; Returns: boolean }
       update_admin_passcode: {
         Args: { new_passcode: string }
