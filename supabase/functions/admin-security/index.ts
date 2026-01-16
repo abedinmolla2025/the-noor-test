@@ -165,9 +165,9 @@ Deno.serve(async (req) => {
       const adminUser = await ensureAdminUser(passcode);
 
       // Backend decides pass/fail via RPC (also writes attempt rows)
-        const { data: res, error: rpcErr } = await supabase.rpc("verify_admin_passcode", {
+       const { data: res, error: rpcErr } = await supabase.rpc("verify_admin_passcode", {
           _passcode: passcode,
-          _device_fingerprint: deviceFingerprint ?? "(none)",
+          _device_fingerprint: deviceFingerprint ?? "no-fingerprint",
         });
 
        if (rpcErr) {
