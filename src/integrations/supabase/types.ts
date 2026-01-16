@@ -303,6 +303,75 @@ export type Database = {
           },
         ]
       }
+      admin_layout_settings: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          layout_key: string
+          order_index: number
+          platform: string
+          section_key: string
+          size: string | null
+          updated_at: string
+          updated_by: string | null
+          visible: boolean
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          layout_key: string
+          order_index?: number
+          platform: string
+          section_key: string
+          size?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          visible?: boolean
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          layout_key?: string
+          order_index?: number
+          platform?: string
+          section_key?: string
+          size?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          visible?: boolean
+        }
+        Relationships: []
+      }
+      admin_layout_settings_versions: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          layout_key: string
+          platform: string
+          snapshot: Json
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          layout_key: string
+          platform: string
+          snapshot: Json
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          layout_key?: string
+          platform?: string
+          snapshot?: Json
+        }
+        Relationships: []
+      }
       admin_notifications: {
         Row: {
           created_at: string | null
