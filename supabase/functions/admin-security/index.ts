@@ -60,7 +60,8 @@ Deno.serve(async (req) => {
       return data.user.id;
     };
 
-    // Load config (service role bypasses RLS). If missing/invalid, auto-create a safe default.
+    // Load config (service role bypasses RLS).
+    // IMPORTANT: passcode hashing/verification is done in Postgres (crypt), not in JS.
     const ensureConfig = async () => {
       const { data: existing, error: existingErr } = await supabase
         .from("admin_security_config")
@@ -70,33 +71,9 @@ Deno.serve(async (req) => {
 
       if (existingErr) throw existingErr;
 
-      // Create/repair if row missing or required fields are empty.
-      if (!existing?.passcode_hash || !String(existing.admin_email ?? "").trim()) {
-        const bcrypt = await import("https://deno.land/x/bcrypt@v0.4.1/mod.ts");
-        const passcodeHash = existing?.passcode_hash ?? (await bcrypt.hash(DEFAULT_PASSCODE));
-
-        const adminEmail = String(existing?.admin_email ?? DEFAULT_ADMIN_EMAIL).trim() || DEFAULT_ADMIN_EMAIL;
-        const requireFingerprint = Boolean(existing?.require_fingerprint ?? false);
-
-        const { data: upserted, error: upsertErr } = await supabase
-          .from("admin_security_config")
-          .upsert(
-            {
-              id: 1,
-              admin_email: adminEmail,
-              passcode_hash: passcodeHash,
-              require_fingerprint: requireFingerprint,
-              failed_attempts: 0,
-              locked_until: null,
-              updated_at: new Date().toISOString(),
-            },
-            { onConflict: "id" }
-          )
-          .select("id, admin_email, require_fingerprint, passcode_hash")
-          .single();
-
-        if (upsertErr || !upserted) throw upsertErr ?? new Error("Failed to initialize admin security config");
-        return upserted;
+      // We expect this row to exist (created by initial setup). If missing, fail with a clear message.
+      if (!existing?.passcode_hash) {
+        throw new Error("admin_security_not_configured");
       }
 
       return existing;
@@ -251,10 +228,16 @@ Deno.serve(async (req) => {
         return json({ ok: false, error: "not_configured" }, 500);
       }
 
-      const bcrypt = await import("https://deno.land/x/bcrypt@v0.4.1/mod.ts");
+      // Validate current passcode using DB crypt verifier (also applies lockout rules)
+      const { data: verifyRes, error: verifyErr } = await supabase.rpc("verify_admin_passcode", {
+        _passcode: current,
+        _device_fingerprint: "(change_passcode)",
+      });
 
-      const valid = await bcrypt.compare(current, String(cfgRow.passcode_hash));
-      if (!valid) {
+      if (verifyErr) return json({ ok: false, error: "verify_failed" }, 500);
+
+      const verifyRow = Array.isArray(verifyRes) ? verifyRes[0] : verifyRes;
+      if (!verifyRow?.ok) {
         await logAudit(sub, "unlock_failed", {
           reason: "change_passcode_invalid_current",
           ip: getIp(req),
@@ -262,38 +245,35 @@ Deno.serve(async (req) => {
         return json({ ok: false, error: "invalid_current" }, 200);
       }
 
-      const { data: historyData, error: historyErr } = await supabase
-        .from("admin_passcode_history")
+      // Prevent reuse (last 5)
+      const { data: isReused, error: reusedErr } = await supabase.rpc("is_recent_admin_passcode", {
+        _passcode: next,
+        _limit: 5,
+      });
+
+      if (reusedErr) return json({ ok: false, error: "history_error" }, 500);
+      if (isReused) return json({ ok: false, error: "passcode_reused" }, 200);
+
+      // Update config hash in DB
+      const { data: updatedOk, error: updateRpcErr } = await supabase.rpc("update_admin_passcode", {
+        new_passcode: next,
+      });
+
+      if (updateRpcErr || !updatedOk) return json({ ok: false, error: "config_update_failed" }, 500);
+
+      // Store latest hash in history (read it back after update)
+      const { data: updatedCfg, error: updatedCfgErr } = await supabase
+        .from("admin_security_config")
         .select("passcode_hash")
-        .order("created_at", { ascending: false })
-        .limit(5);
+        .eq("id", 1)
+        .single();
 
-      if (historyErr) return json({ ok: false, error: "history_error" }, 500);
-
-      for (const h of historyData ?? []) {
-        if (await bcrypt.compare(next, String((h as any).passcode_hash))) {
-          return json({ ok: false, error: "passcode_reused" }, 200);
-        }
-      }
-
-      const newHash = await bcrypt.hash(next);
+      if (updatedCfgErr || !updatedCfg?.passcode_hash) return json({ ok: false, error: "history_insert_failed" }, 500);
 
       const { error: insertErr } = await supabase.from("admin_passcode_history").insert({
-        passcode_hash: newHash,
+        passcode_hash: String(updatedCfg.passcode_hash),
       });
       if (insertErr) return json({ ok: false, error: "history_insert_failed" }, 500);
-
-      const { error: updateErr } = await supabase
-        .from("admin_security_config")
-        .update({
-          passcode_hash: newHash,
-          failed_attempts: 0,
-          locked_until: null,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", 1);
-
-      if (updateErr) return json({ ok: false, error: "config_update_failed" }, 500);
 
       // Keep the dedicated admin user's auth password in sync
       const adminUser = await ensureAdminUser();
