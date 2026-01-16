@@ -54,7 +54,9 @@ export const AdminUnlockModal = ({ open, onOpenChange, onUnlocked }: Props) => {
       if (fnError) throw fnError;
 
       if (!data?.ok) {
-        if (data?.locked_until) {
+        if (data?.reason === "fingerprint_required") {
+          setError("Device fingerprint is required. Please enable the toggle and try again.");
+        } else if (data?.locked_until) {
           setError(`Locked out until ${new Date(data.locked_until).toLocaleTimeString()}.`);
         } else {
           setError("Invalid passcode.");
