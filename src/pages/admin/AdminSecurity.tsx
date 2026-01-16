@@ -106,14 +106,29 @@ const AdminSecurity = () => {
       });
       if (error) throw error;
 
-      if (!data?.ok) {
-        toast({
-          title: "Failed",
-          description: data?.error === "invalid_current" ? "Invalid current passcode." : "Passcode change failed.",
-          variant: "destructive",
-        });
-        return;
-      }
+       if (!data?.ok) {
+         const err = String(data?.error ?? "");
+         toast({
+           title: "Failed",
+           description:
+             err === "invalid_current"
+               ? "Invalid current passcode."
+               : err === "passcode_reused"
+                 ? "You recently used this passcode. Choose a different one."
+                 : err === "weak_passcode"
+                   ? "Passcode must be at least 6 characters."
+                   : err === "not_authenticated"
+                     ? "Session expired. Please unlock admin again."
+                     : "Passcode change failed.",
+           variant: "destructive",
+         });
+
+         // If auth is missing, clear local unlock so ProtectedRoute will prompt unlock again.
+         if (err === "not_authenticated") {
+           localStorage.removeItem("noor_admin_unlocked");
+         }
+         return;
+       }
 
       toast({
         title: "Passcode updated",
