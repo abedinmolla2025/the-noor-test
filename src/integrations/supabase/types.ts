@@ -671,6 +671,7 @@ export type Database = {
           platform: string
           token: string
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string
@@ -681,6 +682,7 @@ export type Database = {
           platform: string
           token: string
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string
@@ -691,6 +693,100 @@ export type Database = {
           platform?: string
           token?: string
           updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      notification_deliveries: {
+        Row: {
+          delivered_at: string
+          error_code: string | null
+          error_message: string | null
+          id: string
+          notification_id: string
+          platform: string
+          provider_message_id: string | null
+          status: string
+          token_id: string | null
+        }
+        Insert: {
+          delivered_at?: string
+          error_code?: string | null
+          error_message?: string | null
+          id?: string
+          notification_id: string
+          platform: string
+          provider_message_id?: string | null
+          status: string
+          token_id?: string | null
+        }
+        Update: {
+          delivered_at?: string
+          error_code?: string | null
+          error_message?: string | null
+          id?: string
+          notification_id?: string
+          platform?: string
+          provider_message_id?: string | null
+          status?: string
+          token_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_deliveries_notification_id_fkey"
+            columns: ["notification_id"]
+            isOneToOne: false
+            referencedRelation: "notifications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notification_deliveries_token_id_fkey"
+            columns: ["token_id"]
+            isOneToOne: false
+            referencedRelation: "device_push_tokens"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          body: string
+          created_at: string
+          created_by: string
+          deep_link: string | null
+          id: string
+          image_url: string | null
+          scheduled_at: string | null
+          sent_at: string | null
+          status: string
+          target_platform: string
+          title: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          created_by: string
+          deep_link?: string | null
+          id?: string
+          image_url?: string | null
+          scheduled_at?: string | null
+          sent_at?: string | null
+          status?: string
+          target_platform?: string
+          title: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          created_by?: string
+          deep_link?: string | null
+          id?: string
+          image_url?: string | null
+          scheduled_at?: string | null
+          sent_at?: string | null
+          status?: string
+          target_platform?: string
+          title?: string
         }
         Relationships: []
       }
