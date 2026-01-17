@@ -59,6 +59,13 @@ function toLocalEndOfDayIso(d: Date) {
   return x.toISOString();
 }
 
+function toISODateTimeLocal(value: string) {
+  // input[type=datetime-local] gives local time without timezone; store as ISO string in UTC
+  // simplest: new Date(localString) assumes local timezone.
+  const d = new Date(value);
+  return isNaN(d.getTime()) ? null : d.toISOString();
+}
+
 async function compressImageFile(file: File, opts?: { maxDimension?: number; quality?: number }) {
   // Don't recompress GIFs (keep animation)
   if (file.type === "image/gif") return file;
@@ -322,13 +329,57 @@ export default function AdminOccasions() {
   const [imageProcessing, setImageProcessing] = useState(false);
   const [dateError, setDateError] = useState<string | null>(null);
   const [templateId, setTemplateId] = useState<string>("");
+  const [templateImages, setTemplateImages] = useState<Record<string, string>>({});
+  const [templatePhotoUploading, setTemplatePhotoUploading] = useState(false);
   const [localImagePreviewUrl, setLocalImagePreviewUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadTemplateImages = async () => {
+      try {
+        const { data, error } = await (supabase as any)
+          .from("app_settings")
+          .select("setting_value")
+          .eq("setting_key", "occasion_template_images")
+          .maybeSingle();
+
+        if (error) throw error;
+        const value = (data?.setting_value ?? {}) as any;
+        const map = value && typeof value === "object" ? (value as Record<string, string>) : {};
+        if (!cancelled) setTemplateImages(map);
+      } catch {
+        if (!cancelled) setTemplateImages({});
+      }
+    };
+
+    void loadTemplateImages();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     return () => {
       if (localImagePreviewUrl) URL.revokeObjectURL(localImagePreviewUrl);
     };
   }, [localImagePreviewUrl]);
+
+  const applyBlankTemplate = () => {
+    setForm((p) => ({
+      ...p,
+      title: "",
+      message: "",
+      dua_text: "",
+      dateRange: undefined,
+      templateStyle: null,
+      imageFile: null,
+      image_url: "",
+    }));
+
+    if (localImagePreviewUrl) URL.revokeObjectURL(localImagePreviewUrl);
+    setLocalImagePreviewUrl(null);
+  };
 
   const applyTemplate = (id: string) => {
     const tpl = OCCASION_TEMPLATES.find((t) => t.id === id);
@@ -338,6 +389,8 @@ export default function AdminOccasions() {
     const to = new Date(today);
     to.setDate(to.getDate() + Math.max(0, (tpl.daysActive ?? 7) - 1));
 
+    const tplImage = templateImages[id];
+
     setForm((p) => ({
       ...p,
       title: tpl.title,
@@ -345,7 +398,13 @@ export default function AdminOccasions() {
       dua_text: tpl.dua_text ?? "",
       dateRange: { from: today, to },
       templateStyle: tpl.style,
+      // if a template image exists, prefill it (still optional)
+      image_url: typeof tplImage === "string" ? tplImage : p.image_url,
+      imageFile: null,
     }));
+
+    if (localImagePreviewUrl) URL.revokeObjectURL(localImagePreviewUrl);
+    setLocalImagePreviewUrl(null);
   };
 
   const getTemplateStyleLabel = (s: OccasionTemplate["style"]) => {
@@ -470,6 +529,49 @@ export default function AdminOccasions() {
 
     const { data } = supabase.storage.from("occasions-assets").getPublicUrl(path);
     return data.publicUrl;
+  };
+
+  const uploadTemplatePhoto = async (id: string, file: File) => {
+    setTemplatePhotoUploading(true);
+    try {
+      const optimized = await compressImageFile(file);
+      const path = `occasion-templates/${id}/${crypto.randomUUID()}-${optimized.name}`;
+
+      const { error: uploadError } = await supabase.storage.from("occasions-assets").upload(path, optimized, {
+        cacheControl: "3600",
+        upsert: false,
+      });
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage.from("occasions-assets").getPublicUrl(path);
+      const url = data.publicUrl;
+
+      const nextMap = { ...templateImages, [id]: url };
+      setTemplateImages(nextMap);
+
+      const { error: upsertErr } = await (supabase as any)
+        .from("app_settings")
+        .upsert(
+          {
+            setting_key: "occasion_template_images",
+            setting_value: nextMap,
+            description: "Occasion template image URLs (by template id)",
+          },
+          { onConflict: "setting_key" },
+        );
+      if (upsertErr) throw upsertErr;
+
+      // Also prefill current form image_url so user sees it immediately
+      setForm((p) => ({ ...p, image_url: url, imageFile: null }));
+      if (localImagePreviewUrl) URL.revokeObjectURL(localImagePreviewUrl);
+      setLocalImagePreviewUrl(null);
+
+      toast({ title: "Template photo saved" });
+    } catch (e: any) {
+      toast({ title: "Failed", description: e?.message ?? "Could not upload template photo.", variant: "destructive" });
+    } finally {
+      setTemplatePhotoUploading(false);
+    }
   };
 
   const save = async () => {
@@ -610,21 +712,59 @@ export default function AdminOccasions() {
                          ))}
                        </SelectContent>
                      </Select>
-                     <Button
-                       type="button"
-                       variant="outline"
-                       disabled={!templateId}
-                       onClick={() => {
-                         setDateError(null);
-                         applyTemplate(templateId);
-                       }}
-                     >
-                       Apply
-                     </Button>
-                   </div>
-                   <p className="text-xs text-muted-foreground">
-                     টেমপ্লেট সিলেক্ট করলে Title/Message/Dua + Date range auto-fill হবে।
-                   </p>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        disabled={!templateId || templateId === "blank"}
+                        onClick={() => {
+                          setDateError(null);
+                          if (templateId) applyTemplate(templateId);
+                        }}
+                      >
+                        Apply
+                      </Button>
+                    </div>
+
+                    {templateId && templateId !== "blank" ? (
+                      <div className="mt-3 rounded-lg border border-border p-3">
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium">Template photo (optional)</p>
+                            <p className="text-xs text-muted-foreground">
+                              এই টেমপ্লেট সিলেক্ট করলে এই ফটোটা auto-fill হবে। চাইলে পরে Image/GIF ফিল্ড থেকে override করতে পারবেন।
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-muted-foreground">
+                              {templateImages[templateId] ? "Saved" : "Not set"}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="mt-3 grid gap-2 sm:grid-cols-[1fr_auto]">
+                          <Input
+                            type="file"
+                            accept="image/*,image/gif"
+                            disabled={templatePhotoUploading}
+                            onChange={(e) => {
+                              const f = e.target.files?.[0];
+                              if (!f) return;
+                              void uploadTemplatePhoto(templateId, f);
+                              // allow re-selecting same file later
+                              e.currentTarget.value = "";
+                            }}
+                          />
+                          <Button type="button" variant="outline" disabled className="gap-2">
+                            {templatePhotoUploading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                            {templatePhotoUploading ? "Uploading…" : "Upload"}
+                          </Button>
+                        </div>
+                      </div>
+                    ) : null}
+
+                    <p className="text-xs text-muted-foreground">
+                      টেমপ্লেট সিলেক্ট করলে Title/Message/Dua + Date range auto-fill হবে।
+                    </p>
                  </div>
 
                  <div className="space-y-2 md:col-span-2">
@@ -715,7 +855,7 @@ export default function AdminOccasions() {
                 <div className="space-y-2 md:col-span-2">
                   <Label className="flex items-center gap-2">
                     <ImageIcon className="h-4 w-4" />
-                    Image/GIF
+                    Image/GIF (optional)
                   </Label>
                   <Input
                     type="file"
@@ -732,7 +872,7 @@ export default function AdminOccasions() {
                       setImageProcessing(true);
                       try {
                         const optimized = await compressImageFile(raw);
-                        setForm((p) => ({ ...p, imageFile: optimized }));
+                        setForm((p) => ({ ...p, imageFile: optimized, image_url: "" }));
 
                         // Local preview for UI only
                         if (localImagePreviewUrl) URL.revokeObjectURL(localImagePreviewUrl);
@@ -745,7 +885,9 @@ export default function AdminOccasions() {
                   {imageProcessing ? (
                     <p className="text-xs text-muted-foreground">Optimizing image…</p>
                   ) : (
-                    <p className="text-xs text-muted-foreground">Optional. Uploads to storage bucket “occasions-assets”.</p>
+                    <p className="text-xs text-muted-foreground">
+                      Optional. Leave empty to use template photo (if set) or show a plain banner.
+                    </p>
                   )}
                 </div>
               </div>
