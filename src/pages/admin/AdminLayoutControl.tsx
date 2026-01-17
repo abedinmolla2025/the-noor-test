@@ -11,23 +11,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
-import { GripVertical, History, RotateCcw } from "lucide-react";
+import { History, RotateCcw } from "lucide-react";
 import type { LayoutPlatform } from "@/lib/layout";
 import { detectLayoutPlatform } from "@/lib/layout";
 import { useLayoutSettings } from "@/hooks/useLayoutSettings";
-
-type UiSize = "compact" | "normal" | "large";
-
-type UiSection = {
-  section_key: string;
-  label: string;
-  visible: boolean;
-  order_index: number;
-  size: UiSize;
-};
+import { LayoutSectionRow } from "@/components/admin/layout/LayoutSectionRow";
+import type { UiSection } from "@/components/admin/layout/types";
 
 const LAYOUT_KEY = "home";
 
@@ -47,6 +38,7 @@ function toUiSections(rows: any[], fallback = DEFAULT_SECTIONS): UiSection[] {
       visible: true,
       order_index: i,
       size: "normal",
+      settings: {},
     }));
   }
 
@@ -59,7 +51,8 @@ function toUiSections(rows: any[], fallback = DEFAULT_SECTIONS): UiSection[] {
       label: fallback.find((f) => f.section_key === r.section_key)?.label ?? r.section_key,
       visible: r.visible ?? true,
       order_index: r.order_index ?? 0,
-      size: (r.size as UiSize) || "normal",
+      size: (r.size as any) || "normal",
+      settings: (r.settings as any) ?? {},
     }));
 
   // Ensure any new defaults appear even if not in DB yet
@@ -70,7 +63,8 @@ function toUiSections(rows: any[], fallback = DEFAULT_SECTIONS): UiSection[] {
       label: f.label,
       visible: true,
       order_index: fromDb.length + idx,
-      size: "normal" as UiSize,
+      size: "normal" as any,
+      settings: {},
     }));
 
   return [...fromDb, ...missing].map((s, i) => ({ ...s, order_index: i }));
@@ -136,6 +130,7 @@ export default function AdminLayoutControl() {
         visible: s.visible,
         order_index: s.order_index,
         size: s.size,
+        settings: s.settings ?? {},
       }));
 
       const ins = await supabase.from("admin_layout_settings").insert(insertPayload);
@@ -193,6 +188,7 @@ export default function AdminLayoutControl() {
         visible: r.visible ?? true,
         order_index: i,
         size: "normal",
+        settings: {},
       }));
 
       setItems(synced);
@@ -211,6 +207,7 @@ export default function AdminLayoutControl() {
         visible: r.visible ?? true,
         order_index: r.order_index ?? i,
         size: r.size ?? "normal",
+        settings: r.settings ?? {},
       })),
     );
 
@@ -276,60 +273,15 @@ export default function AdminLayoutControl() {
           className="space-y-2"
         >
           {items.map((item) => (
-            <Reorder.Item
+            <LayoutSectionRow
               key={item.section_key}
-              value={item}
-              className="rounded-xl border border-border bg-card p-3"
-            >
-              <div className="flex items-center gap-3">
-                <div className="cursor-grab text-muted-foreground">
-                  <GripVertical className="h-4 w-4" />
-                </div>
-
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium leading-tight">{item.label}</p>
-                  <p className="text-[11px] text-muted-foreground">{item.section_key}</p>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <div className="w-32">
-                    <Select
-                      value={item.size}
-                      onValueChange={(v) =>
-                        setItems((prev) =>
-                          prev.map((p) =>
-                            p.section_key === item.section_key ? { ...p, size: v as UiSize } : p,
-                          ),
-                        )
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Size" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="compact">Compact</SelectItem>
-                        <SelectItem value="normal">Normal</SelectItem>
-                        <SelectItem value="large">Large</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <Label className="text-xs text-muted-foreground">Show</Label>
-                    <Switch
-                      checked={item.visible}
-                      onCheckedChange={(checked) =>
-                        setItems((prev) =>
-                          prev.map((p) =>
-                            p.section_key === item.section_key ? { ...p, visible: checked } : p,
-                          ),
-                        )
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
-            </Reorder.Item>
+              item={item}
+              onChange={(next) =>
+                setItems((prev) =>
+                  prev.map((p) => (p.section_key === item.section_key ? { ...next, order_index: p.order_index } : p)),
+                )
+              }
+            />
           ))}
         </Reorder.Group>
       </Card>

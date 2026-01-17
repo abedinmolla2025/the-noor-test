@@ -312,6 +312,7 @@ export type Database = {
           order_index: number
           platform: string
           section_key: string
+          settings: Json
           size: string | null
           updated_at: string
           updated_by: string | null
@@ -325,6 +326,7 @@ export type Database = {
           order_index?: number
           platform: string
           section_key: string
+          settings?: Json
           size?: string | null
           updated_at?: string
           updated_by?: string | null
@@ -338,6 +340,7 @@ export type Database = {
           order_index?: number
           platform?: string
           section_key?: string
+          settings?: Json
           size?: string | null
           updated_at?: string
           updated_by?: string | null
