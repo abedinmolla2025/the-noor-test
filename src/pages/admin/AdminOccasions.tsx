@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
@@ -332,7 +333,9 @@ export default function AdminOccasions() {
   const [templateImages, setTemplateImages] = useState<Record<string, string>>({});
   const [templatePhotoUploading, setTemplatePhotoUploading] = useState(false);
   const templatePhotoInputRef = useRef<HTMLInputElement | null>(null);
+  const [previewPlatform, setPreviewPlatform] = useState<"web" | "app">("web");
   const [localImagePreviewUrl, setLocalImagePreviewUrl] = useState<string | null>(null);
+
 
   useEffect(() => {
     let cancelled = false;
@@ -946,46 +949,78 @@ export default function AdminOccasions() {
         <Card>
           <CardContent className="p-4">
             {(() => {
-              const previewStyle = form.templateStyle;
-              const v = getPreviewVariant(previewStyle);
               const title = (editing ? editing.title : form.title) || "ঈদ মোবারক";
               const message = (editing ? editing.message : form.message) || "আপনার দিন কাটুক আনন্দ ও বরকতে।";
               const dua = (editing ? editing.dua_text : form.dua_text) || "তাকাব্বালাল্লাহু মিন্না ওয়া মিনকুম";
               const bannerImg = localImagePreviewUrl || form.image_url || editing?.image_url || null;
 
+              const willShowOnSelectedPlatform =
+                form.platform === "both" ||
+                (form.platform === "web" && previewPlatform === "web") ||
+                (form.platform === "app" && previewPlatform === "app");
+
               return (
-                <div className={cn("p-4", v.frame)}>
+                <div className="space-y-3">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="text-sm font-semibold">Preview</p>
-                      <p className="mt-1 text-xs text-muted-foreground">This is roughly how it will look at the top of Home.</p>
+                      <p className="text-sm font-semibold">Live preview (Home carousel)</p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        Homepage এর carousel card-এর exact UI স্টাইলে preview দেখাচ্ছে।
+                      </p>
                     </div>
-                    {previewStyle ? (
-                      <span className={cn("inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-medium", v.badge)}>
-                        {getTemplateStyleLabel(previewStyle)}
-                      </span>
-                    ) : null}
+
+                    <div className="flex flex-col items-end gap-2">
+                      <ToggleGroup
+                        type="single"
+                        value={previewPlatform}
+                        onValueChange={(v) => {
+                          if (v === "web" || v === "app") setPreviewPlatform(v);
+                        }}
+                        variant="outline"
+                        size="sm"
+                      >
+                        <ToggleGroupItem value="web" aria-label="Preview web">
+                          Web
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="app" aria-label="Preview app">
+                          App
+                        </ToggleGroupItem>
+                      </ToggleGroup>
+
+                      {!willShowOnSelectedPlatform ? (
+                        <span className="text-[11px] text-muted-foreground">
+                          Note: এই occasion টি {previewPlatform} এ show হবে না (platform={form.platform}).
+                        </span>
+                      ) : null}
+                    </div>
                   </div>
 
-                  <div className={cn("mt-4 overflow-hidden border border-border", previewStyle === "playful" ? "rounded-3xl" : "rounded-2xl", "bg-card")}>
-                    <div className="relative">
-                      {bannerImg ? (
-                        <img
-                          src={bannerImg}
-                          alt="Occasion banner preview"
-                          className="h-44 w-full object-cover"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className={cn("h-44 w-full", v.banner)} />
-                      )}
-                      <div className={cn("absolute inset-0", v.overlay)} />
-                      <div className={cn("absolute bottom-0 p-4", previewStyle === "editorial" ? "space-y-2" : "")}
-                      >
-                        <p className={v.title}>{title}</p>
-                        <p className={cn("mt-1", v.message)}>{message}</p>
-                        <p className={cn("mt-2 inline-flex rounded-full px-3 py-1", v.dua)}>{dua}</p>
-                      </div>
+                  {/* Exact same card markup as src/components/OccasionCarousel.tsx */}
+                  <div className="relative overflow-hidden rounded-2xl border border-border bg-card">
+                    {bannerImg ? (
+                      <img
+                        src={bannerImg}
+                        alt={title}
+                        loading="lazy"
+                        className="h-44 w-full object-cover sm:h-52"
+                      />
+                    ) : (
+                      <div className="h-44 w-full bg-muted sm:h-52" />
+                    )}
+
+                    {/* Gradient overlay */}
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent" />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/25 via-transparent to-accent/20" />
+
+                    {/* Content */}
+                    <div className="absolute inset-x-0 bottom-0 p-4">
+                      <p className="font-semibold tracking-tight text-foreground text-lg sm:text-xl">{title}</p>
+                      <p className="mt-1 text-sm text-foreground/90 line-clamp-2">{message}</p>
+                      {dua ? (
+                        <p className="mt-2 text-sm italic text-primary-foreground/90 bg-primary/20 inline-flex rounded-full px-3 py-1">
+                          {dua}
+                        </p>
+                      ) : null}
                     </div>
                   </div>
                 </div>
