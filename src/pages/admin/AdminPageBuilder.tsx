@@ -241,6 +241,7 @@ export default function AdminPageBuilder() {
   const [importOpen, setImportOpen] = useState(false);
   const [exportJson, setExportJson] = useState<string>("");
   const [importJson, setImportJson] = useState<string>("");
+  const [importStep, setImportStep] = useState<"edit" | "preview">("edit");
   const [importing, setImporting] = useState(false);
   const [replaceAllAndPlatform, setReplaceAllAndPlatform] = useState(false);
 
@@ -379,34 +380,57 @@ export default function AdminPageBuilder() {
     }
   };
 
+  const parseImportText = (text: string) => {
+    const raw = JSON.parse(text);
+    const incoming: any[] = Array.isArray(raw) ? raw : Array.isArray((raw as any)?.sections) ? (raw as any).sections : [];
+    if (!incoming.length) throw new Error("Invalid JSON: expected an array or { sections: [...] }.");
+
+    const normalized = incoming
+      .filter((x) => x && typeof x === "object")
+      .map((x, idx) => {
+        const sectionKey = String((x as any).section_key ?? "").trim();
+        if (!sectionKey) throw new Error("Each section must have section_key");
+
+        const incomingPlatform = String((x as any).platform ?? platform);
+        const platformToUse = replaceAllAndPlatform ? incomingPlatform : platform;
+
+        return {
+          page: "home",
+          platform: platformToUse,
+          section_key: sectionKey,
+          title: String((x as any).title ?? sectionKey),
+          position: typeof (x as any).position === "number" ? (x as any).position : idx,
+          visible: typeof (x as any).visible === "boolean" ? (x as any).visible : true,
+          settings: (x as any).settings && typeof (x as any).settings === "object" ? (x as any).settings : {},
+        };
+      })
+      .sort((a, b) => a.position - b.position)
+      .map((s, idx) => ({ ...s, position: idx }));
+
+    return normalized;
+  };
+
+  const importPreview = useMemo(() => {
+    const text = importJson.trim();
+    if (!text) return { rows: [] as ReturnType<typeof parseImportText>, error: "" as string, toDelete: [] as AdminPageSection[] };
+
+    try {
+      const rows = parseImportText(text);
+      const toDelete = replaceAllAndPlatform
+        ? items.filter((s) => s.platform === "all" || s.platform === platform)
+        : items.filter((s) => s.platform === platform);
+
+      return { rows, error: "", toDelete };
+    } catch (e: any) {
+      return { rows: [] as ReturnType<typeof parseImportText>, error: e?.message ?? "Invalid JSON", toDelete: [] as AdminPageSection[] };
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [importJson, replaceAllAndPlatform, platform, items]);
+
   const applyImport = async () => {
     setImporting(true);
     try {
-      const raw = JSON.parse(importJson);
-      const incoming: any[] = Array.isArray(raw) ? raw : Array.isArray((raw as any)?.sections) ? (raw as any).sections : [];
-      if (!incoming.length) throw new Error("Invalid JSON: expected an array or { sections: [...] }.");
-
-      const normalized = incoming
-        .filter((x) => x && typeof x === "object")
-        .map((x, idx) => {
-          const sectionKey = String((x as any).section_key ?? "").trim();
-          if (!sectionKey) throw new Error("Each section must have section_key");
-
-          const incomingPlatform = String((x as any).platform ?? platform);
-          const platformToUse = replaceAllAndPlatform ? incomingPlatform : platform;
-
-          return {
-            page: "home",
-            platform: platformToUse,
-            section_key: sectionKey,
-            title: String((x as any).title ?? sectionKey),
-            position: typeof (x as any).position === "number" ? (x as any).position : idx,
-            visible: typeof (x as any).visible === "boolean" ? (x as any).visible : true,
-            settings: (x as any).settings && typeof (x as any).settings === "object" ? (x as any).settings : {},
-          };
-        })
-        .sort((a, b) => a.position - b.position)
-        .map((s, idx) => ({ ...s, position: idx }));
+      const normalized = parseImportText(importJson);
 
       let del = supabase.from("admin_page_sections").delete().eq("page", "home");
       if (replaceAllAndPlatform) {
@@ -424,6 +448,7 @@ export default function AdminPageBuilder() {
       toast({ title: "Import complete" });
       setImportOpen(false);
       setImportJson("");
+      setImportStep("edit");
       await load();
     } catch (e: any) {
       toast({ title: "Import failed", description: e?.message ?? "", variant: "destructive" });
@@ -541,7 +566,10 @@ export default function AdminPageBuilder() {
               </DialogContent>
             </Dialog>
 
-            <Dialog open={importOpen} onOpenChange={setImportOpen}>
+            <Dialog open={importOpen} onOpenChange={(open) => {
+              setImportOpen(open);
+              if (!open) setImportStep("edit");
+            }}>
               <DialogTrigger asChild>
                 <Button variant="outline">Import JSON</Button>
               </DialogTrigger>
@@ -549,37 +577,127 @@ export default function AdminPageBuilder() {
                 <DialogHeader>
                   <DialogTitle>Import Home config (JSON)</DialogTitle>
                   <DialogDescription>
-                    Paste JSON exported from another environment. Import replaces the current platform config.
+                    {importStep === "edit"
+                      ? "Paste JSON exported from another environment, then preview what will change before applying."
+                      : "Preview what will be imported and what will be deleted."}
                   </DialogDescription>
                 </DialogHeader>
 
-                <div className="space-y-3">
-                  <Textarea
-                    value={importJson}
-                    onChange={(e) => setImportJson(e.target.value)}
-                    placeholder='{"version":1,"page":"home","sections":[...]}'
-                    className="min-h-[320px] font-mono text-xs"
-                  />
+                {importStep === "edit" ? (
+                  <div className="space-y-3">
+                    <Textarea
+                      value={importJson}
+                      onChange={(e) => setImportJson(e.target.value)}
+                      placeholder='{"version":1,"page":"home","sections":[...]}'
+                      className="min-h-[320px] font-mono text-xs"
+                    />
 
-                  <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 px-3 py-2">
-                    <div className="space-y-0.5">
-                      <p className="text-sm font-medium">Replace “all” rows too</p>
-                      <p className="text-xs text-muted-foreground">
-                        If enabled, we will also delete/replace shared <code>all</code> rows.
-                      </p>
+                    {importJson.trim() && importPreview.error ? (
+                      <p className="text-sm text-destructive">{importPreview.error}</p>
+                    ) : null}
+
+                    <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 px-3 py-2">
+                      <div className="space-y-0.5">
+                        <p className="text-sm font-medium">Replace “all” rows too</p>
+                        <p className="text-xs text-muted-foreground">
+                          If enabled, we will also delete/replace shared <code>all</code> rows.
+                        </p>
+                      </div>
+                      <Switch checked={replaceAllAndPlatform} onCheckedChange={setReplaceAllAndPlatform} />
                     </div>
-                    <Switch checked={replaceAllAndPlatform} onCheckedChange={setReplaceAllAndPlatform} />
                   </div>
-                </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="rounded-lg border border-border bg-muted/20 p-3">
+                        <p className="text-sm font-medium">Will delete ({importPreview.toDelete.length})</p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          {replaceAllAndPlatform ? (
+                            <>
+                              Rows with platform <code>all</code> and <code>{platform}</code>.
+                            </>
+                          ) : (
+                            <>
+                              Rows with platform <code>{platform}</code>.
+                            </>
+                          )}
+                        </p>
+                        <div className="mt-3 max-h-52 space-y-2 overflow-auto pr-1">
+                          {importPreview.toDelete.length ? (
+                            importPreview.toDelete
+                              .slice()
+                              .sort((a, b) => a.position - b.position)
+                              .map((s) => (
+                                <div key={s.id} className="flex items-center justify-between gap-2 text-xs">
+                                  <span className="truncate">
+                                    {s.title || s.section_key} <span className="text-muted-foreground">({s.section_key})</span>
+                                  </span>
+                                  <Badge variant="secondary">{s.platform}</Badge>
+                                </div>
+                              ))
+                          ) : (
+                            <p className="text-xs text-muted-foreground">Nothing will be deleted.</p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="rounded-lg border border-border bg-muted/20 p-3">
+                        <p className="text-sm font-medium">Will import ({importPreview.rows.length})</p>
+                        <p className="mt-1 text-xs text-muted-foreground">Rows will be renumbered to positions 0..n.</p>
+                        <div className="mt-3 max-h-52 space-y-2 overflow-auto pr-1">
+                          {importPreview.rows.length ? (
+                            importPreview.rows.map((s, idx) => (
+                              <div key={`${s.platform}-${s.section_key}-${idx}`} className="flex items-center justify-between gap-2 text-xs">
+                                <span className="truncate">
+                                  {s.title} <span className="text-muted-foreground">({s.section_key})</span>
+                                </span>
+                                <div className="flex items-center gap-2">
+                                  {!s.visible ? <Badge variant="outline">hidden</Badge> : null}
+                                  <Badge variant="secondary">{String(s.platform)}</Badge>
+                                </div>
+                              </div>
+                            ))
+                          ) : (
+                            <p className="text-xs text-muted-foreground">No sections detected.</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {importPreview.error ? <p className="text-sm text-destructive">{importPreview.error}</p> : null}
+                  </div>
+                )}
 
                 <DialogFooter className="gap-2 sm:gap-2">
-                  <Button variant="outline" onClick={() => setImportOpen(false)} disabled={importing}>
-                    Cancel
-                  </Button>
-                  <Button onClick={applyImport} disabled={importing || !importJson.trim()}>
-                    {importing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                    Import & Replace
-                  </Button>
+                  {importStep === "preview" ? (
+                    <Button variant="outline" onClick={() => setImportStep("edit")} disabled={importing}>
+                      Back
+                    </Button>
+                  ) : (
+                    <Button variant="outline" onClick={() => {
+                      setImportOpen(false);
+                      setImportStep("edit");
+                    }} disabled={importing}>
+                      Cancel
+                    </Button>
+                  )}
+
+                  {importStep === "edit" ? (
+                    <Button
+                      onClick={() => setImportStep("preview")}
+                      disabled={importing || !importJson.trim() || !!importPreview.error}
+                    >
+                      Preview
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={applyImport}
+                      disabled={importing || !!importPreview.error || !importPreview.rows.length}
+                    >
+                      {importing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                      Import & Replace
+                    </Button>
+                  )}
                 </DialogFooter>
               </DialogContent>
             </Dialog>
