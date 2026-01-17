@@ -549,6 +549,54 @@ export type Database = {
         }
         Relationships: []
       }
+      celebrate_posts: {
+        Row: {
+          body: string | null
+          created_at: string
+          created_by: string | null
+          cta_text: string | null
+          expires_at: string | null
+          id: string
+          link_url: string | null
+          media_path: string | null
+          media_type: string | null
+          starts_at: string
+          target_platform: string
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          created_by?: string | null
+          cta_text?: string | null
+          expires_at?: string | null
+          id?: string
+          link_url?: string | null
+          media_path?: string | null
+          media_type?: string | null
+          starts_at?: string
+          target_platform?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          created_by?: string | null
+          cta_text?: string | null
+          expires_at?: string | null
+          id?: string
+          link_url?: string | null
+          media_path?: string | null
+          media_type?: string | null
+          starts_at?: string
+          target_platform?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       content_approvals: {
         Row: {
           approved_by: string | null
