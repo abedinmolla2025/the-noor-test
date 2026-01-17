@@ -270,6 +270,13 @@ export default function AdminOccasions() {
   const [saving, setSaving] = useState(false);
   const [dateError, setDateError] = useState<string | null>(null);
   const [templateId, setTemplateId] = useState<string>("");
+  const [localImagePreviewUrl, setLocalImagePreviewUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (localImagePreviewUrl) URL.revokeObjectURL(localImagePreviewUrl);
+    };
+  }, [localImagePreviewUrl]);
 
   const applyTemplate = (id: string) => {
     const tpl = OCCASION_TEMPLATES.find((t) => t.id === id);
@@ -371,6 +378,7 @@ export default function AdminOccasions() {
     setEditing(null);
     setDateError(null);
     setTemplateId("");
+    setLocalImagePreviewUrl(null);
     setForm(emptyForm);
     setDialogOpen(true);
   };
@@ -379,6 +387,7 @@ export default function AdminOccasions() {
     setEditing(row);
     setDateError(null);
     setTemplateId("");
+    setLocalImagePreviewUrl(null);
     setForm({
       ...emptyForm,
       title: row.title ?? "",
@@ -659,7 +668,14 @@ export default function AdminOccasions() {
                   <Input
                     type="file"
                     accept="image/*,image/gif"
-                    onChange={(e) => setForm((p) => ({ ...p, imageFile: e.target.files?.[0] ?? null }))}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] ?? null;
+                      setForm((p) => ({ ...p, imageFile: file }));
+
+                      // Local preview for UI only
+                      if (localImagePreviewUrl) URL.revokeObjectURL(localImagePreviewUrl);
+                      setLocalImagePreviewUrl(file ? URL.createObjectURL(file) : null);
+                    }}
                   />
                   <p className="text-xs text-muted-foreground">Optional. Uploads to storage bucket “occasions-assets”.</p>
                 </div>
@@ -709,6 +725,7 @@ export default function AdminOccasions() {
               const title = (editing ? editing.title : form.title) || "ঈদ মোবারক";
               const message = (editing ? editing.message : form.message) || "আপনার দিন কাটুক আনন্দ ও বরকতে।";
               const dua = (editing ? editing.dua_text : form.dua_text) || "তাকাব্বালাল্লাহু মিন্না ওয়া মিনকুম";
+              const bannerImg = localImagePreviewUrl || form.image_url || editing?.image_url || null;
 
               return (
                 <div className={cn("p-4", v.frame)}>
@@ -726,7 +743,16 @@ export default function AdminOccasions() {
 
                   <div className={cn("mt-4 overflow-hidden border border-border", previewStyle === "playful" ? "rounded-3xl" : "rounded-2xl", "bg-card")}>
                     <div className="relative">
-                      <div className={cn("h-44 w-full", v.banner)} />
+                      {bannerImg ? (
+                        <img
+                          src={bannerImg}
+                          alt="Occasion banner preview"
+                          className="h-44 w-full object-cover"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className={cn("h-44 w-full", v.banner)} />
+                      )}
                       <div className={cn("absolute inset-0", v.overlay)} />
                       <div className={cn("absolute bottom-0 p-4", previewStyle === "editorial" ? "space-y-2" : "")}
                       >
