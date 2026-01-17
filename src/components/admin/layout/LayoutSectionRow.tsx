@@ -3,7 +3,6 @@ import { Reorder } from "framer-motion";
 import { GripVertical, SlidersHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -18,11 +17,14 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import type { LayoutPlatform } from "@/lib/layout";
+import { APP_PLACEMENTS, WEB_PLACEMENTS } from "@/lib/ads";
 
 import type { SectionSettings, UiSection, UiSize, StyleVariant } from "./types";
 
 type Props = {
   item: UiSection;
+  platform: LayoutPlatform;
   onChange: (next: UiSection) => void;
 };
 
@@ -33,7 +35,11 @@ const VARIANTS: Array<{ value: StyleVariant; label: string }> = [
   { value: "glass", label: "Glass" },
 ];
 
-export function LayoutSectionRow({ item, onChange }: Props) {
+function getAdPlacementOptions(platform: LayoutPlatform) {
+  return platform === "app" ? APP_PLACEMENTS : WEB_PLACEMENTS;
+}
+
+export function LayoutSectionRow({ item, platform, onChange }: Props) {
   const [open, setOpen] = useState(false);
 
   const hasSettings = useMemo(() => {
@@ -126,11 +132,24 @@ export function LayoutSectionRow({ item, onChange }: Props) {
 
             <div className="space-y-1">
               <Label className="text-xs">Ad placement</Label>
-              <Input
-                value={item.settings?.adPlacement ?? ""}
-                onChange={(e) => updateSettings({ adPlacement: e.target.value ? e.target.value : undefined })}
-                placeholder="e.g. web_home_top"
-              />
+              <Select
+                value={item.settings?.adPlacement ?? "auto"}
+                onValueChange={(v) =>
+                  updateSettings({ adPlacement: v === "auto" ? undefined : v })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Auto" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="auto">Auto</SelectItem>
+                  {getAdPlacementOptions(platform).map((p) => (
+                    <SelectItem key={p} value={p}>
+                      {p}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <p className="text-[11px] text-muted-foreground">Optional — only used by ad sections.</p>
             </div>
 

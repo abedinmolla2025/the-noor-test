@@ -276,9 +276,12 @@ export default function AdminLayoutControl() {
             <LayoutSectionRow
               key={item.section_key}
               item={item}
+              platform={platform}
               onChange={(next) =>
                 setItems((prev) =>
-                  prev.map((p) => (p.section_key === item.section_key ? { ...next, order_index: p.order_index } : p)),
+                  prev.map((p) =>
+                    p.section_key === item.section_key ? { ...next, order_index: p.order_index } : p,
+                  ),
                 )
               }
             />
