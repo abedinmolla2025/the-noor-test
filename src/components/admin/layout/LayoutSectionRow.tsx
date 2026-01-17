@@ -42,10 +42,15 @@ function getAdPlacementOptions(platform: LayoutPlatform) {
 export function LayoutSectionRow({ item, platform, onChange }: Props) {
   const [open, setOpen] = useState(false);
 
+  const isAdSection = useMemo(() => item.section_key.startsWith("ad_"), [item.section_key]);
+  const isFeatureIcons = useMemo(() => item.section_key === "feature_icons", [item.section_key]);
+
   const hasSettings = useMemo(() => {
     const s = item.settings ?? {};
-    return Boolean(s.gridColumns || s.adPlacement || s.styleVariant);
-  }, [item.settings]);
+    const hasGrid = isFeatureIcons && Boolean(s.gridColumns);
+    const hasPlacement = isAdSection && Boolean(s.adPlacement);
+    return Boolean(hasGrid || hasPlacement || s.styleVariant);
+  }, [isAdSection, isFeatureIcons, item.settings]);
 
   const updateSettings = (patch: Partial<SectionSettings>) => {
     onChange({
@@ -110,54 +115,62 @@ export function LayoutSectionRow({ item, platform, onChange }: Props) {
 
         <CollapsibleContent className="pt-3">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <div className="space-y-1">
-              <Label className="text-xs">Grid columns</Label>
-              <Select
-                value={item.settings?.gridColumns ? String(item.settings.gridColumns) : "auto"}
-                onValueChange={(v) => updateSettings({ gridColumns: v === "auto" ? undefined : Number(v) })}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Auto" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="auto">Auto</SelectItem>
-                  {GRID_OPTIONS.map((n) => (
-                    <SelectItem key={n} value={String(n)}>
-                      {n}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            {isFeatureIcons && (
+              <div className="space-y-1">
+                <Label className="text-xs">Grid columns</Label>
+                <Select
+                  value={item.settings?.gridColumns ? String(item.settings.gridColumns) : "auto"}
+                  onValueChange={(v) =>
+                    updateSettings({ gridColumns: v === "auto" ? undefined : Number(v) })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Auto" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="auto">Auto</SelectItem>
+                    {GRID_OPTIONS.map((n) => (
+                      <SelectItem key={n} value={String(n)}>
+                        {n}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
 
-            <div className="space-y-1">
-              <Label className="text-xs">Ad placement</Label>
-              <Select
-                value={item.settings?.adPlacement ?? "auto"}
-                onValueChange={(v) =>
-                  updateSettings({ adPlacement: v === "auto" ? undefined : v })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Auto" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="auto">Auto</SelectItem>
-                  {getAdPlacementOptions(platform).map((p) => (
-                    <SelectItem key={p} value={p}>
-                      {p}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <p className="text-[11px] text-muted-foreground">Optional — only used by ad sections.</p>
-            </div>
+            {isAdSection && (
+              <div className="space-y-1">
+                <Label className="text-xs">Ad placement</Label>
+                <Select
+                  value={item.settings?.adPlacement ?? "auto"}
+                  onValueChange={(v) =>
+                    updateSettings({ adPlacement: v === "auto" ? undefined : v })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Auto" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="auto">Auto</SelectItem>
+                    {getAdPlacementOptions(platform).map((p) => (
+                      <SelectItem key={p} value={p}>
+                        {p}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-[11px] text-muted-foreground">Optional — only used by ad sections.</p>
+              </div>
+            )}
 
             <div className="space-y-1">
               <Label className="text-xs">Style variant</Label>
               <Select
                 value={item.settings?.styleVariant ?? "default"}
-                onValueChange={(v) => updateSettings({ styleVariant: (v as StyleVariant) || "default" })}
+                onValueChange={(v) =>
+                  updateSettings({ styleVariant: (v as StyleVariant) || "default" })
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Default" />
