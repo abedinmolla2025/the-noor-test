@@ -1,6 +1,11 @@
 import { useMemo, useState } from "react";
 import { Reorder } from "framer-motion";
-import { GripVertical, SlidersHorizontal } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  GripVertical,
+  SlidersHorizontal,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -27,6 +32,10 @@ type Props = {
   item: UiSection;
   platform: LayoutPlatform;
   onChange: (next: UiSection) => void;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
+  canMoveUp?: boolean;
+  canMoveDown?: boolean;
 };
 
 const GRID_OPTIONS = [1, 2, 3, 4] as const;
@@ -40,7 +49,15 @@ function getAdPlacementOptions(platform: LayoutPlatform) {
   return platform === "app" ? APP_PLACEMENTS : WEB_PLACEMENTS;
 }
 
-export function LayoutSectionRow({ item, platform, onChange }: Props) {
+export function LayoutSectionRow({
+  item,
+  platform,
+  onChange,
+  onMoveUp,
+  onMoveDown,
+  canMoveUp,
+  canMoveDown,
+}: Props) {
   const [open, setOpen] = useState(false);
 
   const isAdSection = useMemo(() => item.section_key.startsWith("ad_"), [item.section_key]);
@@ -108,6 +125,31 @@ export function LayoutSectionRow({ item, platform, onChange }: Props) {
           </div>
 
           <div className="flex flex-wrap items-center gap-3 sm:flex-nowrap sm:justify-end">
+            <div className="flex items-center gap-1">
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={onMoveUp}
+                disabled={!canMoveUp || !onMoveUp}
+                aria-label="Move section up"
+                title="Move up"
+              >
+                <ChevronUp className="h-4 w-4" />
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={onMoveDown}
+                disabled={!canMoveDown || !onMoveDown}
+                aria-label="Move section down"
+                title="Move down"
+              >
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </div>
+
             <div className="w-32">
               <Select value={item.size} onValueChange={(v) => onChange({ ...item, size: v as UiSize })}>
                 <SelectTrigger>

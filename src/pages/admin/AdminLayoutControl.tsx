@@ -272,11 +272,29 @@ export default function AdminLayoutControl() {
           onReorder={(next) => setItems(next.map((s, i) => ({ ...s, order_index: i })))}
           className="space-y-2"
         >
-          {items.map((item) => (
+          {items.map((item, idx) => (
             <LayoutSectionRow
               key={item.section_key}
               item={item}
               platform={platform}
+              canMoveUp={idx > 0}
+              canMoveDown={idx < items.length - 1}
+              onMoveUp={() =>
+                setItems((prev) => {
+                  if (idx <= 0) return prev;
+                  const next = prev.slice();
+                  [next[idx - 1], next[idx]] = [next[idx], next[idx - 1]];
+                  return next.map((s, i) => ({ ...s, order_index: i }));
+                })
+              }
+              onMoveDown={() =>
+                setItems((prev) => {
+                  if (idx >= prev.length - 1) return prev;
+                  const next = prev.slice();
+                  [next[idx], next[idx + 1]] = [next[idx + 1], next[idx]];
+                  return next.map((s, i) => ({ ...s, order_index: i }));
+                })
+              }
               onChange={(next) =>
                 setItems((prev) =>
                   prev.map((p) =>
