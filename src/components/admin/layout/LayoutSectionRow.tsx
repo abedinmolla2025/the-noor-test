@@ -1,0 +1,160 @@
+import { useMemo, useState } from "react";
+import { Reorder } from "framer-motion";
+import { GripVertical, SlidersHorizontal } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+
+import type { SectionSettings, UiSection, UiSize, StyleVariant } from "./types";
+
+type Props = {
+  item: UiSection;
+  onChange: (next: UiSection) => void;
+};
+
+const GRID_OPTIONS = [1, 2, 3, 4] as const;
+const VARIANTS: Array<{ value: StyleVariant; label: string }> = [
+  { value: "default", label: "Default" },
+  { value: "soft", label: "Soft" },
+  { value: "glass", label: "Glass" },
+];
+
+export function LayoutSectionRow({ item, onChange }: Props) {
+  const [open, setOpen] = useState(false);
+
+  const hasSettings = useMemo(() => {
+    const s = item.settings ?? {};
+    return Boolean(s.gridColumns || s.adPlacement || s.styleVariant);
+  }, [item.settings]);
+
+  const updateSettings = (patch: Partial<SectionSettings>) => {
+    onChange({
+      ...item,
+      settings: {
+        ...(item.settings ?? {}),
+        ...patch,
+      },
+    });
+  };
+
+  return (
+    <Reorder.Item
+      key={item.section_key}
+      value={item}
+      className="rounded-xl border border-border bg-card p-3"
+    >
+      <Collapsible open={open} onOpenChange={setOpen}>
+        <div className="flex items-center gap-3">
+          <div className="cursor-grab text-muted-foreground">
+            <GripVertical className="h-4 w-4" />
+          </div>
+
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-medium leading-tight">{item.label}</p>
+              {hasSettings && (
+                <span className="rounded-md border border-border bg-background px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                  settings
+                </span>
+              )}
+            </div>
+            <p className="text-[11px] text-muted-foreground">{item.section_key}</p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="w-32">
+              <Select value={item.size} onValueChange={(v) => onChange({ ...item, size: v as UiSize })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Size" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="compact">Compact</SelectItem>
+                  <SelectItem value="normal">Normal</SelectItem>
+                  <SelectItem value="large">Large</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Label className="text-xs text-muted-foreground">Show</Label>
+              <Switch checked={item.visible} onCheckedChange={(checked) => onChange({ ...item, visible: checked })} />
+            </div>
+
+            <CollapsibleTrigger asChild>
+              <Button variant="outline" size="icon" aria-label="Edit section settings">
+                <SlidersHorizontal className="h-4 w-4" />
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+        </div>
+
+        <CollapsibleContent className="pt-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="space-y-1">
+              <Label className="text-xs">Grid columns</Label>
+              <Select
+                value={item.settings?.gridColumns ? String(item.settings.gridColumns) : "auto"}
+                onValueChange={(v) => updateSettings({ gridColumns: v === "auto" ? undefined : Number(v) })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Auto" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="auto">Auto</SelectItem>
+                  {GRID_OPTIONS.map((n) => (
+                    <SelectItem key={n} value={String(n)}>
+                      {n}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-xs">Ad placement</Label>
+              <Input
+                value={item.settings?.adPlacement ?? ""}
+                onChange={(e) => updateSettings({ adPlacement: e.target.value ? e.target.value : undefined })}
+                placeholder="e.g. web_home_top"
+              />
+              <p className="text-[11px] text-muted-foreground">Optional — only used by ad sections.</p>
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-xs">Style variant</Label>
+              <Select
+                value={item.settings?.styleVariant ?? "default"}
+                onValueChange={(v) => updateSettings({ styleVariant: (v as StyleVariant) || "default" })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Default" />
+                </SelectTrigger>
+                <SelectContent>
+                  {VARIANTS.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
+    </Reorder.Item>
+  );
+}
