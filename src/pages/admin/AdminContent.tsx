@@ -14,8 +14,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
-import { Plus, Edit, Trash2, Workflow, History, Activity, BookOpen, Upload } from 'lucide-react';
+import { Plus, Edit, Trash2, Workflow, History, Activity, BookOpen, Upload, MoreVertical } from 'lucide-react';
 import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 import { MobileTableWrapper } from '@/components/admin/MobileTableWrapper';
 import { NameBulkImportDialog } from '@/components/admin/NameBulkImportDialog';
@@ -706,29 +713,66 @@ export default function AdminContent() {
                         {formatDateTime(item.published_at)}
                       </TableCell>
                       <TableCell className="text-right align-middle">
-                        <div className="inline-flex gap-1 sm:gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 w-8 p-0"
-                            onClick={() => {
-                              setSelectedId(item.id);
-                              resetEditForm(item);
-                              setActiveTab('workflow');
-                            }}
-                            aria-label="Open workflow"
-                          >
-                            <Edit className="h-3.5 w-3.5" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-                            onClick={() => deleteMutation.mutate(item.id)}
-                            aria-label="Delete content"
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
+                        {/* Mobile: single kebab menu for row actions */}
+                        <div className="flex justify-end">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-9 w-9 p-0 sm:hidden"
+                                aria-label="Row actions"
+                              >
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" sideOffset={6} className="z-50 w-44">
+                              <DropdownMenuItem
+                                onClick={() => {
+                                  setSelectedId(item.id);
+                                  resetEditForm(item);
+                                  setActiveTab('workflow');
+                                }}
+                              >
+                                <Edit className="mr-2 h-4 w-4" />
+                                Open workflow
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                className="text-destructive focus:text-destructive"
+                                onClick={() => deleteMutation.mutate(item.id)}
+                              >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+
+                          {/* Desktop: icon buttons */}
+                          <div className="hidden sm:inline-flex gap-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 w-8 p-0"
+                              onClick={() => {
+                                setSelectedId(item.id);
+                                resetEditForm(item);
+                                setActiveTab('workflow');
+                              }}
+                              aria-label="Open workflow"
+                            >
+                              <Edit className="h-3.5 w-3.5" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                              onClick={() => deleteMutation.mutate(item.id)}
+                              aria-label="Delete content"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
                         </div>
                       </TableCell>
                     </TableRow>
