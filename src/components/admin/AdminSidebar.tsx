@@ -26,6 +26,8 @@ import { cn } from '@/lib/utils';
 type AdminSidebarProps = {
   /** Only used inside the mobile sheet: shows a compact shortcut row */
   showQuickShortcuts?: boolean;
+  /** Optional hook for mobile: close the sheet after navigation/logout */
+  onNavigate?: () => void;
 };
 
 type NavItem = {
@@ -39,12 +41,13 @@ type NavSection = {
   items: NavItem[];
 };
 
-export const AdminSidebar = ({ showQuickShortcuts = false }: AdminSidebarProps) => {
+export const AdminSidebar = ({ showQuickShortcuts = false, onNavigate }: AdminSidebarProps) => {
   const { user } = useAdmin();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    onNavigate?.();
     navigate('/');
   };
 
@@ -113,7 +116,10 @@ export const AdminSidebar = ({ showQuickShortcuts = false }: AdminSidebarProps) 
               variant="outline"
               size="icon"
               aria-label="Dashboard"
-              onClick={() => navigate('/admin/dashboard')}
+              onClick={() => {
+                onNavigate?.();
+                navigate('/admin/dashboard');
+              }}
             >
               <LayoutDashboard className="h-4 w-4" />
             </Button>
@@ -121,7 +127,10 @@ export const AdminSidebar = ({ showQuickShortcuts = false }: AdminSidebarProps) 
               variant="outline"
               size="icon"
               aria-label="Users"
-              onClick={() => navigate('/admin/users')}
+              onClick={() => {
+                onNavigate?.();
+                navigate('/admin/users');
+              }}
             >
               <Users className="h-4 w-4" />
             </Button>
@@ -129,7 +138,10 @@ export const AdminSidebar = ({ showQuickShortcuts = false }: AdminSidebarProps) 
               variant="outline"
               size="icon"
               aria-label="Content"
-              onClick={() => navigate('/admin/content')}
+              onClick={() => {
+                onNavigate?.();
+                navigate('/admin/content');
+              }}
             >
               <BookOpen className="h-4 w-4" />
             </Button>
@@ -137,7 +149,10 @@ export const AdminSidebar = ({ showQuickShortcuts = false }: AdminSidebarProps) 
               variant="outline"
               size="icon"
               aria-label="Notifications"
-              onClick={() => navigate('/admin/notifications')}
+              onClick={() => {
+                onNavigate?.();
+                navigate('/admin/notifications');
+              }}
             >
               <Bell className="h-4 w-4" />
             </Button>
@@ -157,6 +172,7 @@ export const AdminSidebar = ({ showQuickShortcuts = false }: AdminSidebarProps) 
                   <NavLink
                     key={item.to}
                     to={item.to}
+                    onClick={() => onNavigate?.()}
                     className={cn(
                       "relative flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] text-muted-foreground transition-colors",
                       "hover:bg-muted hover:text-foreground",

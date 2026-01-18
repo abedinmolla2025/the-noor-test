@@ -30,6 +30,8 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
   const location = useLocation();
   const pageTitle = pageTitleFromPath(location.pathname);
 
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+
   return (
     <ProtectedRoute>
       <div className="admin-compact flex min-h-screen bg-background">
@@ -48,14 +50,14 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
               <h1 className="truncate text-sm font-semibold leading-tight">{pageTitle}</h1>
             </div>
 
-            <Sheet>
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon" aria-label="Open admin menu">
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-64 border-r border-border p-0">
-                <AdminSidebar showQuickShortcuts />
+                <AdminSidebar showQuickShortcuts onNavigate={() => setMobileMenuOpen(false)} />
               </SheetContent>
             </Sheet>
           </div>
@@ -71,3 +73,4 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
     </ProtectedRoute>
   );
 };
+
