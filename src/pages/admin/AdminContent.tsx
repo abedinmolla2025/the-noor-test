@@ -577,39 +577,48 @@ export default function AdminContent() {
         description="Manage Quran, Dua, Hadith and other content with workflow, versions, and audit."
         icon={BookOpen}
         actions={
-          <>
+          <div
+            className="-mx-3 flex w-[calc(100%+1.5rem)] gap-2 overflow-x-auto px-3 pb-1 sm:mx-0 sm:w-auto sm:overflow-visible sm:px-0 sm:pb-0"
+            aria-label="Content actions"
+          >
             <Button
+              size="sm"
+              className="shrink-0 whitespace-nowrap"
               onClick={() => {
                 resetEditForm();
                 setActiveTab('edit');
               }}
             >
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="mr-2 h-4 w-4" />
               New Content
             </Button>
 
             <Button
               type="button"
+              size="sm"
               variant="outline"
+              className="shrink-0 whitespace-nowrap"
               onClick={() => setIsNameImportOpen(true)}
               disabled={!canEdit}
               title={!canEdit ? 'No permission' : undefined}
             >
-              <Upload className="h-4 w-4 mr-2" />
+              <Upload className="mr-2 h-4 w-4" />
               Import Names (JSON)
             </Button>
 
             <Button
               type="button"
+              size="sm"
               variant="outline"
+              className="shrink-0 whitespace-nowrap"
               onClick={() => setIsDuaImportOpen(true)}
               disabled={!canEdit}
               title={!canEdit ? 'No permission' : undefined}
             >
-              <Upload className="h-4 w-4 mr-2" />
+              <Upload className="mr-2 h-4 w-4" />
               Import Dua (JSON)
             </Button>
-          </>
+          </div>
         }
       />
 
