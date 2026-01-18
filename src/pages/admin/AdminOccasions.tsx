@@ -5,9 +5,10 @@ import type { DateRange } from "react-day-picker";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminPageActionsDropdown } from "@/components/admin/AdminPageActionsDropdown";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -677,22 +678,24 @@ export default function AdminOccasions() {
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader
-        title="Occasions"
-        description="Islamic occasion banners for web + app (carousel on Home)."
-        icon={CalendarDays}
-        actions={
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger asChild>
-              <Button onClick={openCreate} className="gap-2">
-                <Plus className="h-4 w-4" />
-                Create
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl">
-              <DialogHeader>
-                <DialogTitle>{editing ? "Edit occasion" : "Create occasion"}</DialogTitle>
-              </DialogHeader>
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <AdminPageHeader
+          title="Occasions"
+          description="Islamic occasion banners for web + app (carousel on Home)."
+          icon={CalendarDays}
+          actions={
+            <AdminPageActionsDropdown
+              onCreate={openCreate}
+              exportData={items}
+              onRefresh={() => qc.invalidateQueries({ queryKey: ["admin-occasions"] })}
+            />
+          }
+        />
+
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{editing ? "Edit occasion" : "Create occasion"}</DialogTitle>
+          </DialogHeader>
 
                <div className="grid gap-4 md:grid-cols-2">
                  <div className="space-y-2 md:col-span-2">
@@ -910,16 +913,14 @@ export default function AdminOccasions() {
                 </div>
               </div>
 
-               <DialogFooter className="mt-2">
-                 <Button onClick={save} disabled={saving || imageProcessing} className="gap-2">
-                   {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-                   Save
-                 </Button>
-               </DialogFooter>
+              <DialogFooter className="mt-2">
+                <Button onClick={save} disabled={saving || imageProcessing} className="gap-2">
+                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                  Save
+                </Button>
+              </DialogFooter>
             </DialogContent>
           </Dialog>
-        }
-      />
 
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="space-y-3">

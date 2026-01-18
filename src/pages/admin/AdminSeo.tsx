@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminPageActionsDropdown } from "@/components/admin/AdminPageActionsDropdown";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -146,10 +147,17 @@ export default function AdminSeoPage() {
         description="Set per-page title/description/canonical + optional JSON-LD. Changes apply instantly."
         icon={Globe}
         actions={
-          <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending} className="gap-2">
-            <Save className="h-4 w-4" />
-            Save
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending} className="gap-2">
+              <Save className="h-4 w-4" />
+              Save
+            </Button>
+            <AdminPageActionsDropdown
+              exportData={pages ?? []}
+              exportFileName="seo-pages"
+              onRefresh={() => queryClient.invalidateQueries({ queryKey: ["admin-seo-pages"] })}
+            />
+          </div>
         }
       />
 
