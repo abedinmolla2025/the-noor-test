@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminPageActionsDropdown } from "@/components/admin/AdminPageActionsDropdown";
 import { AdsBackendHealthPanel } from "@/components/admin/AdsBackendHealthPanel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -270,6 +271,19 @@ export default function AdminAds() {
         title="Ads"
         description="Manage web + app ads from one dashboard."
         icon={DollarSign}
+        actions={
+          <AdminPageActionsDropdown
+            onCreate={openCreate}
+            createLabel="Create Ad"
+            exportData={ads}
+            exportFileName="ads"
+            onRefresh={async () => {
+              await qc.invalidateQueries({ queryKey: ["admin-ads"] });
+              await qc.invalidateQueries({ queryKey: ["ad-controls"] });
+              await qc.invalidateQueries({ queryKey: ["ad-analytics"] });
+            }}
+          />
+        }
       />
 
       <Tabs defaultValue="ads">
