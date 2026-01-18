@@ -1132,35 +1132,42 @@ export default function AdminContent() {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-3 border-t border-border/70 pt-4 sm:flex-row sm:items-center sm:justify-between">
-                {selectedContent && (
-                  <div className="space-y-1 text-xs sm:text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <span className="font-medium">Status:</span>
-                      <Badge
-                        variant={STATUS_VARIANTS[selectedContent.status] || 'secondary'}
-                        className="rounded-full px-2 py-0.5 text-xs font-medium flex items-center gap-1"
-                      >
-                        <span className="h-1.5 w-1.5 rounded-full bg-current" />
-                        {STATUS_LABELS[selectedContent.status] || selectedContent.status}
-                      </Badge>
+              <div className="-mx-3 sticky bottom-20 z-40 mt-4 border-t border-border/70 bg-background/95 px-3 py-3 backdrop-blur sm:static sm:mx-0 sm:mt-4 sm:border-t sm:bg-transparent sm:px-0 sm:py-4 sm:backdrop-blur-0">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  {selectedContent && (
+                    <div className="space-y-1 text-xs sm:text-sm text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <span className="font-medium">Status:</span>
+                        <Badge
+                          variant={STATUS_VARIANTS[selectedContent.status] || 'secondary'}
+                          className="rounded-full px-2 py-0.5 text-xs font-medium flex items-center gap-1"
+                        >
+                          <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                          {STATUS_LABELS[selectedContent.status] || selectedContent.status}
+                        </Badge>
+                      </div>
+                      <div>Scheduled: {formatDateTime(selectedContent.scheduled_at)}</div>
+                      <div>Published: {formatDateTime(selectedContent.published_at)}</div>
                     </div>
-                    <div>Scheduled: {formatDateTime(selectedContent.scheduled_at)}</div>
-                    <div>Published: {formatDateTime(selectedContent.published_at)}</div>
-                  </div>
-                )}
+                  )}
 
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => selectedContent && resetEditForm(selectedContent)}
-                    disabled={!selectedContent}
-                  >
-                    Reset
-                  </Button>
-                  <Button onClick={handleSave} disabled={isSaving || !canEdit}>
-                    {isSaving ? 'Saving...' : 'Save'}
-                  </Button>
+                  <div className="grid grid-cols-2 gap-2 sm:flex sm:justify-end">
+                    <Button
+                      variant="outline"
+                      className="h-9 w-full"
+                      onClick={() => selectedContent && resetEditForm(selectedContent)}
+                      disabled={!selectedContent}
+                    >
+                      Reset
+                    </Button>
+                    <Button
+                      className="h-9 w-full"
+                      onClick={handleSave}
+                      disabled={isSaving || !canEdit}
+                    >
+                      {isSaving ? 'Saving...' : 'Save'}
+                    </Button>
+                  </div>
                 </div>
               </div>
             </TabsContent>
