@@ -709,18 +709,16 @@ const QuizPage = () => {
 
                   <Card className="mb-3">
                     <CardHeader>
-                      <CardTitle className="text-xl leading-relaxed">
-                        {languageMode === "bn" && (
+                      <CardTitle className="leading-relaxed">
+                        {languageMode === "bn" ? (
                           <span className="font-bangla text-2xl leading-relaxed">
                             {currentQuestion.question_bn || currentQuestion.question}
                           </span>
-                        )}
-                        {languageMode === "en" && (
+                        ) : languageMode === "en" ? (
                           <span className="font-serif text-lg">
                             {currentQuestion.question_en || currentQuestion.question}
                           </span>
-                        )}
-                        {languageMode === "mixed" && (
+                        ) : (
                           <div className="space-y-2">
                             <p className="font-bangla text-2xl leading-relaxed">
                               {currentQuestion.question_bn || currentQuestion.question}
@@ -753,17 +751,15 @@ const QuizPage = () => {
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex-1">
-                              {languageMode === "bn" && (
+                              {languageMode === "bn" ? (
                                 <p className="font-bangla text-lg leading-snug">
                                   {currentQuestion.options_bn?.[index] || option}
                                 </p>
-                              )}
-                              {languageMode === "en" && (
+                              ) : languageMode === "en" ? (
                                 <p className="font-serif text-base">
                                   {currentQuestion.options_en?.[index] || option}
                                 </p>
-                              )}
-                              {languageMode === "mixed" && (
+                              ) : (
                                 <div className="space-y-1">
                                   <p className="font-bangla text-lg leading-snug">
                                     {currentQuestion.options_bn?.[index] || option}
