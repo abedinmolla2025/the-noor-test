@@ -93,6 +93,21 @@ const STATUS_VARIANTS: Record<string, 'default' | 'secondary' | 'outline' | 'des
   archived: 'destructive',
 };
 
+const DUA_CATEGORY_PRESETS = [
+  'Morning',
+  'Evening',
+  'Salah',
+  'Travel',
+  'Food',
+  'Protection',
+  'Forgiveness',
+  'Health',
+  'Family',
+  'Dhikr',
+] as const;
+
+type DuaCategoryPreset = (typeof DUA_CATEGORY_PRESETS)[number];
+
 const formatDateTime = (value: string | null | undefined) => {
   if (!value) return '-';
   return new Date(value).toLocaleString();
@@ -148,6 +163,8 @@ export default function AdminContent() {
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [duaCategoryFilter, setDuaCategoryFilter] = useState<string>('all');
+
   const [editForm, setEditForm] = useState({
     content_type: 'dua',
     title: '',
@@ -200,11 +217,53 @@ export default function AdminContent() {
     return Array.from(set).sort();
   }, [content]);
 
+  const duaCategoryCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+
+    for (const item of content ?? []) {
+      const typeOk = typeFilter === 'all' || item.content_type === typeFilter;
+      if (!typeOk) continue;
+
+      // Category filter is intended for Dua, so we only count Dua items
+      if (item.content_type !== 'dua') continue;
+
+      const statusOk = statusFilter === 'all' || item.status === statusFilter;
+      if (!statusOk) continue;
+
+      const cat = (item.category ?? '').trim();
+      if (!cat) continue;
+      counts.set(cat, (counts.get(cat) ?? 0) + 1);
+    }
+
+    return counts;
+  }, [content, statusFilter, typeFilter]);
+
+  const availableDuaCategories = useMemo(() => {
+    const set = new Set<string>();
+
+    for (const preset of DUA_CATEGORY_PRESETS) set.add(preset);
+
+    for (const item of content ?? []) {
+      if (item.content_type !== 'dua') continue;
+      const cat = (item.category ?? '').trim();
+      if (cat) set.add(cat);
+    }
+
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [content]);
+
   const filteredContent = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     return (content ?? []).filter((item) => {
       if (typeFilter !== 'all' && item.content_type !== typeFilter) return false;
       if (statusFilter !== 'all' && item.status !== statusFilter) return false;
+
+      if (duaCategoryFilter !== 'all') {
+        // If a Dua category filter is active, only show Dua items for that category
+        if (item.content_type !== 'dua') return false;
+        if ((item.category ?? '').trim() !== duaCategoryFilter) return false;
+      }
+
       if (!q) return true;
 
       const hay = [item.title, item.title_arabic, item.title_en, item.title_hi, item.title_ur]
@@ -214,7 +273,7 @@ export default function AdminContent() {
 
       return hay.includes(q);
     });
-  }, [content, searchQuery, statusFilter, typeFilter]);
+  }, [content, searchQuery, statusFilter, typeFilter, duaCategoryFilter]);
 
   const existingNameKeys = useMemo(() => {
     const keyOf = (title: string, titleArabic?: string | null) =>
@@ -708,7 +767,7 @@ export default function AdminContent() {
           ) : content && content.length > 0 ? (
             <>
               {/* Quick filters */}
-              <div className="mb-3 grid gap-2 sm:mb-4 sm:grid-cols-[1fr_180px_180px]">
+              <div className="mb-3 grid gap-2 sm:mb-4 sm:grid-cols-[1fr_160px_160px_200px]">
                 <Input
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -716,7 +775,14 @@ export default function AdminContent() {
                   className="h-9"
                 />
 
-                <Select value={typeFilter} onValueChange={setTypeFilter}>
+                <Select
+                  value={typeFilter}
+                  onValueChange={(v) => {
+                    setTypeFilter(v);
+                    // Reset Dua category filter when switching away from Dua
+                    if (v !== 'dua' && v !== 'all') setDuaCategoryFilter('all');
+                  }}
+                >
                   <SelectTrigger className="h-9">
                     <SelectValue placeholder="Type" />
                   </SelectTrigger>
@@ -741,6 +807,27 @@ export default function AdminContent() {
                         {STATUS_LABELS[status] || status}
                       </SelectItem>
                     ))}
+                  </SelectContent>
+                </Select>
+
+                <Select
+                  value={duaCategoryFilter}
+                  onValueChange={setDuaCategoryFilter}
+                  disabled={!(typeFilter === 'dua' || typeFilter === 'all')}
+                >
+                  <SelectTrigger className="h-9">
+                    <SelectValue placeholder="Dua category" />
+                  </SelectTrigger>
+                  <SelectContent className="z-50 bg-popover">
+                    <SelectItem value="all">All dua categories</SelectItem>
+                    {availableDuaCategories.map((c) => {
+                      const count = duaCategoryCounts.get(c) ?? 0;
+                      return (
+                        <SelectItem key={c} value={c}>
+                          {c}{count ? ` (${count})` : ''}
+                        </SelectItem>
+                      );
+                    })}
                   </SelectContent>
                 </Select>
               </div>
@@ -1024,12 +1111,54 @@ export default function AdminContent() {
 
                   <div>
                     <Label>Category</Label>
-                    <Input
-                      value={editForm.category}
-                      onChange={(e) =>
-                        setEditForm((prev) => ({ ...prev, category: e.target.value }))
-                      }
-                    />
+
+                    {editForm.content_type === 'dua' ? (
+                      <Select
+                        value={(editForm.category || '').trim() || 'none'}
+                        onValueChange={(v) =>
+                          setEditForm((prev) => ({
+                            ...prev,
+                            category: v === 'none' ? '' : v,
+                          }))
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent className="z-50 bg-popover">
+                          <SelectItem value="none">No category</SelectItem>
+                          {availableDuaCategories.map((c) => (
+                            <SelectItem key={c} value={c}>
+                              {c}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <Input
+                        value={editForm.category}
+                        onChange={(e) =>
+                          setEditForm((prev) => ({ ...prev, category: e.target.value }))
+                        }
+                      />
+                    )}
+
+                    {editForm.content_type === 'dua' && (
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {DUA_CATEGORY_PRESETS.map((p) => (
+                          <Button
+                            key={p}
+                            type="button"
+                            size="sm"
+                            variant={(editForm.category ?? '') === p ? 'secondary' : 'outline'}
+                            className="h-7 rounded-full px-3 text-[11px]"
+                            onClick={() => setEditForm((prev) => ({ ...prev, category: p }))}
+                          >
+                            {p}
+                          </Button>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   {editForm.content_type === 'name' && (
