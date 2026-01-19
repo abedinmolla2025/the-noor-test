@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useAppSettings } from "@/context/AppSettingsContext";
 import { AdminUnlockModal } from "@/components/admin/AdminUnlockModal";
+import { PrayerNotificationSettings } from "@/components/PrayerNotificationSettings";
 
 
 const OFFSET_OPTIONS = [-20, -15, -10, -5, 0, 5, 10, 15, 20];
@@ -387,6 +388,15 @@ const SettingsPage = () => {
             </Card>
           </motion.div>
         ))}
+
+        {/* Prayer Notification Settings */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <PrayerNotificationSettings />
+        </motion.div>
 
         {/* App Info */}
         <motion.div
