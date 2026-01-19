@@ -461,7 +461,8 @@ export default function AdminQuiz() {
                   <TableHeader>
                     <TableRow>
                       <TableHead className="w-12">#</TableHead>
-                      <TableHead>Question</TableHead>
+                      <TableHead>Question (EN)</TableHead>
+                      <TableHead>Question (BN)</TableHead>
                       <TableHead>Category</TableHead>
                       <TableHead>Difficulty</TableHead>
                       <TableHead>Status</TableHead>
@@ -472,7 +473,8 @@ export default function AdminQuiz() {
                     {questions.map((question, index) => (
                       <TableRow key={question.id}>
                         <TableCell>{index + 1}</TableCell>
-                        <TableCell className="max-w-md truncate">{question.question}</TableCell>
+                        <TableCell className="max-w-md truncate">{(question as any).question_en || question.question || "-"}</TableCell>
+                        <TableCell className="max-w-md truncate">{(question as any).question_bn || "-"}</TableCell>
                         <TableCell>{question.category}</TableCell>
                         <TableCell>
                           {question.difficulty === "easy"
