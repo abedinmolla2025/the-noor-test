@@ -26,6 +26,8 @@ type NameContentRow = {
   content: string | null;
   /** English meaning */
   content_en: string | null;
+  /** Arabic meaning (optional/legacy) */
+  content_arabic: string | null;
   category: string | null;
   metadata: unknown;
   created_at: string | null;
@@ -53,6 +55,17 @@ const safeParseMeta = (meta: unknown): NameMeta => {
     origin: pick("origin"),
     reference: pick("reference"),
   };
+};
+
+const normalizeGender = (raw?: string) => {
+  const g = (raw ?? "").trim().toLowerCase();
+  if (!g) return "";
+  if (g === "boy") return "male";
+  if (g === "girl") return "female";
+  if (g === "m") return "male";
+  if (g === "f") return "female";
+  if (g === "male" || g === "female" || g === "unisex") return g;
+  return g; // fallback (custom values)
 };
 
 const buildShareText = (n: NameContentRow) => {
@@ -94,7 +107,7 @@ const copyToClipboard = async (text: string, label = "Copied") => {
 const fetchNames = async (): Promise<NameContentRow[]> => {
   const { data, error } = await supabase
     .from("admin_content")
-    .select("id,title,title_arabic,content,content_en,category,metadata,created_at,order_index,is_published,content_type")
+    .select("id,title,title_arabic,content,content_en,content_arabic,category,metadata,created_at,order_index,is_published,content_type")
     .eq("content_type", "name")
     .eq("is_published", true)
     .order("order_index", { ascending: true, nullsFirst: false })
@@ -108,6 +121,7 @@ const NamesPage = () => {
   const navigate = useNavigate();
   const [q, setQ] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [activeGender, setActiveGender] = useState<string>("all");
   const [selected, setSelected] = useState<NameContentRow | null>(null);
 
   const namesQuery = useQuery({
@@ -124,18 +138,49 @@ const NamesPage = () => {
     return Array.from(set).sort((a, b) => a.localeCompare(b));
   }, [namesQuery.data]);
 
-  const filtered = useMemo(() => {
+  const categoryFiltered = useMemo(() => {
     const list = namesQuery.data ?? [];
+    return activeCategory === "all"
+      ? list
+      : list.filter((n) => (n.category ?? "").trim() === activeCategory);
+  }, [namesQuery.data, activeCategory]);
+
+  const genderCounts = useMemo(() => {
+    const counts = {
+      total: categoryFiltered.length,
+      male: 0,
+      female: 0,
+      unisex: 0,
+      unspecified: 0,
+    };
+
+    for (const n of categoryFiltered) {
+      const g = normalizeGender(safeParseMeta(n.metadata).gender);
+      if (!g) counts.unspecified += 1;
+      else if (g === "male") counts.male += 1;
+      else if (g === "female") counts.female += 1;
+      else if (g === "unisex") counts.unisex += 1;
+      else counts.unspecified += 1; // unknown/custom values treated as unspecified
+    }
+
+    return counts;
+  }, [categoryFiltered]);
+
+  const filtered = useMemo(() => {
     const query = q.trim().toLowerCase();
 
-    const categoryFiltered =
-      activeCategory === "all"
-        ? list
-        : list.filter((n) => (n.category ?? "").trim() === activeCategory);
+    const genderFiltered =
+      activeGender === "all"
+        ? categoryFiltered
+        : categoryFiltered.filter((n) => {
+            const g = normalizeGender(safeParseMeta(n.metadata).gender);
+            if (activeGender === "unspecified") return !g;
+            return g === activeGender;
+          });
 
-    if (!query) return categoryFiltered;
+    if (!query) return genderFiltered;
 
-    return categoryFiltered.filter((n) => {
+    return genderFiltered.filter((n) => {
       const meta = safeParseMeta(n.metadata);
       const parts = [
         n.title,
@@ -152,7 +197,7 @@ const NamesPage = () => {
       ];
       return parts.join(" ").toLowerCase().includes(query);
     });
-  }, [namesQuery.data, q, activeCategory]);
+  }, [q, activeGender, categoryFiltered]);
 
   const selectedMeta = useMemo(() => safeParseMeta(selected?.metadata), [selected?.metadata]);
 
@@ -224,6 +269,54 @@ const NamesPage = () => {
                 {c}
               </Button>
             ))}
+          </div>
+
+          <div className="mt-2 flex items-center gap-2 overflow-x-auto pb-1">
+            <Button
+              type="button"
+              size="sm"
+              variant={activeGender === "all" ? "secondary" : "outline"}
+              onClick={() => setActiveGender("all")}
+              className="shrink-0"
+            >
+              All ({genderCounts.total})
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant={activeGender === "male" ? "secondary" : "outline"}
+              onClick={() => setActiveGender("male")}
+              className="shrink-0"
+            >
+              Male ({genderCounts.male})
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant={activeGender === "female" ? "secondary" : "outline"}
+              onClick={() => setActiveGender("female")}
+              className="shrink-0"
+            >
+              Female ({genderCounts.female})
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant={activeGender === "unisex" ? "secondary" : "outline"}
+              onClick={() => setActiveGender("unisex")}
+              className="shrink-0"
+            >
+              Unisex ({genderCounts.unisex})
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant={activeGender === "unspecified" ? "secondary" : "outline"}
+              onClick={() => setActiveGender("unspecified")}
+              className="shrink-0"
+            >
+              Unspecified ({genderCounts.unspecified})
+            </Button>
           </div>
         </div>
       </header>
