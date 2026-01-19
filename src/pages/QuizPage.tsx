@@ -657,22 +657,45 @@ const QuizPage = () => {
                     </div>
                     <Progress value={((currentQuestionIndex + 1) / 5) * 100} className="h-2" />
                     
-                    {/* Timer */}
-                    <div className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 transition-all ${
-                      timeLeft <= 5 
-                        ? "bg-red-500/10 border-red-500/50 animate-pulse" 
-                        : timeLeft <= 10
-                        ? "bg-amber-500/10 border-amber-500/50"
-                        : "bg-primary/10 border-primary/20"
-                    }`}>
-                      <Clock className={`w-5 h-5 ${
-                        timeLeft <= 5 ? "text-red-500" : timeLeft <= 10 ? "text-amber-500" : "text-primary"
-                      }`} />
-                      <span className={`text-2xl font-bold font-mono ${
-                        timeLeft <= 5 ? "text-red-500" : timeLeft <= 10 ? "text-amber-500" : "text-primary"
+                    {/* Timer with Progress Bar */}
+                    <div className="space-y-2">
+                      <div className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 transition-all ${
+                        timeLeft <= 5 
+                          ? "bg-red-500/10 border-red-500/50" 
+                          : timeLeft <= 10
+                          ? "bg-amber-500/10 border-amber-500/50"
+                          : "bg-primary/10 border-primary/20"
                       }`}>
-                        {timeLeft}s
-                      </span>
+                        <Clock className={`w-5 h-5 ${
+                          timeLeft <= 5 ? "text-red-500" : timeLeft <= 10 ? "text-amber-500" : "text-primary"
+                        }`} />
+                        <span className={`text-2xl font-bold font-mono ${
+                          timeLeft <= 5 ? "text-red-500" : timeLeft <= 10 ? "text-amber-500" : "text-primary"
+                        }`}>
+                          {timeLeft}s
+                        </span>
+                      </div>
+                      
+                      {/* Animated Progress Bar */}
+                      <div className="relative h-2 bg-muted rounded-full overflow-hidden">
+                        <motion.div
+                          className={`h-full rounded-full ${
+                            timeLeft <= 5 
+                              ? "bg-gradient-to-r from-red-500 to-red-600" 
+                              : timeLeft <= 10
+                              ? "bg-gradient-to-r from-amber-500 to-amber-600"
+                              : "bg-gradient-to-r from-primary to-emerald-500"
+                          }`}
+                          initial={{ width: "100%" }}
+                          animate={{ 
+                            width: `${(timeLeft / 30) * 100}%`,
+                          }}
+                          transition={{ 
+                            duration: 0.5,
+                            ease: "easeInOut"
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
 
