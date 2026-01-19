@@ -10,11 +10,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { CalendarClock, History as HistoryIcon, Send } from "lucide-react";
+import { CalendarClock, History as HistoryIcon, Send, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 type TargetPlatform = "all" | "android" | "ios" | "web";
 
@@ -26,9 +27,39 @@ export default function AdminNotifications() {
   const [targetPlatform, setTargetPlatform] = useState<TargetPlatform>("all");
   const [scheduledAt, setScheduledAt] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
+  const [tokenCount, setTokenCount] = useState<{ android: number; ios: number; web: number; total: number } | null>(
+    null
+  );
+  const [loadingTokens, setLoadingTokens] = useState(false);
   const { toast } = useToast();
 
   const canSubmit = title.trim().length > 0 && body.trim().length > 0;
+
+  useEffect(() => {
+    loadTokenCounts();
+  }, []);
+
+  const loadTokenCounts = async () => {
+    setLoadingTokens(true);
+    try {
+      const { data, error } = await supabase.from("device_push_tokens").select("platform").eq("enabled", true);
+
+      if (error) throw error;
+
+      const counts = {
+        android: data?.filter((t) => t.platform === "android").length ?? 0,
+        ios: data?.filter((t) => t.platform === "ios").length ?? 0,
+        web: data?.filter((t) => t.platform === "web").length ?? 0,
+        total: data?.length ?? 0,
+      };
+
+      setTokenCount(counts);
+    } catch (error: any) {
+      console.error("Failed to load token counts", error);
+    } finally {
+      setLoadingTokens(false);
+    }
+  };
 
   const handleCreateAndSend = async (mode: "now" | "schedule") => {
     setSubmitting(true);
@@ -95,6 +126,52 @@ export default function AdminNotifications() {
     }
   };
 
+  const sendTestNotification = async () => {
+    setSubmitting(true);
+    try {
+      const {
+        data: { user },
+        error: userErr,
+      } = await supabase.auth.getUser();
+      if (userErr) throw userErr;
+      if (!user) throw new Error("Not authenticated");
+
+      const { data: created, error: insErr } = await supabase
+        .from("notifications")
+        .insert({
+          title: "Test Notification 🔔",
+          body: "This is a test push notification from Noor App!",
+          target_platform: "all",
+          status: "draft",
+          created_by: user.id,
+        })
+        .select("id")
+        .single();
+
+      if (insErr) throw insErr;
+
+      const { data: sendRes, error: sendErr } = await supabase.functions.invoke("send-push", {
+        body: { notificationId: created.id },
+      });
+      if (sendErr) throw sendErr;
+
+      toast({
+        title: "Test notification sent! ✅",
+        description: `Sent: ${sendRes?.totals?.sent ?? 0}, Failed: ${sendRes?.totals?.failed ?? 0}`,
+      });
+
+      loadTokenCounts();
+    } catch (error: any) {
+      toast({
+        title: "Test failed",
+        description: error?.message ?? "Could not send test notification",
+        variant: "destructive",
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <header className="space-y-2">
@@ -123,6 +200,46 @@ export default function AdminNotifications() {
           </div>
         </div>
       </header>
+
+      {/* Token Status Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Zap className="h-5 w-5" />
+            Push Notification Status
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid gap-3 sm:grid-cols-4">
+            <div className="rounded-lg border bg-card p-4">
+              <div className="text-2xl font-bold">{loadingTokens ? "..." : tokenCount?.android ?? 0}</div>
+              <div className="text-sm text-muted-foreground">Android Devices</div>
+            </div>
+            <div className="rounded-lg border bg-card p-4">
+              <div className="text-2xl font-bold">{loadingTokens ? "..." : tokenCount?.ios ?? 0}</div>
+              <div className="text-sm text-muted-foreground">iOS Devices</div>
+            </div>
+            <div className="rounded-lg border bg-card p-4">
+              <div className="text-2xl font-bold">{loadingTokens ? "..." : tokenCount?.web ?? 0}</div>
+              <div className="text-sm text-muted-foreground">Web Browsers</div>
+            </div>
+            <div className="rounded-lg border bg-primary/10 p-4">
+              <div className="text-2xl font-bold text-primary">{loadingTokens ? "..." : tokenCount?.total ?? 0}</div>
+              <div className="text-sm font-medium">Total Devices</div>
+            </div>
+          </div>
+
+          <Alert>
+            <AlertDescription className="flex items-center justify-between">
+              <span className="text-sm">Test your FCM integration with a sample notification</span>
+              <Button onClick={sendTestNotification} disabled={submitting || (tokenCount?.total ?? 0) === 0} size="sm">
+                <Zap className="mr-2 h-4 w-4" />
+                Send Test Push
+              </Button>
+            </AlertDescription>
+          </Alert>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

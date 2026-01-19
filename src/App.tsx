@@ -45,6 +45,7 @@ import { AdminProvider } from "./contexts/AdminContext";
 import { AdminLayout } from "./components/admin/AdminLayout";
 import { GlobalConfigProvider } from "./context/GlobalConfigContext";
 import { usePushTokenRegistration } from "@/hooks/usePushTokenRegistration";
+import { useWebPushRegistration } from "@/hooks/useWebPushRegistration";
 
 const queryClient = new QueryClient();
 
@@ -256,6 +257,8 @@ const AppRoutes = () => (
 const App = () => {
   // Native-only: register device token for future push delivery.
   usePushTokenRegistration();
+  // Web-only: register browser for web push notifications.
+  useWebPushRegistration();
 
   return (
     <QueryClientProvider client={queryClient}>
