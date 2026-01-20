@@ -14,6 +14,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,6 +38,7 @@ import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 import { MobileTableWrapper } from '@/components/admin/MobileTableWrapper';
 import { NameBulkImportDialog } from '@/components/admin/NameBulkImportDialog';
 import { DuaBulkImportDialog } from '@/components/admin/DuaBulkImportDialog';
+import { BulkContentActionBar, type BulkContentAction } from '@/components/admin/BulkContentActionBar';
 
 interface AdminContentRow {
   id: string;
@@ -159,6 +171,11 @@ export default function AdminContent() {
   const [isNameImportOpen, setIsNameImportOpen] = useState(false);
   const [isDuaImportOpen, setIsDuaImportOpen] = useState(false);
 
+  const [bulkSelectedIds, setBulkSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkAction, setBulkAction] = useState<BulkContentAction | null>(null);
+  const [bulkConfirmOpen, setBulkConfirmOpen] = useState(false);
+  const [bulkIsWorking, setBulkIsWorking] = useState(false);
+
   // Quick filters (mobile + desktop)
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState<string>('all');
@@ -274,6 +291,98 @@ export default function AdminContent() {
       return hay.includes(q);
     });
   }, [content, searchQuery, statusFilter, typeFilter, duaCategoryFilter]);
+
+  const bulkSelectedItems = useMemo(
+    () => (content ?? []).filter((item) => bulkSelectedIds.has(item.id)),
+    [content, bulkSelectedIds]
+  );
+
+  const bulkSelectedCount = bulkSelectedIds.size;
+
+  const toggleBulkSelected = (id: string, next: boolean) => {
+    setBulkSelectedIds((prev) => {
+      const copy = new Set(prev);
+      if (next) copy.add(id);
+      else copy.delete(id);
+      return copy;
+    });
+  };
+
+  const clearBulkSelection = () => setBulkSelectedIds(new Set());
+
+  const selectAllFiltered = () => {
+    setBulkSelectedIds(new Set(filteredContent.map((i) => i.id)));
+  };
+
+  const requestBulkAction = (action: BulkContentAction) => {
+    setBulkAction(action);
+    setBulkConfirmOpen(true);
+  };
+
+  const runBulkAction = async () => {
+    if (!user) {
+      toast({ title: 'You must be logged in', variant: 'destructive' });
+      return;
+    }
+
+    if (!bulkAction || bulkSelectedIds.size === 0) return;
+
+    const ids = Array.from(bulkSelectedIds);
+
+    if (bulkAction === 'submit_for_review' && !canEdit) {
+      toast({ title: 'No permission', description: 'You cannot submit for review.', variant: 'destructive' });
+      return;
+    }
+    if ((bulkAction === 'publish' || bulkAction === 'unpublish') && !canApprove) {
+      toast({ title: 'No permission', description: 'You cannot publish/unpublish.', variant: 'destructive' });
+      return;
+    }
+
+    setBulkIsWorking(true);
+    try {
+      const now = new Date().toISOString();
+      let payload: Record<string, any> = {};
+
+      if (bulkAction === 'submit_for_review') {
+        payload = { status: 'in_review', is_published: false };
+      }
+
+      if (bulkAction === 'publish') {
+        payload = {
+          status: 'published',
+          is_published: true,
+          published_at: now,
+          scheduled_at: null,
+          approved_by: user.id,
+          approved_at: now,
+        };
+      }
+
+      if (bulkAction === 'unpublish') {
+        payload = {
+          status: 'draft',
+          is_published: false,
+          published_at: null,
+          scheduled_at: null,
+        };
+      }
+
+      const { error } = await supabase.from('admin_content').update(payload).in('id', ids);
+      if (error) throw error;
+
+      await queryClient.invalidateQueries({ queryKey: ['admin-content'] });
+      clearBulkSelection();
+      setBulkConfirmOpen(false);
+      setBulkAction(null);
+
+      toast({ title: 'Bulk update complete', description: `${ids.length} items updated.` });
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : 'Bulk update failed';
+      toast({ title: 'Bulk update failed', description: msg, variant: 'destructive' });
+    } finally {
+      setBulkIsWorking(false);
+    }
+  };
 
   const existingNameKeys = useMemo(() => {
     const keyOf = (title: string, titleArabic?: string | null) =>
@@ -682,6 +791,45 @@ export default function AdminContent() {
 
   return (
     <div className="space-y-6">
+      <AlertDialog open={bulkConfirmOpen} onOpenChange={setBulkConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {bulkAction === 'submit_for_review'
+                ? 'Submit for review (bulk)'
+                : bulkAction === 'publish'
+                  ? 'Publish now (bulk)'
+                  : 'Unpublish (bulk)'}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This will update <strong>{bulkSelectedCount}</strong> item(s).
+              {bulkSelectedItems.length > 0 ? (
+                <span>
+                  {' '}
+                  Examples: {bulkSelectedItems
+                    .slice(0, 3)
+                    .map((i) => i.title)
+                    .join(', ')}
+                  {bulkSelectedItems.length > 3 ? '…' : ''}
+                </span>
+              ) : null}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={bulkIsWorking}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                runBulkAction();
+              }}
+              disabled={bulkIsWorking}
+            >
+              {bulkIsWorking ? 'Working…' : 'Confirm'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <AdminPageHeader
         title="Content Management"
         description="Manage Quran, Dua, Hadith and other content with workflow, versions, and audit."
@@ -762,6 +910,16 @@ export default function AdminContent() {
           </div>
         </CardHeader>
         <CardContent className="pt-2">
+          <BulkContentActionBar
+            selectedCount={bulkSelectedCount}
+            filteredCount={filteredContent.length}
+            canEdit={canEdit}
+            canApprove={canApprove}
+            onSelectAllFiltered={selectAllFiltered}
+            onClearSelection={clearBulkSelection}
+            onRequestAction={requestBulkAction}
+          />
+
           {isLoading ? (
             <p className="text-xs sm:text-sm text-muted-foreground">Loading content…</p>
           ) : content && content.length > 0 ? (
@@ -842,6 +1000,7 @@ export default function AdminContent() {
                   <div className="space-y-2 sm:hidden">
                     {filteredContent.map((item) => {
                       const isSelected = selectedId === item.id;
+                      const isChecked = bulkSelectedIds.has(item.id);
 
                       return (
                         <div
@@ -851,6 +1010,14 @@ export default function AdminContent() {
                             (isSelected ? 'ring-2 ring-ring/40' : '')
                           }
                         >
+                          <div className="pt-1">
+                            <Checkbox
+                              checked={isChecked}
+                              onCheckedChange={(v) => toggleBulkSelected(item.id, Boolean(v))}
+                              onClick={(e) => e.stopPropagation()}
+                              aria-label="Select row"
+                            />
+                          </div>
                           <button
                             type="button"
                             className="min-w-0 flex-1 text-left"
@@ -925,6 +1092,19 @@ export default function AdminContent() {
                       <Table className="min-w-[720px] text-xs sm:text-sm">
                         <TableHeader>
                           <TableRow className="h-9">
+                            <TableHead className="w-[44px]">
+                              <Checkbox
+                                checked={
+                                  filteredContent.length > 0 &&
+                                  filteredContent.every((i) => bulkSelectedIds.has(i.id))
+                                }
+                                onCheckedChange={(v) => {
+                                  if (Boolean(v)) selectAllFiltered();
+                                  else clearBulkSelection();
+                                }}
+                                aria-label="Select all filtered"
+                              />
+                            </TableHead>
                             <TableHead className="w-[90px] whitespace-nowrap">Type</TableHead>
                             <TableHead className="whitespace-nowrap">Title</TableHead>
                             <TableHead className="w-[140px] whitespace-nowrap">Category</TableHead>
@@ -942,6 +1122,13 @@ export default function AdminContent() {
                                 selectedId === item.id ? 'bg-muted/60 hover:bg-muted/70' : 'hover:bg-muted/40'
                               }`}
                             >
+                              <TableCell className="align-middle">
+                                <Checkbox
+                                  checked={bulkSelectedIds.has(item.id)}
+                                  onCheckedChange={(v) => toggleBulkSelected(item.id, Boolean(v))}
+                                  aria-label="Select row"
+                                />
+                              </TableCell>
                               <TableCell className="align-middle">
                                 <Badge
                                   variant="outline"
