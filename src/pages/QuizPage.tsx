@@ -282,7 +282,7 @@ const QuizPage = () => {
   const earnedBadges = badges.filter(b => progress.totalPoints >= b.requirement);
 
   return (
-    <div className="font-quizEn min-h-screen bg-gradient-to-br from-background via-background to-primary/5 pb-24">
+    <div className="font-quizEnPremium min-h-screen bg-gradient-to-br from-background via-background to-primary/5 pb-24">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-lg border-b border-border/50">
         <div className="flex items-center justify-between p-4">
@@ -664,24 +664,24 @@ const QuizPage = () => {
                     <CardHeader>
                       <CardTitle className="text-xl leading-relaxed">
                         {languageMode === "bn" && (
-                          <span className="font-bangla text-2xl leading-relaxed">
+                          <span className="font-quizBnPremium text-2xl md:text-3xl leading-relaxed">
                             {currentQuestion.question}
                           </span>
                         )}
                         {languageMode === "en" && (
-                          <span className="font-quizEn">
+                          <span className="font-quizEnPremium text-lg md:text-xl leading-relaxed">
                             {currentQuestion.question}
                           </span>
                         )}
                         {languageMode === "mixed" && (
-                          <span className="font-bangla text-2xl leading-relaxed">
+                          <span className="font-quizBnPremium text-2xl md:text-3xl leading-relaxed">
                             {currentQuestion.question}
                           </span>
                         )}
                       </CardTitle>
                       {languageMode === "mixed" && (
                         <div className="mt-1 space-y-0.5">
-                          <p className="text-xs text-muted-foreground font-quizEn">
+                          <p className="text-sm md:text-xs text-muted-foreground font-quizEnPremium">
                             {currentQuestion.question}
                           </p>
                         </div>
@@ -711,14 +711,14 @@ const QuizPage = () => {
                               <p
                                 className={`font-semibold leading-snug ${
                                   languageMode === "bn" || languageMode === "mixed"
-                                    ? "font-bangla text-[16px]"
-                                    : "font-quizEn text-[14px]"
+                                    ? "font-quizBnPremium text-lg"
+                                    : "font-quizEnPremium text-sm"
                                 }`}
                               >
                                 {option}
                               </p>
                               {languageMode === "mixed" && (
-                                <p className="text-[11px] text-muted-foreground mt-0.5 font-quizEn">
+                                <p className="text-xs text-muted-foreground mt-0.5 font-quizEnPremium">
                                   {option}
                                 </p>
                               )}

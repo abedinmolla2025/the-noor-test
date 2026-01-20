@@ -20,6 +20,9 @@ export default {
         premium: ["Cinzel", "Playfair Display", "serif"],
         bangla: ["Hind Siliguri", "system-ui", "sans-serif"],
         quizEn: ["DM Sans", "system-ui", "sans-serif"],
+        // Premium quiz typography
+        quizBnPremium: ["Noto Serif Bengali", "Hind Siliguri", "system-ui", "serif"],
+        quizEnPremium: ["Lora", "DM Sans", "system-ui", "serif"],
       },
       colors: {
         border: "hsl(var(--border))",
