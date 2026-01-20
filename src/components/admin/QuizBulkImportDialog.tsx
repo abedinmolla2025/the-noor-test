@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -31,6 +31,7 @@ export function QuizBulkImportDialog() {
   const [isOpen, setIsOpen] = useState(false);
   const [jsonInput, setJsonInput] = useState("");
   const [preview, setPreview] = useState<QuizQuestion[]>([]);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const importMutation = useMutation({
     mutationFn: async (questions: QuizQuestion[]) => {
@@ -98,6 +99,31 @@ export function QuizBulkImportDialog() {
     }
   };
 
+  const handlePickFile = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileSelected = async (file: File | null) => {
+    if (!file) return;
+    try {
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error("File is too large (max 10MB)");
+        return;
+      }
+      const text = await file.text();
+      // Basic validation before setting
+      JSON.parse(text);
+      setJsonInput(text);
+      setPreview([]);
+      toast.success(`Loaded ${file.name}`);
+    } catch (e) {
+      toast.error("Invalid JSON file");
+    } finally {
+      // allow re-selecting same file
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
   const handleImport = () => {
     if (preview.length === 0) {
       toast.error("Please preview first");
@@ -138,6 +164,14 @@ export function QuizBulkImportDialog() {
         </DialogHeader>
 
         <div className="space-y-4">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="application/json,.json"
+            className="hidden"
+            onChange={(e) => handleFileSelected(e.target.files?.[0] ?? null)}
+          />
+
           <div className="space-y-2">
             <Label>JSON Format Example:</Label>
             <pre className="bg-muted p-4 rounded-lg text-xs overflow-x-auto">
@@ -146,7 +180,13 @@ export function QuizBulkImportDialog() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="json-input">Paste JSON data:</Label>
+            <div className="flex items-center justify-between gap-3">
+              <Label htmlFor="json-input">Paste JSON data:</Label>
+              <Button type="button" variant="outline" size="sm" onClick={handlePickFile}>
+                <Upload className="h-4 w-4 mr-2" />
+                Import JSON file
+              </Button>
+            </div>
             <Textarea
               id="json-input"
               value={jsonInput}
