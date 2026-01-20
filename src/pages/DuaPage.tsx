@@ -46,8 +46,10 @@ interface DuaTranslation {
 interface Dua {
   id: string;
   arabic: string;
-  transliteration?: string;
   bengaliTransliteration?: string;
+  pronunciationEn?: string;
+  pronunciationHi?: string;
+  pronunciationUr?: string;
   translations: Record<Language, DuaTranslation>;
 }
 
@@ -63,6 +65,9 @@ interface AdminContentDuaRow {
   content_hi: string | null;
   content_ur: string | null;
   content_pronunciation: string | null;
+  content_pronunciation_en: string | null;
+  content_pronunciation_hi: string | null;
+  content_pronunciation_ur: string | null;
   category: string | null;
 }
 
@@ -98,8 +103,10 @@ const DuaPage = () => {
       const mapped: Dua[] = (data as AdminContentDuaRow[]).map((row) => ({
         id: row.id,
         arabic: row.content_arabic || "",
-        transliteration: undefined,
         bengaliTransliteration: row.content_pronunciation || undefined,
+        pronunciationEn: row.content_pronunciation_en || undefined,
+        pronunciationHi: row.content_pronunciation_hi || undefined,
+        pronunciationUr: row.content_pronunciation_ur || undefined,
         translations: {
           bengali: {
             title: row.title || "দোয়া",
@@ -137,8 +144,10 @@ const DuaPage = () => {
     const translation = dua.translations[language];
     const matchesSearch =
       translation.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (dua.transliteration || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
       (dua.bengaliTransliteration || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (dua.pronunciationEn || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (dua.pronunciationHi || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (dua.pronunciationUr || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
       translation.translation.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = !selectedCategory || translation.category === selectedCategory;
     return matchesSearch && matchesCategory;
@@ -255,11 +264,23 @@ const DuaPage = () => {
 
               {/* Transliteration */}
               {(() => {
-                // We currently store a single pronunciation/transliteration string.
-                // Use Bengali pronunciation when available (it also works for English/Hindi/Urdu UIs).
-                const translitText = selectedDua.bengaliTransliteration || selectedDua.transliteration;
+                const translitText =
+                  language === "bengali"
+                    ? selectedDua.bengaliTransliteration
+                    : language === "english"
+                    ? selectedDua.pronunciationEn
+                    : language === "hindi"
+                    ? selectedDua.pronunciationHi
+                    : selectedDua.pronunciationUr;
 
-                if (!translitText) return null;
+                const fallbackText =
+                  translitText ||
+                  selectedDua.bengaliTransliteration ||
+                  selectedDua.pronunciationEn ||
+                  selectedDua.pronunciationHi ||
+                  selectedDua.pronunciationUr;
+
+                if (!fallbackText) return null;
 
                 return (
                   <motion.div
@@ -275,7 +296,7 @@ const DuaPage = () => {
                       </p>
                     </div>
                     <p className="text-white/90 text-lg md:text-xl leading-relaxed">
-                      {translitText}
+                      {fallbackText}
                     </p>
                   </motion.div>
                 );
