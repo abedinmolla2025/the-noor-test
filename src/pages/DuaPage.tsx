@@ -16,6 +16,27 @@ const LANGUAGE_LABELS: Record<Language, string> = {
   urdu: "اردو",
 };
 
+const SECTION_LABELS = {
+  arabic: {
+    bengali: "আরবি",
+    english: "Arabic",
+    hindi: "अरबी",
+    urdu: "عربی",
+  },
+  transliteration: {
+    bengali: "বাংলা উচ্চারণ",
+    english: "Transliteration",
+    hindi: "उच्चारण",
+    urdu: "تلفظ",
+  },
+  translation: {
+    bengali: "অনুবাদ",
+    english: "Translation",
+    hindi: "अनुवाद",
+    urdu: "ترجمہ",
+  },
+} as const;
+
 interface DuaTranslation {
   title: string;
   translation: string;
@@ -222,7 +243,7 @@ const DuaPage = () => {
                   <div className="flex items-center justify-center gap-2 mb-4">
                     <Sparkles className="w-4 h-4 text-[hsl(45,93%,58%)]" />
                     <span className="text-xs font-medium text-[hsl(45,93%,58%)]">
-                      {language === "bengali" ? "আরবি" : language === "hindi" ? "अरबी" : language === "urdu" ? "عربی" : "Arabic"}
+                      {SECTION_LABELS.arabic[language]}
                     </span>
                     <Sparkles className="w-4 h-4 text-[hsl(45,93%,58%)]" />
                   </div>
@@ -234,9 +255,9 @@ const DuaPage = () => {
 
               {/* Transliteration */}
               {(() => {
-                const translitText = language === "bengali"
-                  ? selectedDua.bengaliTransliteration
-                  : selectedDua.transliteration;
+                // We currently store a single pronunciation/transliteration string.
+                // Use Bengali pronunciation when available (it also works for English/Hindi/Urdu UIs).
+                const translitText = selectedDua.bengaliTransliteration || selectedDua.transliteration;
 
                 if (!translitText) return null;
 
@@ -250,7 +271,7 @@ const DuaPage = () => {
                     <div className="flex items-center gap-2 mb-3">
                       <Sparkles className="w-4 h-4 text-[hsl(45,93%,58%)]" />
                       <p className="text-xs font-medium text-[hsl(45,93%,58%)]">
-                        {language === "bengali" ? "উচ্চারণ" : language === "hindi" ? "उच्चारण" : language === "urdu" ? "تلفظ" : "Transliteration"}
+                        {SECTION_LABELS.transliteration[language]}
                       </p>
                     </div>
                     <p className="text-white/90 text-lg md:text-xl leading-relaxed">
@@ -270,7 +291,7 @@ const DuaPage = () => {
                 <div className="flex items-center gap-2 mb-3">
                   <Heart className="w-4 h-4 text-[hsl(45,93%,58%)]" />
                   <p className="text-xs font-medium text-[hsl(45,93%,58%)]">
-                    {language === "bengali" ? "অর্থ" : language === "hindi" ? "अनुवाद" : language === "urdu" ? "ترجمہ" : "Translation"}
+                    {SECTION_LABELS.translation[language]}
                   </p>
                 </div>
                 <p className="text-white text-lg md:text-xl leading-relaxed">
