@@ -127,9 +127,10 @@ const DuaAudioPlayer = ({ arabicText, duaId }: DuaAudioPlayerProps) => {
       transition={{ delay: 0.3 }}
       className="bg-white/5 rounded-2xl p-4 border border-white/10"
     >
-      <p className="text-xs font-medium text-[hsl(45,93%,58%)] mb-3 text-center">
-        🎧 উচ্চারণ শুনুন
-      </p>
+      <div className="flex items-center justify-center gap-2 mb-3 text-[hsl(45,93%,58%)]">
+        <Volume2 className="w-4 h-4" />
+        <p className="text-xs font-medium">উচ্চারণ শুনুন</p>
+      </div>
 
       {/* Progress Bar */}
       <div className="w-full h-1.5 bg-white/10 rounded-full mb-4 overflow-hidden">
