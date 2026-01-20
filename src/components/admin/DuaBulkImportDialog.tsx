@@ -38,6 +38,9 @@ const duaImportItemSchema = z
     content_bn: z.string().trim().max(8000).optional(),
     content_en: z.string().trim().max(8000).optional(),
     pronunciation: z.string().trim().max(2000).optional(),
+    pronunciation_en: z.string().trim().max(2000).optional(),
+    pronunciation_hi: z.string().trim().max(2000).optional(),
+    pronunciation_ur: z.string().trim().max(2000).optional(),
 
     category: z.string().trim().max(100).optional(),
 
@@ -88,6 +91,9 @@ export function DuaBulkImportDialog({
     "title_arabic": "دعاء الصباح",
     "content_arabic": "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ",
     "pronunciation": "আস্‌বাহনা ওয়া আস্‌বাহাল মুলকু লিল্লাহ, ওয়ালহামদু লিল্লাহ",
+    "pronunciation_en": "Asbahna wa asbahal mulku lillah, walhamdu lillah",
+    "pronunciation_hi": "असबहना वा असबहल मुल्कु लिल्लाह, वलहम्दु लिल्लाह",
+    "pronunciation_ur": "اصبحنا و اصبح الملک للہ، والحمد للہ",
     "content_bn": "আমরা সকালে উপনীত হয়েছি এবং এই সময়ে সমস্ত সার্বভৌমত্ব আল্লাহর...",
     "content_en": "We have reached the morning and at this very time all sovereignty belongs to Allah...",
     "category": "Morning",
@@ -246,6 +252,9 @@ export function DuaBulkImportDialog({
             content: it.content_bn?.trim() || null,
             content_en: it.content_en?.trim() || null,
             content_pronunciation: it.pronunciation?.trim() || null,
+            content_pronunciation_en: it.pronunciation_en?.trim() || null,
+            content_pronunciation_hi: it.pronunciation_hi?.trim() || null,
+            content_pronunciation_ur: it.pronunciation_ur?.trim() || null,
             category: it.category?.trim() || null,
             metadata: Object.keys(meta).length ? meta : null,
             status: "draft",
@@ -298,6 +307,9 @@ export function DuaBulkImportDialog({
               content: it.content_bn?.trim() || null,
               content_en: it.content_en?.trim() || null,
               content_pronunciation: it.pronunciation?.trim() || null,
+              content_pronunciation_en: it.pronunciation_en?.trim() || null,
+              content_pronunciation_hi: it.pronunciation_hi?.trim() || null,
+              content_pronunciation_ur: it.pronunciation_ur?.trim() || null,
               category: it.category?.trim() || null,
               metadata: Object.keys(baseMeta).length ? baseMeta : null,
               // keep draft/unpublished to match existing import behavior
@@ -444,7 +456,10 @@ export function DuaBulkImportDialog({
                       <TableHead className="whitespace-nowrap">Arabic (Dua)</TableHead>
                       <TableHead className="whitespace-nowrap">Content (BN)</TableHead>
                       <TableHead className="whitespace-nowrap">Content (EN)</TableHead>
-                      <TableHead className="whitespace-nowrap">Pronunciation</TableHead>
+                      <TableHead className="whitespace-nowrap">Pron (BN)</TableHead>
+                      <TableHead className="whitespace-nowrap">Pron (EN)</TableHead>
+                      <TableHead className="whitespace-nowrap">Pron (HI)</TableHead>
+                      <TableHead className="whitespace-nowrap">Pron (UR)</TableHead>
                       <TableHead className="whitespace-nowrap">Category</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -455,7 +470,10 @@ export function DuaBulkImportDialog({
                           <TableCell className="min-w-[320px] font-arabic">{it.content_arabic ?? ""}</TableCell>
                         <TableCell className="min-w-[320px]">{it.content_bn ?? ""}</TableCell>
                         <TableCell className="min-w-[320px]">{it.content_en ?? ""}</TableCell>
-                        <TableCell className="min-w-[220px]">{it.pronunciation ?? ""}</TableCell>
+                          <TableCell className="min-w-[220px]">{it.pronunciation ?? ""}</TableCell>
+                          <TableCell className="min-w-[220px]">{it.pronunciation_en ?? ""}</TableCell>
+                          <TableCell className="min-w-[220px]">{it.pronunciation_hi ?? ""}</TableCell>
+                          <TableCell className="min-w-[220px]">{it.pronunciation_ur ?? ""}</TableCell>
                         <TableCell className="whitespace-nowrap">{it.category ?? ""}</TableCell>
                       </TableRow>
                     ))}
