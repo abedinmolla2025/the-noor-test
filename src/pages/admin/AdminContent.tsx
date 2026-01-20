@@ -38,7 +38,11 @@ import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 import { MobileTableWrapper } from '@/components/admin/MobileTableWrapper';
 import { NameBulkImportDialog } from '@/components/admin/NameBulkImportDialog';
 import { DuaBulkImportDialog } from '@/components/admin/DuaBulkImportDialog';
-import { BulkContentActionBar, type BulkContentAction } from '@/components/admin/BulkContentActionBar';
+import {
+  BulkContentActionBar,
+  type BulkContentAction,
+  type BulkStatusBreakdown,
+} from '@/components/admin/BulkContentActionBar';
 
 interface AdminContentRow {
   id: string;
@@ -296,6 +300,19 @@ export default function AdminContent() {
     () => (content ?? []).filter((item) => bulkSelectedIds.has(item.id)),
     [content, bulkSelectedIds]
   );
+
+  const bulkStatusBreakdown = useMemo<BulkStatusBreakdown>(() => {
+    const base: BulkStatusBreakdown = { draft: 0, in_review: 0, published: 0, other: 0 };
+
+    for (const item of bulkSelectedItems) {
+      if (item.status === 'draft') base.draft += 1;
+      else if (item.status === 'in_review') base.in_review += 1;
+      else if (item.status === 'published') base.published += 1;
+      else base.other += 1;
+    }
+
+    return base;
+  }, [bulkSelectedItems]);
 
   const bulkSelectedCount = bulkSelectedIds.size;
 
@@ -913,6 +930,7 @@ export default function AdminContent() {
           <BulkContentActionBar
             selectedCount={bulkSelectedCount}
             filteredCount={filteredContent.length}
+            statusBreakdown={bulkStatusBreakdown}
             canEdit={canEdit}
             canApprove={canApprove}
             onSelectAllFiltered={selectAllFiltered}
