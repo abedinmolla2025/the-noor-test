@@ -280,13 +280,18 @@ export default function AdminQuiz() {
 
   const totalDays = questions ? Math.ceil(questions.filter((q) => q.is_active).length / 3) : 0;
 
+  // Export in the same bilingual schema we support for bulk import
   const exportData = questions?.map((q) => ({
-    question: q.question_en || q.question || "",
+    // Base fallback fields
+    question: q.question || q.question_en || q.question_bn || "",
+    options: q.options || q.options_en || q.options_bn || [],
+
+    // Explicit bilingual packs
     question_en: q.question_en,
     question_bn: q.question_bn,
-    options: q.options_en || q.options || [],
     options_en: q.options_en,
     options_bn: q.options_bn,
+
     correct_answer: q.correct_answer,
     category: q.category,
     difficulty: q.difficulty,
