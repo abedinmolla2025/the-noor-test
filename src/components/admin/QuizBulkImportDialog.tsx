@@ -42,11 +42,59 @@ const QuizQuestionSchema = z
 
 type QuizQuestion = z.infer<typeof QuizQuestionSchema>;
 
+type PreviewStats = {
+  total: number;
+  valid: number;
+  invalid: number;
+  duplicates_existing: number;
+  duplicates_in_file: number;
+};
+
+const normalizeKey = (s: string) =>
+  s
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ");
+
+const deriveQuestionKey = (q: QuizQuestion) => normalizeKey((q.question_en || q.question_bn || q.question).trim());
+
+async function fetchExistingQuestionKeys(): Promise<Set<string>> {
+  // Defensive pagination (Supabase default limit can be 1000)
+  const keys = new Set<string>();
+  const pageSize = 1000;
+  let from = 0;
+
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const { data, error } = await supabase
+      .from("quiz_questions")
+      .select("question, question_en, question_bn")
+      .range(from, from + pageSize - 1);
+
+    if (error) throw error;
+
+    for (const row of data ?? []) {
+      const base = String(row.question ?? "").trim();
+      const en = String(row.question_en ?? "").trim();
+      const bn = String(row.question_bn ?? "").trim();
+      if (en) keys.add(normalizeKey(en));
+      if (bn) keys.add(normalizeKey(bn));
+      if (base) keys.add(normalizeKey(base));
+    }
+
+    if (!data || data.length < pageSize) break;
+    from += pageSize;
+  }
+
+  return keys;
+}
+
 export function QuizBulkImportDialog() {
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
   const [jsonInput, setJsonInput] = useState("");
   const [preview, setPreview] = useState<QuizQuestion[]>([]);
+  const [previewStats, setPreviewStats] = useState<PreviewStats | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const importMutation = useMutation({
@@ -88,22 +136,24 @@ export function QuizBulkImportDialog() {
     },
     onSuccess: (_, questions) => {
       queryClient.invalidateQueries({ queryKey: ["admin-quiz-questions"] });
-      toast.success(`${questions.length} questions added successfully`);
+      const skipped = (previewStats?.duplicates_existing ?? 0) + (previewStats?.duplicates_in_file ?? 0);
+      toast.success(`Imported ${questions.length} | Skipped duplicates ${skipped}`);
       setIsOpen(false);
       setJsonInput("");
       setPreview([]);
+      setPreviewStats(null);
     },
     onError: (error: Error) => {
       toast.error("Error: " + error.message);
     },
   });
 
-  const handlePreview = () => {
+  const handlePreview = async () => {
     try {
       const parsed = JSON.parse(jsonInput);
       const questions = Array.isArray(parsed) ? parsed : [parsed];
 
-      const validated = questions.map((q, index) => {
+      const validated: QuizQuestion[] = questions.map((q, index) => {
         try {
           return QuizQuestionSchema.parse(q);
         } catch (err) {
@@ -116,8 +166,42 @@ export function QuizBulkImportDialog() {
         }
       });
 
-      setPreview(validated);
-      toast.success(`${validated.length} questions validated`);
+      const existingKeys = await fetchExistingQuestionKeys();
+      const seenInFile = new Set<string>();
+      const unique: QuizQuestion[] = [];
+      let duplicatesExisting = 0;
+      let duplicatesInFile = 0;
+
+      for (const q of validated) {
+        const key = deriveQuestionKey(q);
+        if (!key) continue;
+
+        if (existingKeys.has(key)) {
+          duplicatesExisting += 1;
+          continue;
+        }
+
+        if (seenInFile.has(key)) {
+          duplicatesInFile += 1;
+          continue;
+        }
+
+        seenInFile.add(key);
+        unique.push(q);
+      }
+
+      setPreview(unique);
+      setPreviewStats({
+        total: questions.length,
+        valid: unique.length,
+        invalid: 0,
+        duplicates_existing: duplicatesExisting,
+        duplicates_in_file: duplicatesInFile,
+      });
+
+      toast.success(
+        `Valid ${unique.length} | Duplicates skipped ${duplicatesExisting + duplicatesInFile}`
+      );
     } catch (error) {
       if (error instanceof Error) {
         toast.error("JSON Error: " + error.message);
@@ -125,6 +209,7 @@ export function QuizBulkImportDialog() {
         toast.error("Invalid JSON format");
       }
       setPreview([]);
+      setPreviewStats(null);
     }
   };
 
@@ -144,6 +229,7 @@ export function QuizBulkImportDialog() {
       JSON.parse(text);
       setJsonInput(text);
       setPreview([]);
+      setPreviewStats(null);
       toast.success(`Loaded ${file.name}`);
     } catch (e) {
       toast.error("Invalid JSON file");
@@ -244,7 +330,15 @@ export function QuizBulkImportDialog() {
 
           {preview.length > 0 && (
             <div className="space-y-2">
-              <Label>Preview ({preview.length} questions):</Label>
+              <Label>
+                Preview ({preview.length} questions)
+                {previewStats && (
+                  <span className="text-xs text-muted-foreground ml-2">
+                    Total: {previewStats.total} • Skipped duplicates:{" "}
+                    {previewStats.duplicates_existing + previewStats.duplicates_in_file}
+                  </span>
+                )}
+              </Label>
               <div className="bg-muted p-4 rounded-lg max-h-60 overflow-y-auto space-y-4">
                 {preview.map((q, index) => (
                   <div key={index} className="border-b border-border pb-2 last:border-0">
