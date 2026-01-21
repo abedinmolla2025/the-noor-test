@@ -44,6 +44,8 @@ export default function AnnouncementTicker() {
   const fontClass = typeof style.font === "string" ? style.font : "font-sans";
   const sizeClass = typeof style.size === "string" ? style.size : "text-xs";
   const colorClass = typeof style.color === "string" ? style.color : "text-foreground/90";
+  const speed = style.speed === "slow" || style.speed === "normal" || style.speed === "fast" ? style.speed : "normal";
+  const durationSeconds = speed === "slow" ? 26 : speed === "fast" ? 12 : 18;
 
   return (
     <div className="border-b border-border bg-background/80 backdrop-blur">
@@ -56,7 +58,7 @@ export default function AnnouncementTicker() {
         >
           <span
             className={`inline-block pr-12 font-medium ${sizeClass} ${colorClass} ${fontClass}`}
-            style={{ animation: "noor-marquee 18s linear infinite" }}
+             style={{ animation: `noor-marquee ${durationSeconds}s linear infinite` }}
           >
             {text}
           </span>
