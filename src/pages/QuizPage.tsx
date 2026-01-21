@@ -187,6 +187,8 @@ const QuizPage = () => {
   const [isTimeUp, setIsTimeUp] = useState(false);
   const [resultProgress, setResultProgress] = useState(0);
   const resultMetaRef = useRef<{ startedAt: number; durationMs: number } | null>(null);
+  const [showResultBurst, setShowResultBurst] = useState(false);
+  const resultBurstTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -307,6 +309,25 @@ const QuizPage = () => {
     return () => window.clearInterval(id);
   }, [showResult, currentQuestionIndex]);
 
+  // Popup micro-effects (confetti on correct; shake on wrong is handled in motion props)
+  useEffect(() => {
+    if (!showResult) return;
+    const q = dailyQuestions[currentQuestionIndex];
+    if (!q) return;
+
+    // confetti only for answered questions (not time-up)
+    const isCorrect = !isTimeUp && selectedAnswer !== null && selectedAnswer === q.correctAnswer;
+    if (!isCorrect) return;
+
+    setShowResultBurst(true);
+    if (resultBurstTimerRef.current) window.clearTimeout(resultBurstTimerRef.current);
+    resultBurstTimerRef.current = window.setTimeout(() => setShowResultBurst(false), 550);
+
+    return () => {
+      if (resultBurstTimerRef.current) window.clearTimeout(resultBurstTimerRef.current);
+    };
+  }, [showResult, currentQuestionIndex, isTimeUp, selectedAnswer, dailyQuestions]);
+
   const submitAnswer = (answerIndex: number) => {
     if (showResult || isTimeUp) return;
     setShowResult(true);
@@ -361,6 +382,7 @@ const QuizPage = () => {
     return () => {
       if (submitAutoNextTimerRef.current) window.clearTimeout(submitAutoNextTimerRef.current);
       if (submitScrollTimerRef.current) window.clearTimeout(submitScrollTimerRef.current);
+      if (resultBurstTimerRef.current) window.clearTimeout(resultBurstTimerRef.current);
     };
   }, []);
 
@@ -994,10 +1016,17 @@ const QuizPage = () => {
                     >
                       <motion.div
                         initial={{ opacity: 0, scale: 0.96, y: 10 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        animate={{
+                          opacity: 1,
+                          scale: 1,
+                          y: 0,
+                          ...(isTimeUp || (selectedAnswer !== null && selectedAnswer !== currentQuestion.correctAnswer)
+                            ? { x: [0, -10, 10, -8, 8, 0] }
+                            : {}),
+                        }}
                         exit={{ opacity: 0, scale: 0.98, y: 10 }}
                         transition={{ duration: 0.18 }}
-                        className="w-[min(92vw,440px)] overflow-hidden rounded-2xl border bg-card shadow-lg"
+                        className="relative w-[min(92vw,440px)] overflow-hidden rounded-2xl border bg-card shadow-lg"
                       >
                         {/* Top accent */}
                         <div
@@ -1011,6 +1040,21 @@ const QuizPage = () => {
                         />
 
                         <div className="p-5">
+                          {/* Small confetti burst (correct only) */}
+                          {showResultBurst && !isTimeUp && selectedAnswer === currentQuestion.correctAnswer && (
+                            <div className="pointer-events-none absolute inset-0 overflow-hidden">
+                              <Confetti
+                                width={440}
+                                height={260}
+                                numberOfPieces={70}
+                                recycle={false}
+                                gravity={0.45}
+                                initialVelocityY={12}
+                                confettiSource={{ x: 220, y: 10, w: 10, h: 10 }}
+                              />
+                            </div>
+                          )}
+
                           <div className="flex items-start gap-3">
                             <div
                               className={`mt-0.5 inline-flex h-11 w-11 items-center justify-center rounded-xl border ${
