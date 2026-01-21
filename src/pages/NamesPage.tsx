@@ -17,6 +17,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import NameTableRow from "@/components/names/NameTableRow";
 
 type NameContentRow = {
   id: string;
@@ -426,55 +427,16 @@ const NamesPage = () => {
                       gender === "male" ? "Male" : gender === "female" ? "Female" : gender === "unisex" ? "Unisex" : "";
 
                     return (
-                      <Card
+                      <NameTableRow
                         key={n.id}
-                        className="dua-card group cursor-pointer transition-all hover:-translate-y-[1px] hover:shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--dua-accent)/0.45)]"
+                        arabicName={primary ?? ""}
+                        englishName={secondary ?? (n.title ?? "")}
+                        banglaName={bnName}
+                        meaning={snippet}
+                        category={(n.category ?? "").trim() || undefined}
+                        genderLabel={genderLabel || undefined}
                         onClick={() => setSelected(n)}
-                        role="button"
-                        tabIndex={0}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" || e.key === " ") setSelected(n);
-                        }}
-                        aria-label={`Open details for ${n.title}`}
-                      >
-                        <CardHeader className="py-3">
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="min-w-0">
-                              <CardTitle className="truncate text-base leading-snug">
-                                <span className={n.title_arabic?.trim() ? "font-arabic" : undefined}>{primary}</span>
-                                {secondary ? (
-                                  <span className="ml-2 text-sm font-medium text-[hsl(var(--dua-fg-soft))]">({secondary})</span>
-                                ) : null}
-                              </CardTitle>
-                              {bnName ? <p className="pt-1 text-sm text-[hsl(var(--dua-fg-muted))]">{bnName}</p> : null}
-                            </div>
-
-                            <div className="flex shrink-0 items-center gap-1">
-                              {genderLabel ? (
-                                <Badge
-                                  variant="outline"
-                                  className="text-[11px] border-[hsl(var(--dua-fg)/0.18)] text-[hsl(var(--dua-fg-muted))]"
-                                >
-                                  {genderLabel}
-                                </Badge>
-                              ) : null}
-                              {n.category?.trim() ? (
-                                <Badge
-                                  variant="secondary"
-                                  className="text-[11px] bg-[hsl(var(--dua-accent)/0.18)] text-[hsl(var(--dua-accent))]"
-                                >
-                                  {n.category}
-                                </Badge>
-                              ) : null}
-                            </div>
-                          </div>
-                        </CardHeader>
-                        {snippet ? (
-                          <CardContent className="pt-0 pb-3 text-sm text-[hsl(var(--dua-fg-muted))]">
-                            <p className="leading-relaxed">{snippet}</p>
-                          </CardContent>
-                        ) : null}
-                      </Card>
+                      />
                     );
                   })}
                 </div>
@@ -508,61 +470,16 @@ const NamesPage = () => {
                                   : "";
 
                           return (
-                            <Card
+                            <NameTableRow
                               key={n.id}
-                              className="dua-card group cursor-pointer transition-all hover:-translate-y-[1px] hover:shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--dua-accent)/0.45)]"
+                              arabicName={primary ?? ""}
+                              englishName={secondary ?? (n.title ?? "")}
+                              banglaName={bnName}
+                              meaning={snippet}
+                              category={(n.category ?? "").trim() || undefined}
+                              genderLabel={genderLabel || undefined}
                               onClick={() => setSelected(n)}
-                              role="button"
-                              tabIndex={0}
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter" || e.key === " ") setSelected(n);
-                              }}
-                              aria-label={`Open details for ${n.title}`}
-                            >
-                              <CardHeader className="py-3">
-                                <div className="flex items-start justify-between gap-3">
-                                  <div className="min-w-0">
-                                    <CardTitle className="truncate text-base leading-snug">
-                                      <span className={n.title_arabic?.trim() ? "font-arabic" : undefined}>
-                                        {primary}
-                                      </span>
-                                      {secondary ? (
-                                        <span className="ml-2 text-sm font-medium text-[hsl(var(--dua-fg-soft))]">
-                                          ({secondary})
-                                        </span>
-                                      ) : null}
-                                    </CardTitle>
-                                    {bnName ? (
-                                      <p className="pt-1 text-sm text-[hsl(var(--dua-fg-muted))]">{bnName}</p>
-                                    ) : null}
-                                  </div>
-
-                                  <div className="flex shrink-0 items-center gap-1">
-                                    {genderLabel ? (
-                                      <Badge
-                                        variant="outline"
-                                        className="text-[11px] border-[hsl(var(--dua-fg)/0.18)] text-[hsl(var(--dua-fg-muted))]"
-                                      >
-                                        {genderLabel}
-                                      </Badge>
-                                    ) : null}
-                                    {n.category?.trim() ? (
-                                      <Badge
-                                        variant="secondary"
-                                        className="text-[11px] bg-[hsl(var(--dua-accent)/0.18)] text-[hsl(var(--dua-accent))]"
-                                      >
-                                        {n.category}
-                                      </Badge>
-                                    ) : null}
-                                  </div>
-                                </div>
-                              </CardHeader>
-                              {snippet ? (
-                                <CardContent className="pt-0 pb-3 text-sm text-[hsl(var(--dua-fg-muted))]">
-                                  <p className="leading-relaxed">{snippet}</p>
-                                </CardContent>
-                              ) : null}
-                            </Card>
+                            />
                           );
                         })}
                       </div>
