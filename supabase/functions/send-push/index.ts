@@ -3,7 +3,8 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 // Web Push provider (works in Edge runtime when bundled for Deno)
-import webpush from "https://esm.sh/web-push@3.6.7?bundle&target=deno";
+// Deno-native Web Push (avoids Node crypto APIs like crypto.ECDH which are not available here)
+import * as webpush from "jsr:@negrel/webpush";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -57,6 +58,17 @@ function normalizeBase64Url(input: string) {
     .replace(/=+$/g, "")
     // Remove any stray punctuation (quotes, commas, etc.)
     .replace(/[^A-Za-z0-9\-_]/g, "");
+}
+
+function normalizeVapidSubject(input: string) {
+  // Expect something like: "mailto:admin@example.com" or "https://example.com"
+  return input
+    .trim()
+    .replace(/[\s\u00A0]+/g, "")
+    .replace(/^mailto:</i, "mailto:")
+    .replace(/>$/g, "")
+    .replace(/<|>/g, "")
+    .replace(/^["']+|["',]+$/g, "");
 }
 
 
@@ -197,7 +209,7 @@ async function sendWebPush({
 }) {
   const publicKey = Deno.env.get("WEBPUSH_VAPID_PUBLIC_KEY") ?? "";
   const privateKey = Deno.env.get("WEBPUSH_VAPID_PRIVATE_KEY") ?? "";
-  const subject = Deno.env.get("WEBPUSH_SUBJECT") ?? "";
+  const subject = normalizeVapidSubject(Deno.env.get("WEBPUSH_SUBJECT") ?? "");
 
   if (!publicKey || !privateKey || !subject) {
     throw new Error("Missing WEBPUSH_VAPID_* keys or WEBPUSH_SUBJECT");
@@ -218,15 +230,86 @@ async function sendWebPush({
     deep_link: deepLink,
   });
 
-  // web-push expects url-safe base64 (no "=")
-  webpush.setVapidDetails(vapidDetails.subject, vapidDetails.publicKey, vapidDetails.privateKey);
+  const w = webpush as any;
 
-  const res = await webpush.sendNotification(subscription, payload);
-  const status = Number((res as any)?.statusCode ?? (res as any)?.status ?? 0);
-  if (status && (status < 200 || status >= 300)) {
-    throw new Error(`webpush_failed_${status}`);
+  // Helpful for diagnosing runtime export differences
+  const g = globalThis as any;
+  if (!g.__WEBPUSH_EXPORTS_LOGGED__) {
+    g.__WEBPUSH_EXPORTS_LOGGED__ = true;
+    try {
+      console.log("webpush_exports", Object.keys(w));
+    } catch {
+      // ignore
+    }
   }
-  return String(status || "200");
+
+  // Try function-style APIs (preferred)
+  const sendFn = w.sendNotification ?? w.sendPushMessage ?? w.sendWebPush;
+  if (typeof sendFn === "function") {
+    const res: Response = await sendFn(subscription, payload, { vapidDetails });
+    const text = await res.text().catch(() => "");
+    if (!res.ok) throw new Error(`webpush_failed_${res.status}: ${text}`);
+    return String(res.status);
+  }
+
+  // Try class-style API
+  const ApplicationServer = w.ApplicationServer;
+  if (typeof ApplicationServer === "function") {
+    const importVapidKeys = w.importVapidKeys;
+    const vapidKeys =
+      typeof importVapidKeys === "function"
+        ? await importVapidKeys({
+            publicKey: vapidDetails.publicKey,
+            privateKey: vapidDetails.privateKey,
+          })
+        : {
+            publicKey: vapidDetails.publicKey,
+            privateKey: vapidDetails.privateKey,
+          };
+
+    const server = new ApplicationServer({
+      contactInformation: subject,
+      vapidKeys,
+    });
+
+    const PushSubscriber = w.PushSubscriber;
+    if (typeof PushSubscriber === "function") {
+      const subscriber = new PushSubscriber(subscription);
+
+      const pushText = subscriber.pushTextMessage ?? subscriber.pushMessage ?? null;
+      if (typeof pushText === "function") {
+        // Different versions accept either (payload, { applicationServer }) or (payload, applicationServer)
+        const tryCall = async (arg2: any) => {
+          const res: Response = await pushText.call(subscriber, payload, arg2);
+          const text = await res.text().catch(() => "");
+          if (!res.ok) throw new Error(`webpush_failed_${res.status}: ${text}`);
+          return String(res.status);
+        };
+
+        try {
+          return await tryCall({ applicationServer: server });
+        } catch {
+          return await tryCall(server);
+        }
+      }
+    }
+
+    // Some versions expose server.send(subscription, payload)
+    if (typeof server.sendNotification === "function") {
+      const res: Response = await server.sendNotification(subscription, payload);
+      const text = await res.text().catch(() => "");
+      if (!res.ok) throw new Error(`webpush_failed_${res.status}: ${text}`);
+      return String(res.status);
+    }
+    if (typeof server.send === "function") {
+      const res: Response = await server.send(subscription, payload);
+      const text = await res.text().catch(() => "");
+      if (!res.ok) throw new Error(`webpush_failed_${res.status}: ${text}`);
+      return String(res.status);
+    }
+  }
+
+  throw new Error("webpush_send_not_supported_by_library");
 }
 
 Deno.serve(async (req) => {
