@@ -44,6 +44,26 @@ type NotificationTemplate = {
   category: "prayer" | "daily" | "special";
 };
 
+type TickerStyle = { font: string; size: string; color: string };
+
+const TICKER_STYLE_THEMES: Array<{ id: string; label: string; style: TickerStyle }> = [
+  {
+    id: "emerald",
+    label: "Emerald",
+    style: { font: "font-display", size: "text-sm", color: "text-primary" },
+  },
+  {
+    id: "gold",
+    label: "Gold",
+    style: { font: "font-premium", size: "text-sm", color: "text-accent" },
+  },
+  {
+    id: "night",
+    label: "Night",
+    style: { font: "font-display", size: "text-xs", color: "text-muted-foreground" },
+  },
+];
+
 const NOTIFICATION_TEMPLATES: NotificationTemplate[] = [
   {
     id: "fajr-reminder",
@@ -200,7 +220,7 @@ export default function AdminNotifications() {
   const [nowTick, setNowTick] = useState(() => Date.now());
   const [extendHours, setExtendHours] = useState<"12" | "24">("12");
 
-  const [activeStyleDraft, setActiveStyleDraft] = useState<{ font: string; size: string; color: string } | null>(null);
+  const [activeStyleDraft, setActiveStyleDraft] = useState<TickerStyle | null>(null);
   const [savingActiveStyle, setSavingActiveStyle] = useState(false);
   const styleSaveTimerRef = useRef<number | null>(null);
   const [tokenCount, setTokenCount] = useState<{ android: number; ios: number; web: number; total: number } | null>(
@@ -469,7 +489,7 @@ export default function AdminNotifications() {
     };
   };
 
-  const saveActiveAnnouncementStyle = async (style: { font: string; size: string; color: string }) => {
+  const saveActiveAnnouncementStyle = async (style: TickerStyle) => {
     if (!activeAnnouncement) return;
     setSavingActiveStyle(true);
     try {
@@ -490,13 +510,29 @@ export default function AdminNotifications() {
     }
   };
 
-  const scheduleActiveStyleSave = (style: { font: string; size: string; color: string }) => {
+  const scheduleActiveStyleSave = (style: TickerStyle) => {
     if (styleSaveTimerRef.current) {
       window.clearTimeout(styleSaveTimerRef.current);
     }
     styleSaveTimerRef.current = window.setTimeout(() => {
       void saveActiveAnnouncementStyle(style);
     }, 450);
+  };
+
+  const applyTickerThemeToActive = (themeId: string) => {
+    if (!activeAnnouncement || !activeStyleDraft) return;
+    const theme = TICKER_STYLE_THEMES.find((t) => t.id === themeId);
+    if (!theme) return;
+    setActiveStyleDraft(theme.style);
+    scheduleActiveStyleSave(theme.style);
+  };
+
+  const applyTickerThemeToDraft = (themeId: string) => {
+    const theme = TICKER_STYLE_THEMES.find((t) => t.id === themeId);
+    if (!theme) return;
+    setAnnFont(theme.style.font);
+    setAnnSize(theme.style.size);
+    setAnnColor(theme.style.color);
   };
 
   useEffect(() => {
@@ -934,8 +970,28 @@ export default function AdminNotifications() {
                         <p className="text-xs text-muted-foreground">Remaining: {remainingText}</p>
 
                         {activeStyleDraft ? (
-                          <div className="mt-2 grid gap-2 sm:grid-cols-3">
+                          <div className="mt-2 space-y-2">
                             <div className="space-y-1">
+                              <p className="text-[11px] font-medium text-muted-foreground">Premium theme</p>
+                              <div className="flex flex-wrap gap-2">
+                                {TICKER_STYLE_THEMES.map((t) => (
+                                  <Button
+                                    key={t.id}
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    className="h-8 px-2 text-xs"
+                                    onClick={() => applyTickerThemeToActive(t.id)}
+                                    disabled={submitting}
+                                  >
+                                    {t.label}
+                                  </Button>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div className="grid gap-2 sm:grid-cols-3">
+                              <div className="space-y-1">
                               <p className="text-[11px] font-medium text-muted-foreground">Font</p>
                               <Select
                                 value={activeStyleDraft.font}
@@ -956,7 +1012,7 @@ export default function AdminNotifications() {
                                   <SelectItem value="font-bangla">Bangla</SelectItem>
                                 </SelectContent>
                               </Select>
-                            </div>
+                              </div>
 
                             <div className="space-y-1">
                               <p className="text-[11px] font-medium text-muted-foreground">Size</p>
@@ -1003,6 +1059,7 @@ export default function AdminNotifications() {
 
                             <div className="sm:col-span-3">
                               <p className="text-[11px] text-muted-foreground">{savingActiveStyle ? "Saving…" : "Live: changes apply instantly"}</p>
+                            </div>
                             </div>
                           </div>
                         ) : null}
@@ -1109,6 +1166,26 @@ export default function AdminNotifications() {
                 </div>
               ) : null}
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-xs sm:text-sm">Premium theme</Label>
+            <div className="flex flex-wrap gap-2">
+              {TICKER_STYLE_THEMES.map((t) => (
+                <Button
+                  key={t.id}
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="h-9 px-3 text-sm"
+                  onClick={() => applyTickerThemeToDraft(t.id)}
+                  disabled={submitting}
+                >
+                  {t.label}
+                </Button>
+              ))}
+            </div>
+            <p className="text-[11px] text-muted-foreground">One click sets font, size, and color.</p>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
