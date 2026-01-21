@@ -27,25 +27,25 @@ export default function NameTableRow({
       type="button"
       onClick={onClick}
       className={cn(
-        "dua-card w-full text-left p-3 transition-all hover:-translate-y-[1px] hover:shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--dua-accent)/0.45)] md:p-4",
+        "dua-card w-full text-left p-2.5 transition-all hover:-translate-y-[1px] hover:shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--dua-accent)/0.45)] md:p-4",
         className,
       )}
     >
       {/* Keep everything side-by-side; on small screens allow horizontal scroll instead of stacking */}
       <div className="overflow-x-auto">
-        <div className="grid min-w-[38rem] grid-cols-[1.1fr_1fr_1fr_1.4fr] items-start gap-2 md:min-w-0 md:gap-3">
+        <div className="grid min-w-[32rem] grid-cols-[1.05fr_.95fr_.95fr_1.25fr] items-start gap-1.5 md:min-w-0 md:grid-cols-[1.1fr_1fr_1fr_1.4fr] md:gap-3">
           {/* Arabic */}
           <div className="min-w-0">
-            <p className="text-[10px] font-medium text-[hsl(var(--dua-fg-soft))] md:text-[11px]">আরবি</p>
-            <p className="font-arabic text-base leading-[1.9] text-[hsl(var(--dua-fg))] md:text-xl">
+            <p className="text-[9px] font-medium text-[hsl(var(--dua-fg-soft))] md:text-[11px]">আরবি</p>
+            <p className="font-arabic text-[15px] leading-[1.85] text-[hsl(var(--dua-fg))] md:text-xl">
               {arabicName}
             </p>
             {(genderLabel || category) && (
-              <div className="mt-1.5 flex flex-wrap items-center gap-1 md:mt-2">
+              <div className="mt-1 flex flex-wrap items-center gap-1 md:mt-2">
                 {genderLabel ? (
                   <Badge
                     variant="outline"
-                    className="text-[10px] border-[hsl(var(--dua-fg)/0.18)] text-[hsl(var(--dua-fg-muted))] md:text-[11px]"
+                    className="text-[9px] border-[hsl(var(--dua-fg)/0.18)] px-1.5 py-0 text-[hsl(var(--dua-fg-muted))] md:px-2 md:py-0.5 md:text-[11px]"
                   >
                     {genderLabel}
                   </Badge>
@@ -53,7 +53,7 @@ export default function NameTableRow({
                 {category ? (
                   <Badge
                     variant="secondary"
-                    className="text-[10px] bg-[hsl(var(--dua-accent)/0.18)] text-[hsl(var(--dua-accent))] md:text-[11px]"
+                    className="text-[9px] bg-[hsl(var(--dua-accent)/0.18)] px-1.5 py-0 text-[hsl(var(--dua-accent))] md:px-2 md:py-0.5 md:text-[11px]"
                   >
                     {category}
                   </Badge>
@@ -64,24 +64,24 @@ export default function NameTableRow({
 
           {/* English */}
           <div className="min-w-0">
-            <p className="text-[10px] font-medium text-[hsl(var(--dua-fg-soft))] md:text-[11px]">English</p>
-            <p className="truncate text-sm font-semibold tracking-tight text-[hsl(var(--dua-fg))] md:text-base">
+            <p className="text-[9px] font-medium text-[hsl(var(--dua-fg-soft))] md:text-[11px]">English</p>
+            <p className="truncate text-xs font-semibold tracking-tight text-[hsl(var(--dua-fg))] md:text-base">
               {englishName}
             </p>
           </div>
 
           {/* Bangla */}
           <div className="min-w-0">
-            <p className="text-[10px] font-medium text-[hsl(var(--dua-fg-soft))] md:text-[11px]">বাংলা</p>
-            <p className="truncate text-sm text-[hsl(var(--dua-fg-muted))] md:text-base">
+            <p className="text-[9px] font-medium text-[hsl(var(--dua-fg-soft))] md:text-[11px]">বাংলা</p>
+            <p className="truncate text-xs text-[hsl(var(--dua-fg-muted))] md:text-base">
               {banglaName || "—"}
             </p>
           </div>
 
           {/* Meaning */}
           <div className="min-w-0">
-            <p className="text-[10px] font-medium text-[hsl(var(--dua-fg-soft))] md:text-[11px]">অর্থ</p>
-            <p className="line-clamp-2 text-sm leading-relaxed text-[hsl(var(--dua-fg-muted))] md:text-base">
+            <p className="text-[9px] font-medium text-[hsl(var(--dua-fg-soft))] md:text-[11px]">অর্থ</p>
+            <p className="line-clamp-1 text-xs leading-relaxed text-[hsl(var(--dua-fg-muted))] md:line-clamp-2 md:text-base">
               {meaning || "—"}
             </p>
           </div>
