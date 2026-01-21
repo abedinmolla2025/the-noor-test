@@ -185,6 +185,8 @@ const QuizPage = () => {
   const [currentDate, setCurrentDate] = useState(() => new Date().toDateString());
   const [timeLeft, setTimeLeft] = useState(30);
   const [isTimeUp, setIsTimeUp] = useState(false);
+  const [resultProgress, setResultProgress] = useState(0);
+  const resultMetaRef = useRef<{ startedAt: number; durationMs: number } | null>(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -268,6 +270,10 @@ const QuizPage = () => {
       setShowResult(true);
       playSfx("wrong");
       triggerHaptic("error");
+
+      // Result popup countdown (time-up uses 3s)
+      resultMetaRef.current = { startedAt: Date.now(), durationMs: 3000 };
+      setResultProgress(0);
       
       // Auto advance to next question after 3 seconds
       const autoNextTimer = setTimeout(() => {
@@ -283,6 +289,23 @@ const QuizPage = () => {
 
     return () => clearInterval(timer);
   }, [timeLeft, quizCompleted, playedToday, currentQuestionIndex, dailyQuestions, showResult]);
+
+  // Result popup progress bar updater
+  useEffect(() => {
+    if (!showResult) return;
+    const meta = resultMetaRef.current;
+    if (!meta) return;
+
+    const tick = () => {
+      const elapsed = Date.now() - meta.startedAt;
+      const p = Math.min(100, Math.max(0, (elapsed / meta.durationMs) * 100));
+      setResultProgress(p);
+    };
+
+    tick();
+    const id = window.setInterval(tick, 40);
+    return () => window.clearInterval(id);
+  }, [showResult, currentQuestionIndex]);
 
   const submitAnswer = (answerIndex: number) => {
     if (showResult || isTimeUp) return;
@@ -306,6 +329,10 @@ const QuizPage = () => {
       playSfx("wrong");
       triggerHaptic("error");
     }
+
+    // Result popup countdown (answer select uses 1.5s)
+    resultMetaRef.current = { startedAt: Date.now(), durationMs: 1500 };
+    setResultProgress(0);
 
     // Clear any previous scheduled actions
     if (submitAutoNextTimerRef.current) window.clearTimeout(submitAutoNextTimerRef.current);
@@ -970,29 +997,41 @@ const QuizPage = () => {
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.98, y: 10 }}
                         transition={{ duration: 0.18 }}
-                        className="w-[min(92vw,420px)] rounded-2xl border bg-background p-5 shadow-lg"
+                        className="w-[min(92vw,440px)] overflow-hidden rounded-2xl border bg-card shadow-lg"
                       >
-                        <div className="flex items-start gap-3">
-                          <div
-                            className={`mt-0.5 inline-flex h-10 w-10 items-center justify-center rounded-xl border ${
-                              isTimeUp
-                                ? "border-destructive/30 bg-destructive/10"
-                                : selectedAnswer === currentQuestion.correctAnswer
-                                ? "border-primary/30 bg-primary/10"
-                                : "border-destructive/30 bg-destructive/10"
-                            }`}
-                          >
-                            {isTimeUp ? (
-                              <Clock className="h-5 w-5 text-destructive" />
-                            ) : selectedAnswer === currentQuestion.correctAnswer ? (
-                              <CheckCircle2 className="h-5 w-5 text-primary" />
-                            ) : (
-                              <XCircle className="h-5 w-5 text-destructive" />
-                            )}
-                          </div>
+                        {/* Top accent */}
+                        <div
+                          className={`h-1.5 w-full ${
+                            isTimeUp
+                              ? "bg-destructive"
+                              : selectedAnswer === currentQuestion.correctAnswer
+                              ? "bg-primary"
+                              : "bg-destructive"
+                          }`}
+                        />
 
-                          <div className="min-w-0">
-                            <p className="text-base font-semibold leading-snug">
+                        <div className="p-5">
+                          <div className="flex items-start gap-3">
+                            <div
+                              className={`mt-0.5 inline-flex h-11 w-11 items-center justify-center rounded-xl border ${
+                                isTimeUp
+                                  ? "border-destructive/30 bg-destructive/10"
+                                  : selectedAnswer === currentQuestion.correctAnswer
+                                  ? "border-primary/30 bg-primary/10"
+                                  : "border-destructive/30 bg-destructive/10"
+                              }`}
+                            >
+                              {isTimeUp ? (
+                                <Clock className="h-5 w-5 text-destructive" />
+                              ) : selectedAnswer === currentQuestion.correctAnswer ? (
+                                <CheckCircle2 className="h-5 w-5 text-primary" />
+                              ) : (
+                                <XCircle className="h-5 w-5 text-destructive" />
+                              )}
+                            </div>
+
+                            <div className="min-w-0 flex-1">
+                              <p className="text-base font-semibold leading-snug">
                               {isTimeUp
                                 ? languageMode === "bn"
                                   ? "সময় শেষ!"
@@ -1022,21 +1061,60 @@ const QuizPage = () => {
                                 ? "সঠিক! ✓"
                                 : "ভুল উত্তর। সঠিক উত্তর দেখানো হচ্ছে।"}
                             </p>
-                          </div>
-                        </div>
 
-                        <div className="mt-4 rounded-xl bg-muted/40 px-3 py-2 text-center text-xs text-muted-foreground">
-                          {isTimeUp
-                            ? languageMode === "bn"
-                              ? "৩ সেকেন্ড পরে পরবর্তী প্রশ্ন…"
-                              : languageMode === "en"
-                              ? "Next question in 3 seconds…"
-                              : "৩ সেকেন্ড পরে পরবর্তী প্রশ্ন… / Next in 3s…"
-                            : languageMode === "bn"
-                            ? "পরবর্তী প্রশ্নে যাচ্ছে…"
-                            : languageMode === "en"
-                            ? "Moving to next question…"
-                            : "পরবর্তী প্রশ্নে যাচ্ছে… / Moving to next…"}
+                              {/* Correct answer preview (more professional/clear) */}
+                              <div className="mt-4 rounded-xl border bg-muted/30 p-3">
+                                <p className="text-xs font-medium text-muted-foreground">
+                                  {languageMode === "bn"
+                                    ? "সঠিক উত্তর"
+                                    : languageMode === "en"
+                                    ? "Correct answer"
+                                    : "সঠিক উত্তর / Correct answer"}
+                                </p>
+                                <p
+                                  className={`mt-1 leading-snug ${
+                                    languageMode === "bn" ||
+                                    (languageMode === "mixed" &&
+                                      isMixedPrimaryBanglaOption(currentQuestion, currentQuestion.correctAnswer))
+                                      ? "quiz-text-bn text-base font-medium"
+                                      : "quiz-text-en text-sm font-medium"
+                                  }`}
+                                >
+                                  {getOptionText(
+                                    currentQuestion,
+                                    currentQuestion.options[currentQuestion.correctAnswer],
+                                    currentQuestion.correctAnswer,
+                                    languageMode,
+                                  )}
+                                </p>
+                                {languageMode === "mixed" &&
+                                  isMixedPrimaryBanglaOption(currentQuestion, currentQuestion.correctAnswer) &&
+                                  shouldShowMixedSecondaryOption(currentQuestion, currentQuestion.correctAnswer) && (
+                                    <p className="quiz-text-en-secondary text-xs mt-0.5">
+                                      {getOptionTextSecondary(
+                                        currentQuestion,
+                                        currentQuestion.options[currentQuestion.correctAnswer],
+                                        currentQuestion.correctAnswer,
+                                      )}
+                                    </p>
+                                  )}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="mt-4">
+                            <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
+                              <span>
+                                {languageMode === "bn"
+                                  ? "পরবর্তী প্রশ্ন"
+                                  : languageMode === "en"
+                                  ? "Next question"
+                                  : "পরবর্তী প্রশ্ন / Next"}
+                              </span>
+                              <span>{Math.max(0, Math.round(100 - resultProgress))}%</span>
+                            </div>
+                            <Progress value={resultProgress} className="h-2" />
+                          </div>
                         </div>
                       </motion.div>
                     </motion.div>
