@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Copy, Search, Share2 } from "lucide-react";
@@ -132,6 +132,17 @@ const NamesPage = () => {
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [activeGender, setActiveGender] = useState<string>("all");
   const [selected, setSelected] = useState<NameContentRow | null>(null);
+  const [stickyHeaderRaised, setStickyHeaderRaised] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      // Keep it subtle: raise the glass header slightly once the page is scrolled.
+      setStickyHeaderRaised(window.scrollY > 8);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const namesQuery = useQuery({
     queryKey: ["public-names"],
@@ -415,7 +426,13 @@ const NamesPage = () => {
           <div className="flex items-start gap-3">
             <div className="min-w-0 flex-1">
               {/* Sticky header row for 4-column layout */}
-              <div className="sticky top-[92px] z-20 mb-3 hidden rounded-2xl border border-[hsl(var(--dua-border))] bg-[hsl(var(--dua-header)/0.58)] px-3 py-2 shadow-soft backdrop-blur-md md:block">
+              <div
+                className={`sticky top-[92px] z-20 mb-3 hidden rounded-2xl border border-[hsl(var(--dua-border))] px-3 py-2 backdrop-blur-md transition-all duration-300 ease-out md:block ${
+                  stickyHeaderRaised
+                    ? "bg-[hsl(var(--dua-header)/0.74)] shadow-card"
+                    : "bg-[hsl(var(--dua-header)/0.56)] shadow-soft"
+                }`}
+              >
                 <div className="grid grid-cols-[1fr_1fr_1fr_1.15fr] items-center gap-1.5 md:grid-cols-[1.1fr_1fr_1fr_1.4fr] md:gap-3">
                   <div className="text-xs font-semibold tracking-wide text-[hsl(var(--dua-fg-soft))]">আরবি</div>
                   <div className="text-xs font-semibold tracking-wide text-[hsl(var(--dua-fg-soft))]">English</div>
@@ -425,7 +442,13 @@ const NamesPage = () => {
               </div>
 
               {/* Mobile sticky header (labels are hidden inside rows on mobile) */}
-              <div className="sticky top-[92px] z-20 mb-3 rounded-2xl border border-[hsl(var(--dua-border))] bg-[hsl(var(--dua-header)/0.58)] px-3 py-2 shadow-soft backdrop-blur-md md:hidden">
+              <div
+                className={`sticky top-[92px] z-20 mb-3 rounded-2xl border border-[hsl(var(--dua-border))] px-3 py-2 backdrop-blur-md transition-all duration-300 ease-out md:hidden ${
+                  stickyHeaderRaised
+                    ? "bg-[hsl(var(--dua-header)/0.74)] shadow-card"
+                    : "bg-[hsl(var(--dua-header)/0.56)] shadow-soft"
+                }`}
+              >
                 <div className="grid grid-cols-[1fr_1fr_1fr_1.15fr] items-center gap-1.5">
                   <div className="text-[11px] font-semibold tracking-wide text-[hsl(var(--dua-fg-soft))]">আরবি</div>
                   <div className="text-[11px] font-semibold tracking-wide text-[hsl(var(--dua-fg-soft))]">EN</div>
