@@ -33,7 +33,7 @@ export default function NameTableRow({
     >
       {/* Keep everything side-by-side; on small screens allow horizontal scroll instead of stacking */}
       <div className="overflow-x-auto">
-        <div className="grid min-w-[44rem] gap-3 md:min-w-0 md:grid-cols-[1.1fr_1fr_1fr_1.4fr] md:items-start">
+        <div className="grid min-w-[44rem] grid-cols-[1.1fr_1fr_1fr_1.4fr] items-start gap-3 md:min-w-0">
           {/* Arabic */}
           <div className="min-w-0">
             <p className="text-[11px] font-medium text-[hsl(var(--dua-fg-soft))]">আরবি</p>
