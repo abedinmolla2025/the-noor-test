@@ -15,14 +15,30 @@ import { toast } from "sonner";
 import { Download, Upload } from "lucide-react";
 import { z } from "zod";
 
-const QuizQuestionSchema = z.object({
-  question: z.string().min(1, "Question cannot be empty"),
-  options: z.array(z.string()).length(4, "Must have 4 options"),
-  correct_answer: z.number().min(0).max(3),
-  category: z.string().min(1, "Category is required"),
-  difficulty: z.enum(["easy", "medium", "hard"]).optional().default("medium"),
-  is_active: z.boolean().optional().default(true),
-});
+const QuizQuestionSchema = z
+  .object({
+    // Base fields (required)
+    question: z.string().min(1, "Question cannot be empty"),
+    options: z.array(z.string()).length(4, "Must have 4 options"),
+    correct_answer: z.number().min(0).max(3),
+    category: z.string().min(1, "Category is required"),
+    difficulty: z.enum(["easy", "medium", "hard"]).optional().default("medium"),
+    is_active: z.boolean().optional().default(true),
+
+    // Optional bilingual packs (your uploaded JSON already contains these)
+    question_en: z.string().optional(),
+    question_bn: z.string().optional(),
+    options_en: z.array(z.string()).length(4).optional(),
+    options_bn: z.array(z.string()).length(4).optional(),
+  })
+  .superRefine((q, ctx) => {
+    if (q.options_en && q.options_en.length !== 4) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "options_en must have 4 options" });
+    }
+    if (q.options_bn && q.options_bn.length !== 4) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "options_bn must have 4 options" });
+    }
+  });
 
 type QuizQuestion = z.infer<typeof QuizQuestionSchema>;
 
@@ -43,15 +59,28 @@ export function QuizBulkImportDialog() {
 
       const startIndex = existingQuestions?.[0]?.order_index ?? -1;
 
-      const questionsWithOrder = questions.map((q, index) => ({
-        question: q.question,
-        options: q.options,
-        correct_answer: q.correct_answer,
-        category: q.category,
-        difficulty: q.difficulty || "medium",
-        is_active: q.is_active !== false,
-        order_index: startIndex + index + 1,
-      }));
+      const questionsWithOrder = questions.map((q, index) => {
+        const derivedBaseQuestion = (q.question_en || q.question_bn || q.question).trim();
+        const derivedOptions = (q.options_en || q.options_bn || q.options).map((s) => String(s));
+
+        return {
+          // Base (used by older clients / fallback)
+          question: derivedBaseQuestion,
+          options: derivedOptions,
+
+          // Explicit bilingual fields (if present)
+          question_en: q.question_en ?? null,
+          question_bn: q.question_bn ?? null,
+          options_en: q.options_en ?? null,
+          options_bn: q.options_bn ?? null,
+
+          correct_answer: q.correct_answer,
+          category: q.category,
+          difficulty: q.difficulty || "medium",
+          is_active: q.is_active !== false,
+          order_index: startIndex + index + 1,
+        };
+      });
 
       const { error } = await supabase.from("quiz_questions").insert(questionsWithOrder);
 
@@ -148,18 +177,15 @@ export function QuizBulkImportDialog() {
   const exampleJson = `[
   {
     "question": "How many surahs are in the Quran?",
+    "question_en": "How many surahs are in the Quran?",
+    "question_bn": "কুরআন কত সূরা নিয়ে গঠিত?",
     "options": ["114", "115", "113", "112"],
+    "options_en": ["114", "115", "113", "112"],
+    "options_bn": ["১১৪", "১১৫", "১১৩", "১১২"],
     "correct_answer": 0,
     "category": "Quran",
     "difficulty": "easy",
     "is_active": true
-  },
-  {
-    "question": "What is the first pillar of Islam?",
-    "options": ["Prayer", "Fasting", "Shahada", "Zakat"],
-    "correct_answer": 2,
-    "category": "Pillars",
-    "difficulty": "easy"
   }
 ]`;
 
