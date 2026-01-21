@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 import {
   Select,
   SelectContent,
@@ -44,23 +45,24 @@ type NotificationTemplate = {
   category: "prayer" | "daily" | "special";
 };
 
-type TickerStyle = { font: string; size: string; color: string };
+type TickerSpeed = "slow" | "normal" | "fast";
+type TickerStyle = { font: string; size: string; color: string; speed?: TickerSpeed };
 
 const TICKER_STYLE_THEMES: Array<{ id: string; label: string; style: TickerStyle }> = [
   {
     id: "emerald",
     label: "Emerald",
-    style: { font: "font-display", size: "text-sm", color: "text-primary" },
+    style: { font: "font-display", size: "text-sm", color: "text-primary", speed: "normal" },
   },
   {
     id: "gold",
     label: "Gold",
-    style: { font: "font-premium", size: "text-sm", color: "text-accent" },
+    style: { font: "font-premium", size: "text-sm", color: "text-accent", speed: "normal" },
   },
   {
     id: "night",
     label: "Night",
-    style: { font: "font-display", size: "text-xs", color: "text-muted-foreground" },
+    style: { font: "font-display", size: "text-xs", color: "text-muted-foreground", speed: "slow" },
   },
 ];
 
@@ -486,6 +488,7 @@ export default function AdminNotifications() {
       font: typeof st.font === "string" ? st.font : "font-sans",
       size: typeof st.size === "string" ? st.size : "text-xs",
       color: typeof st.color === "string" ? st.color : "text-foreground/90",
+      speed: st.speed === "slow" || st.speed === "normal" || st.speed === "fast" ? st.speed : "normal",
     };
   };
 
@@ -534,6 +537,9 @@ export default function AdminNotifications() {
     setAnnSize(theme.style.size);
     setAnnColor(theme.style.color);
   };
+
+  const tickerSpeedToSlider = (speed: TickerSpeed) => (speed === "slow" ? 0 : speed === "fast" ? 2 : 1);
+  const sliderToTickerSpeed = (v: number): TickerSpeed => (v <= 0 ? "slow" : v >= 2 ? "fast" : "normal");
 
   useEffect(() => {
     if (activeAnnouncement) {
@@ -987,6 +993,27 @@ export default function AdminNotifications() {
                                     {t.label}
                                   </Button>
                                 ))}
+                              </div>
+                            </div>
+
+                            <div className="space-y-1">
+                              <p className="text-[11px] font-medium text-muted-foreground">Marquee speed</p>
+                              <Slider
+                                value={[tickerSpeedToSlider(activeStyleDraft.speed ?? "normal")]}
+                                onValueChange={([value]) => {
+                                  const next = { ...activeStyleDraft, speed: sliderToTickerSpeed(value) };
+                                  setActiveStyleDraft(next);
+                                  scheduleActiveStyleSave(next);
+                                }}
+                                min={0}
+                                max={2}
+                                step={1}
+                                className="w-full"
+                              />
+                              <div className="flex justify-between text-[11px] text-muted-foreground">
+                                <span>Slow</span>
+                                <span>Normal</span>
+                                <span>Fast</span>
                               </div>
                             </div>
 
