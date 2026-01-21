@@ -193,6 +193,20 @@
   .admin-compact [data-ui="button"][data-size="icon"] {
     @apply h-9 w-9;
   }
+
+  /* Quiz typography helpers (clean BN/EN pairing) */
+  .quiz-text-bn {
+    @apply font-quizBnPremium leading-relaxed tracking-normal antialiased;
+  }
+
+  .quiz-text-en {
+    @apply font-quizEnPremium leading-relaxed tracking-tight antialiased;
+  }
+
+  .quiz-text-en-secondary {
+    /* slightly higher contrast than muted for readability/pro feel */
+    @apply font-quizEnPremium text-foreground/70 leading-snug tracking-tight antialiased;
+  }
 }
 
 
