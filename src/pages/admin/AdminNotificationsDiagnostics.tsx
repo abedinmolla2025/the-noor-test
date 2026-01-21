@@ -57,6 +57,11 @@ export default function AdminNotificationsDiagnostics() {
 
   const isNative = Capacitor.isNativePlatform();
   const platform = isNative ? Capacitor.getPlatform() : "web";
+  const deviceId = getOrCreateDeviceId();
+  const thisDeviceTarget = ((): TargetPlatform => {
+    if (!isNative) return "web";
+    return platform === "ios" ? "ios" : "android";
+  })();
 
   const [webState, setWebState] = useState<WebPushState>({
     swSupported: "serviceWorker" in navigator && "PushManager" in window,
@@ -75,7 +80,7 @@ export default function AdminNotificationsDiagnostics() {
       [
         { label: "Runtime", value: isNative ? "Native (Capacitor)" : "Web" },
         { label: "Platform", value: String(platform) },
-        { label: "Device ID", value: getOrCreateDeviceId() },
+        { label: "Device ID", value: deviceId },
         {
           label: "Notification permission",
           value: webState.permission === "unsupported" ? "Unsupported" : webState.permission,
@@ -84,7 +89,7 @@ export default function AdminNotificationsDiagnostics() {
         { label: "Web push subscription", value: webState.hasSubscription ? "Present" : "Missing" },
       ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isNative, platform, webState.permission, webState.swSupported, webState.hasSubscription],
+    [isNative, platform, deviceId, webState.permission, webState.swSupported, webState.hasSubscription],
   );
 
   const refreshAuth = async () => {
@@ -189,7 +194,7 @@ export default function AdminNotificationsDiagnostics() {
     }
   };
 
-  const runTest = async (dryRun: boolean) => {
+  const runTest = async (dryRun: boolean, scope: "all" | "this_device") => {
     setLoading(true);
     try {
       const {
@@ -221,7 +226,8 @@ export default function AdminNotificationsDiagnostics() {
       const { data: res, error } = await supabase.functions.invoke("send-push", {
         body: {
           notificationId: created.id,
-          platform: testTarget,
+          platform: scope === "this_device" ? thisDeviceTarget : testTarget,
+          deviceId: scope === "this_device" ? deviceId : undefined,
           dryRun,
         },
       });
@@ -230,12 +236,18 @@ export default function AdminNotificationsDiagnostics() {
       if (dryRun) {
         toast({
           title: "Dry run OK",
-          description: `Target: ${res?.target_platform ?? testTarget} • Targets: ${res?.targets ?? 0}`,
+          description:
+            scope === "this_device"
+              ? `This device • Platform: ${thisDeviceTarget} • Targets: ${res?.targets ?? 0}`
+              : `Target: ${res?.target_platform ?? testTarget} • Targets: ${res?.targets ?? 0}`,
         });
       } else {
         toast({
           title: "Test send triggered",
-          description: `Sent: ${res?.totals?.sent ?? 0}, Failed: ${res?.totals?.failed ?? 0}`,
+          description:
+            scope === "this_device"
+              ? `This device • Sent: ${res?.totals?.sent ?? 0}, Failed: ${res?.totals?.failed ?? 0}`
+              : `Sent: ${res?.totals?.sent ?? 0}, Failed: ${res?.totals?.failed ?? 0}`,
         });
       }
     } catch (e: any) {
@@ -382,12 +394,40 @@ export default function AdminNotificationsDiagnostics() {
           </div>
 
           <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
-            <Button variant="outline" onClick={() => runTest(true)} disabled={loading}>
-              Dry run
+            <Button
+              variant="outline"
+              onClick={() => runTest(true, "this_device")}
+              disabled={loading || adminOk !== true}
+              title={adminOk !== true ? "Admin access required" : undefined}
+            >
+              Dry run (this device)
             </Button>
-            <Button onClick={() => runTest(false)} disabled={loading} className="gap-2">
+            <Button
+              onClick={() => runTest(false, "this_device")}
+              disabled={loading || adminOk !== true}
+              className="gap-2"
+              title={adminOk !== true ? "Admin access required" : undefined}
+            >
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-              Send test
+              Send to this device
+            </Button>
+
+            <Button
+              variant="outline"
+              onClick={() => runTest(true, "all")}
+              disabled={loading || adminOk !== true}
+              title={adminOk !== true ? "Admin access required" : undefined}
+            >
+              Dry run (all)
+            </Button>
+            <Button
+              onClick={() => runTest(false, "all")}
+              disabled={loading || adminOk !== true}
+              className="gap-2"
+              title={adminOk !== true ? "Admin access required" : undefined}
+            >
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+              Send to all
             </Button>
           </div>
 

@@ -14,9 +14,19 @@ type SendPushRequest = {
   notificationId: string;
   /** Optional override: if provided, sends only to this platform */
   platform?: "all" | "android" | "ios" | "web";
+  /** Optional: if provided, sends only to this device_id (recommended for diagnostics) */
+  deviceId?: string;
+  /** Optional: if provided, sends only to this token row id (recommended for diagnostics) */
+  tokenId?: string;
   /** If true, do not actually send; only validate + count targets */
   dryRun?: boolean;
 };
+
+function isValidIdLike(input: unknown, min: number, max: number): input is string {
+  if (typeof input !== "string") return false;
+  const v = input.trim();
+  return v.length >= min && v.length <= max;
+}
 
 function json(status: number, body: unknown, extraHeaders: Record<string, string> = {}) {
   return new Response(JSON.stringify(body), {
@@ -204,9 +214,17 @@ Deno.serve(async (req) => {
       return json(401, { error: "Unauthorized" });
     }
 
-    const { notificationId, platform, dryRun } = (await req.json()) as SendPushRequest;
+    const { notificationId, platform, dryRun, deviceId, tokenId } = (await req.json()) as SendPushRequest;
     if (!notificationId || typeof notificationId !== "string") {
       return json(400, { error: "notificationId is required" });
+    }
+
+    // Optional diagnostics filters
+    if (deviceId !== undefined && !isValidIdLike(deviceId, 8, 128)) {
+      return json(400, { error: "Invalid deviceId" });
+    }
+    if (tokenId !== undefined && !isValidIdLike(tokenId, 8, 128)) {
+      return json(400, { error: "Invalid tokenId" });
     }
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -251,11 +269,16 @@ Deno.serve(async (req) => {
       return ["android", "ios", "web"]; // all
     })();
 
-    const { data: tokens, error: tokensErr } = await svc
+    let tokensQuery = svc
       .from("device_push_tokens")
       .select("id,token,platform")
       .eq("enabled", true)
       .in("platform", allowedPlatforms);
+
+    if (deviceId) tokensQuery = tokensQuery.eq("device_id", deviceId);
+    if (tokenId) tokensQuery = tokensQuery.eq("id", tokenId);
+
+    const { data: tokens, error: tokensErr } = await tokensQuery;
 
     if (tokensErr) {
       console.error("token fetch error", tokensErr);
